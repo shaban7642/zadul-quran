@@ -64,9 +64,13 @@ const CreateUser = () => {
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      role: yup.string().max(255).required("slIsRequired"),
-      staff_id: yup.string().max(255).required("staff_idIsRequired"),
+      role: yup.string().required(),
+      join_date: yup.date().required("staff_idIsRequired"),
       name: yup.string().max(255).required("nameIsRequired"),
+      gender: yup.string().required(),
+      DOB: yup.date().required(),
+      designation: yup.string().required(),
+      depatment: yup.string().required(),
       email: yup
         .string()
         .email("emailAddress")
