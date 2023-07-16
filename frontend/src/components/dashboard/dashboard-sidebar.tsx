@@ -58,14 +58,14 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
         {
           title: "Employees",
           path: "/employees",
-          icon: <ChartIcon fontSize="small" />,
+          icon: <UsersIcon fontSize="small" />,
           disabled: false,
           accessed: true,
         },
         {
-          title: "sidebar.dashboard.orders",
-          path: "/orders",
-          icon: <FoodMenuIcon fontSize="small" />,
+          title: "Students",
+          path: "/students",
+          icon: <ShiftsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
         },

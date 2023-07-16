@@ -12,11 +12,10 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
-import { TableHeads } from "./users-heads";
+import { TableHeads } from "../users/users-heads";
 import { IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import Add from "@mui/icons-material/Add";
 import Delete from "@mui/icons-material/Delete";
-import { UsersRow } from "./users-row";
+import { StudentsRow } from "./students-row";
 import { userApi } from "../../api/userApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { User } from "../../types/user";
@@ -75,7 +74,7 @@ export interface HeadCell {
   numeric: boolean;
 }
 
-export const UsersTable = () => {
+export const StudentsTable = () => {
   const tableName: string = "users";
   const isMounted = useMounted();
   const [order, setOrder] = useState<Order>("asc");
@@ -106,22 +105,16 @@ export const UsersTable = () => {
   const numSelected = selected.length;
   const headCells: readonly any[] = [
     {
-      id: "sl",
+      id: "first_name",
       numeric: false,
       disablePadding: true,
-      label: "Sl",
+      label: "First Name",
     },
     {
-      id: "staff_id",
+      id: "last_name",
       numeric: false,
       disablePadding: true,
-      label: "Staff Id",
-    },
-    {
-      id: "name",
-      numeric: false,
-      disablePadding: true,
-      label: "Name",
+      label: "Last Name",
     },
     {
       id: "department",
@@ -362,7 +355,7 @@ export const UsersTable = () => {
                   const isItemSelected = isSelected(row.sl);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
-                    <UsersRow
+                    <StudentsRow
                       key={row.name}
                       row={row}
                       handleSelectOne={handleSelectOne}

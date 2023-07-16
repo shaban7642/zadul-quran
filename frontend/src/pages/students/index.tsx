@@ -5,8 +5,10 @@ import { UsersTable } from "../../components/users/users-table";
 import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CreateUser from "../../components/users/users-create";
+import CreateStudent from "../../components/students/students-create";
+import { StudentsTable } from "../../components/students/students-table";
 
-const Employees: NextPage = () => {
+const Students: NextPage = () => {
   const [value, setValue] = useState("1");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -16,27 +18,27 @@ const Employees: NextPage = () => {
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
-            <TabList onChange={handleChange} aria-label="Employees options">
-              <Tab label="List Employees" value="1" />
-              <Tab label="Add Employees" value="2" />
-              <Tab label=" Employees" value="3" />
+            <TabList onChange={handleChange} aria-label="Students options">
+              <Tab label="List Students" value="1" />
+              <Tab label="Add Students" value="2" />
+              <Tab label=" Students" value="3" />
             </TabList>
           </Box>
           <TabPanel value="1">
             <Typography color="inherit" variant="h4">
-              List of employees
+              List of student
             </Typography>
-            <UsersTable />
+            <StudentsTable />
           </TabPanel>
           <TabPanel value="2">
             <Typography color="inherit" variant="h4">
-              Add new employee
+              Add new student
             </Typography>
-            <CreateUser />
+            <CreateStudent />
           </TabPanel>
           <TabPanel value="3">
             <Typography color="inherit" variant="h4">
-              List of employees
+              List of student
             </Typography>
           </TabPanel>
         </TabContext>
@@ -45,7 +47,7 @@ const Employees: NextPage = () => {
   );
 };
 
-// Employees.getLayout = (page) => (
+// Students.getLayout = (page) => (
 //   // <AuthGuard>
 //   //   <OwnerGuard>
 
@@ -53,4 +55,4 @@ const Employees: NextPage = () => {
 //   // </AuthGuard>
 // );
 
-export default Employees;
+export default Students;
