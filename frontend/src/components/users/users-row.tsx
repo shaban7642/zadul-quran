@@ -1,13 +1,19 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import Box from "@mui/material/Box";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
+import {
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
-import { TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
 import get from "lodash/get";
@@ -19,6 +25,9 @@ interface RowProps {
   labelId: string;
   updateUser: (id: any, userData: any) => Promise<{ success: boolean }>;
 }
+
+const departments = ["Admin", "Teacher", "Accountant"];
+const designations = ["Admin", "Teacher", "Accountant"];
 export const UsersRow: FC<RowProps> = (props) => {
   const { row, handleSelectOne, isItemSelected, labelId, updateUser } = props;
   const [open, setOpen] = useState(false);
@@ -27,6 +36,7 @@ export const UsersRow: FC<RowProps> = (props) => {
     row?.sl || "no data",
     row?.staff_id || "no data",
     row?.name || "no data",
+    row?.designation || "no data",
     row?.department || "no data",
     row?.email || "no data",
     row?.mobile_no || "no data",
@@ -54,6 +64,7 @@ export const UsersRow: FC<RowProps> = (props) => {
       sl: row?.sl,
       staff_id: row?.staff_id,
       name: row?.name,
+      designation: row?.designation,
       department: row?.department,
       email: row?.email,
       mobile_no: row?.mobile_no,
@@ -64,6 +75,8 @@ export const UsersRow: FC<RowProps> = (props) => {
       sl: yup.string().max(255).required("slIsRequired"),
       staff_id: yup.string().max(255).required("staff_idIsRequired"),
       name: yup.string().max(255).required("nameIsRequired"),
+      designation: yup.string().max(255).required("designationIsRequired"),
+      department: yup.string().max(255).required("departmentIsRequired"),
       email: yup
         .string()
         .email("emailAddress")
@@ -99,6 +112,7 @@ export const UsersRow: FC<RowProps> = (props) => {
         sl: row?.sl,
         staff_id: row?.staff_id,
         name: row?.name,
+        designation: row?.designation,
         department: row?.department,
         email: row?.email,
         mobile_no: row?.mobile_no,
@@ -230,35 +244,64 @@ export const UsersRow: FC<RowProps> = (props) => {
                   }}
                 />
 
-                <TextField
-                  size="small"
+                <FormControl
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
                     mr: 1,
+                    marginTop: 2,
                   }}
-                  error={Boolean(
-                    formik.touched.department && formik.errors.department
-                  )}
-                  // @ts-ignore
-                  helperText={
-                    formik.touched.department && formik.errors.department
-                  }
-                  label="department"
-                  margin="normal"
-                  id="department"
-                  name="department"
-                  type="department"
-                  onChange={formik.handleChange}
-                  value={formik.values.department}
-                  InputProps={{
-                    style: {
-                      fontFamily: "sans-serif",
+                  variant="outlined"
+                >
+                  {" "}
+                  <InputLabel id="outlined-adornment-department">
+                    Department
+                  </InputLabel>
+                  <Select
+                    name="department"
+                    id="outlined-adornment-department"
+                    labelId="outlined-adornment-department"
+                    value={formik.values.department}
+                    onChange={formik.handleChange}
+                  >
+                    {departments.map((department) => (
+                      <MenuItem key={department} value={department}>
+                        {department}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl
+                  sx={{
+                    width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
+                    "& .MuiInputBase-root": {
+                      height: 40,
                     },
+                    mr: 1,
+                    marginTop: 2,
                   }}
-                />
+                  variant="outlined"
+                >
+                  {" "}
+                  <InputLabel id="outlined-adornment-designation">
+                    Designation
+                  </InputLabel>
+                  <Select
+                    name="designation"
+                    id="outlined-adornment-designation"
+                    labelId="outlined-adornment-designation"
+                    value={formik.values.designation}
+                    onChange={formik.handleChange}
+                  >
+                    {designations.map((designation) => (
+                      <MenuItem key={designation} value={designation}>
+                        {designation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField
                   size="small"
                   sx={{

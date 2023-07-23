@@ -22,8 +22,10 @@ import { VisibilityOff } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
 
-const options1 = ["Admin", "Teacher", "Accountant"];
-const options = ["Male", "Female"];
+const roles = ["Admin", "Teacher", "Accountant"];
+const genders = ["Male", "Female"];
+const departments = ["Admin", "Teacher", "Accountant"];
+const designations = ["Admin", "Teacher", "Accountant"];
 const CreateUser = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
@@ -49,13 +51,13 @@ const CreateUser = () => {
 
   const formik = useFormik({
     initialValues: {
-      role: options1[0],
+      role: roles[0],
       join_date: "",
       name: "",
-      gender: options[0],
+      gender: genders[0],
       DOB: "",
-      designation: "",
-      department: "",
+      designation: designations[0],
+      department: departments[0],
       email: "",
       mobile_no: "",
       password: "",
@@ -138,9 +140,9 @@ const CreateUser = () => {
             value={formik.values.role}
             onChange={formik.handleChange}
           >
-            {options1.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+            {roles.map((role) => (
+              <MenuItem key={role} value={role}>
+                {role}
               </MenuItem>
             ))}
           </Select>
@@ -213,9 +215,9 @@ const CreateUser = () => {
             value={formik.values.gender}
             onChange={formik.handleChange}
           >
-            {options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+            {genders.map((gender) => (
+              <MenuItem key={gender} value={gender}>
+                {gender}
               </MenuItem>
             ))}
           </Select>
@@ -244,58 +246,62 @@ const CreateUser = () => {
             shrink: true,
           }}
         />
-        <TextField
-          size="small"
+        <FormControl
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
             "& .MuiInputBase-root": {
               height: 40,
             },
             mr: 1,
+            marginTop: 2,
           }}
-          error={Boolean(formik.touched.department && formik.errors.department)}
-          // @ts-ignore
-          helperText={formik.touched.department && formik.errors.department}
-          label="department"
-          margin="normal"
-          id="department"
-          name="department"
-          type="department"
-          onChange={formik.handleChange}
-          value={formik.values.department}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
-        <TextField
-          size="small"
+          variant="outlined"
+        >
+          {" "}
+          <InputLabel id="outlined-adornment-department">Department</InputLabel>
+          <Select
+            name="department"
+            id="outlined-adornment-department"
+            labelId="outlined-adornment-department"
+            value={formik.values.department}
+            onChange={formik.handleChange}
+          >
+            {departments.map((department) => (
+              <MenuItem key={department} value={department}>
+                {department}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
             "& .MuiInputBase-root": {
               height: 40,
             },
             mr: 1,
+            marginTop: 2,
           }}
-          error={Boolean(
-            formik.touched.designation && formik.errors.designation
-          )}
-          // @ts-ignore
-          helperText={formik.touched.designation && formik.errors.designation}
-          label="designation"
-          margin="normal"
-          id="designation"
-          name="designation"
-          type="designation"
-          onChange={formik.handleChange}
-          value={formik.values.designation}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
+          variant="outlined"
+        >
+          {" "}
+          <InputLabel id="outlined-adornment-designation">
+            Designation
+          </InputLabel>
+          <Select
+            name="designation"
+            id="outlined-adornment-designation"
+            labelId="outlined-adornment-designation"
+            value={formik.values.designation}
+            onChange={formik.handleChange}
+          >
+            {designations.map((designation) => (
+              <MenuItem key={designation} value={designation}>
+                {designation}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           size="small"
           sx={{

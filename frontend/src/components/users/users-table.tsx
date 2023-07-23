@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  FC,
   MouseEvent,
   useCallback,
   useEffect,
@@ -23,11 +24,14 @@ import { User } from "../../types/user";
 import toast from "react-hot-toast";
 
 export interface Data {
-  name: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  mobile_no: string;
+  sl: String;
+  staff_id: String;
+  name: String;
+  role: String;
+  desination: String;
+  department: String;
+  email: String;
+  mobile_no: String;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -74,8 +78,11 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
 }
-
-export const UsersTable = () => {
+interface UsersTableProps {
+  role?: string;
+}
+export const UsersTable: FC<UsersTableProps> = (props) => {
+  const { role } = props;
   const tableName: string = "users";
   const isMounted = useMounted();
   const [order, setOrder] = useState<Order>("asc");
@@ -87,6 +94,8 @@ export const UsersTable = () => {
       sl: 1,
       staff_id: 123,
       name: "abdo",
+      role: "admin",
+      desination: "Admin",
       department: "sdsd",
       email: "e@b.com",
       mobile_no: " + 91 - 876543210",
@@ -95,6 +104,28 @@ export const UsersTable = () => {
       sl: 2,
       staff_id: 456,
       name: "johndoe",
+      role: "admin",
+      desination: "Admin",
+      department: "dsdsddds",
+      email: "<EMAIL>",
+      mobile_no: "+91-9876543210",
+    },
+    {
+      sl: 3,
+      staff_id: 223,
+      name: "abdo",
+      role: "teacher",
+      desination: "Teacher",
+      department: "sdsd",
+      email: "e@b.com",
+      mobile_no: " + 91 - 876543210",
+    },
+    {
+      sl: 4,
+      staff_id: 556,
+      name: "johndoe",
+      role: "teacher",
+      desination: "Teacher",
       department: "dsdsddds",
       email: "<EMAIL>",
       mobile_no: "+91-9876543210",
@@ -122,6 +153,12 @@ export const UsersTable = () => {
       numeric: false,
       disablePadding: true,
       label: "Name",
+    },
+    {
+      id: "desination",
+      numeric: false,
+      disablePadding: true,
+      label: "Desination",
     },
     {
       id: "department",
@@ -273,27 +310,9 @@ export const UsersTable = () => {
   };
   return (
     <Box sx={{ width: "100%", scrollBehavior: "auto" }}>
-      <Toolbar
-        sx={{
-          pl: 2,
-          mt: 1,
-          ...(true && {
-            color: (theme) =>
-              alpha(
-                theme.palette.info.contrastText,
-                theme.palette.action.activatedOpacity
-              ),
-          }),
-        }}
-      >
-        <Typography sx={{ flex: "1 1 100%" }} variant="h4" id="tableTitle">
-          tableName
-        </Typography>
-      </Toolbar>
-
       <Paper
         sx={{
-          m: 1,
+          m: 0,
           ...(true && {
             bgcolor: (theme) =>
               alpha(
@@ -357,8 +376,9 @@ export const UsersTable = () => {
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
               rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(users, getComparator(order, orderBy)).map(
-                (row, index) => {
+              {stableSort(users, getComparator(order, orderBy))
+                .filter((row) => row.role === role)
+                .map((row, index) => {
                   const isItemSelected = isSelected(row.sl);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
@@ -371,8 +391,7 @@ export const UsersTable = () => {
                       updateUser={updateUser}
                     />
                   );
-                }
-              )}
+                })}
             </TableBody>
           </Table>
         </TableContainer>

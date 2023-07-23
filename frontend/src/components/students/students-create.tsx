@@ -39,6 +39,7 @@ const CreateStudent = () => {
       } else {
         toast.dismiss(load);
         toast.error("createStudentFailed");
+        return { success: false };
       }
     } catch (err) {
       toast.dismiss(load);

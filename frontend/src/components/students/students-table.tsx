@@ -296,7 +296,7 @@ export const StudentsTable = () => {
           }),
         }}
       >
-        {numSelected > 0 ? (
+        {numSelected > 0 && (
           <Toolbar
             sx={{
               pl: { sm: 2 },
@@ -326,8 +326,6 @@ export const StudentsTable = () => {
               </IconButton>
             </Tooltip>
           </Toolbar>
-        ) : (
-          <></>
         )}
         <TableContainer>
           <Table
