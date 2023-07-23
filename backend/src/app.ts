@@ -8,6 +8,8 @@ import logger from 'morgan';
 import path from 'path';
 import { Route } from './types/routes.type';
 import { initAssociation, initModels, sequelize } from './db/models';
+import corsMiddleware from './middlewares/cors.middleware';
+import errorMiddleware from './middlewares/error.middleware';
 
 class App {
   public app: express.Application;
@@ -22,9 +24,9 @@ class App {
 
     App.initializeSequelize();
 
-    // this.initializeMiddlewares();
-    // this.initializeRoutes(routes);
-    // this.initializeErrorHandling();
+    this.initializeMiddlewares();
+    this.initializeRoutes(routes);
+    this.initializeErrorHandling();
   }
 
   public listen() {
@@ -57,7 +59,7 @@ class App {
   private initializeMiddlewares() {
     this.app.use(compression());
     this.app.use(express.static(path.join(__dirname, 'public')));
-    // this.app.use(corsMiddleware());
+    this.app.use(corsMiddleware());
     if (this.env) {
       this.app.use(hpp());
       this.app.use(helmet());
@@ -84,7 +86,7 @@ class App {
   }
 
   private initializeErrorHandling() {
-    // this.app.use(errorMiddleware);
+    this.app.use(errorMiddleware);
     this.app.set('trust proxy', true);
   }
 }

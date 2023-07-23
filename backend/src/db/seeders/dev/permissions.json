@@ -1,0 +1,26 @@
+[
+  {
+    "name": "permissions:read"
+  },
+  {
+    "name": "permissions:create"
+  },
+  {
+    "name": "permissions:update"
+  },
+  {
+    "name": "permissions:delete"
+  },
+  {
+    "name": "users:read"
+  },
+  {
+    "name": "users:create"
+  },
+  {
+    "name": "users:update"
+  },
+  {
+    "name": "users:delete"
+  }
+]

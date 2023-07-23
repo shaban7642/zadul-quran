@@ -12,6 +12,27 @@ module.exports = {
       registrationNumber: {
         type: Sequelize.STRING,
       },
+      phoneNumber: {
+        type: Sequelize.STRING,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      username: {
+        type: Sequelize.STRING,
+      },
+      password: {
+        type: Sequelize.STRING,
+      },
+      roleId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'roles',
+          key: 'id',
+        },
+      },
       firstName: {
         type: Sequelize.STRING,
       },
@@ -25,14 +46,21 @@ module.exports = {
       birthDate: {
         type: Sequelize.DATE,
       },
-      phoneNumber: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
       city: {
         type: Sequelize.STRING,
+      },
+      registrationDate: {
+        type: Sequelize.DATE,
+        defaultValue: new Date(),
+      },
+      lastLoginDate: {
+        type: Sequelize.DATE,
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+      },
+      deActivateReason: {
+        type: new Sequelize.STRING(255),
       },
       createdAt: {
         type: Sequelize.DATE,

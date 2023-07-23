@@ -1,5 +1,10 @@
 import { Sequelize } from 'sequelize';
 import { DialectOptions } from '../../types/sequelize.type';
+import Role from './roles.model';
+import Permissions from './permissions.model';
+import RolePermissions from './rolePermissions.model';
+import User from './users.model';
+import UserAgents from './userAgents.model';
 
 console.info('Initializing sequelize...');
 
@@ -33,6 +38,11 @@ export const sequelize = sqlInitialize();
 export const initModels = async (sequelizeInst: Sequelize) => {
   try {
     console.info('Initializing sequelize models...');
+    await Role.initModel(sequelizeInst);
+    await Permissions.initModel(sequelizeInst);
+    await RolePermissions.initModel(sequelizeInst);
+    await User.initModel(sequelizeInst);
+    await UserAgents.initModel(sequelizeInst);
   } catch (error) {
     console.log(error);
   }
@@ -41,6 +51,11 @@ export const initModels = async (sequelizeInst: Sequelize) => {
 export const initAssociation = async () => {
   try {
     console.info('Initializing sequelize associations...');
+    await Role.initAssociation();
+    await Permissions.initAssociation();
+    await RolePermissions.initAssociation();
+    await User.initAssociation();
+    await UserAgents.initAssociation();
   } catch (error) {
     console.log(error);
   }

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "super_admin",
+    "displayName": "Super Admin"
+  },
+  {
+    "name": "admin",
+    "displayName": "Admin"
+  },
+  {
+    "name": "teacher",
+    "displayName": "Teacher"
+  },
+  {
+    "name": "student",
+    "displayName": "Student"
+  },
+  {
+    "name": "parent",
+    "displayName": "Parent"
+  }
+]
