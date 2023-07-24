@@ -15,11 +15,11 @@ import {
 } from "@mui/material";
 import { ChangeEvent, MouseEvent, FormEvent, useState, FC } from "react";
 
-interface CreateDeptProps {
-  createDepts: (values: any) => Promise<{ success: boolean }>;
+interface CreateDesigProps {
+  createDesigs: (values: any) => Promise<{ success: boolean }>;
 }
-const CreateDept: FC<CreateDeptProps> = (props) => {
-  const { createDepts } = props;
+const CreateDesig: FC<CreateDesigProps> = (props) => {
+  const { createDesigs } = props;
   const [formValues, setFormValues] = useState([""]);
   let handleChange = (e: any, i: number, elements?: any) => {
     if (elements) {
@@ -46,7 +46,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { success } = await createDepts(formValues);
+    const { success } = await createDesigs(formValues);
     if (success) {
       setFormValues([""]);
     }
@@ -82,7 +82,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
         }}
       >
         <Typography color="inherit" variant="h6">
-          Add Departments
+          Add Designations
         </Typography>
       </Box>
       <Box sx={{ margin: 1 }}>
@@ -189,4 +189,4 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
   );
 };
 
-export default CreateDept;
+export default CreateDesig;

@@ -8,19 +8,19 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { visuallyHidden } from "@mui/utils";
 import type { FC } from "react";
-import { Dept, Order } from "./dept-table";
+import { Desig, Order } from "./desig-table";
 
-interface DeptHeadsProps {
+interface DesigHeadsProps {
   headCells: readonly any[];
   numSelected: number;
-  onRequestSort: (event: MouseEvent<unknown>, property: keyof Dept) => void;
+  onRequestSort: (event: MouseEvent<unknown>, property: keyof Desig) => void;
   onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
 }
 
-export const DeptHeads: FC<DeptHeadsProps> = (props) => {
+export const DesigHeads: FC<DesigHeadsProps> = (props) => {
   const {
     headCells,
     onSelectAllClick,
@@ -31,7 +31,7 @@ export const DeptHeads: FC<DeptHeadsProps> = (props) => {
     onRequestSort,
   } = props;
   const createSortHandler =
-    (property: keyof Dept) => (event: MouseEvent<unknown>) => {
+    (property: keyof Desig) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
   const theme = useTheme();

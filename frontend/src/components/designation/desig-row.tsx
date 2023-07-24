@@ -12,13 +12,13 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 interface RowProps {
   row: any;
-  updateDept: (id: number, values: any) => void;
+  updateDesig: (id: number, values: any) => void;
   handleSelectOne: (name: number) => void;
   isItemSelected: boolean;
   labelId: string;
 }
-export const DeptRow: FC<RowProps> = (props) => {
-  const { row, handleSelectOne, updateDept, isItemSelected, labelId } = props;
+export const DesigRow: FC<RowProps> = (props) => {
+  const { row, handleSelectOne, updateDesig, isItemSelected, labelId } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const formik = useFormik({
@@ -26,7 +26,7 @@ export const DeptRow: FC<RowProps> = (props) => {
       title: row?.title,
     },
     onSubmit: (values) => {
-      updateDept(row.id, values);
+      updateDesig(row.id, values);
       setOpen(false);
     },
   });

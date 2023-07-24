@@ -1,26 +1,22 @@
 import { apiService } from "../services/api.service";
 
-class UserApi {
-  async getUsers(limit: number, page: number) {
+class DesigApi {
+  async getDesigs() {
     return new Promise((resolve, reject) => {
       try {
-        const users = apiService.get("/api/user/", {
-          limit,
-          page: ++page,
-        });
-
-        resolve(users);
+        const menus = apiService.get("/cafe/category/");
+        resolve(menus);
       } catch (err) {
         reject(new Error("Internal server error"));
       }
     });
   }
 
-  async deleteUsers(usersList?: number[]): Promise<any> {
+  async createDesigs(deptData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.delete("/api/user/delete/", {
-          users: usersList,
+        const resp = apiService.post(`/cafe/dept/create`, {
+          depts: deptData,
         });
         resolve(resp);
       } catch (err) {
@@ -29,10 +25,10 @@ class UserApi {
     });
   }
 
-  async createUser(userData: any): Promise<any> {
+  async updateDesig(id: number, deptData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post("/api/create/", userData);
+        const resp = apiService.put(`/cafe/dept/update/?id=${id}`, deptData);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -40,10 +36,12 @@ class UserApi {
     });
   }
 
-  async updateUser(id: number, userData: any): Promise<any> {
+  async deleteDesigs(deptsList?: number[]): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.put(`/api/user/update/?id=${id}`, userData);
+        const resp = apiService.delete("/cafe/dept/delete/", {
+          depts: deptsList,
+        });
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -52,4 +50,4 @@ class UserApi {
   }
 }
 
-export const userApi = new UserApi();
+export const desigApi = new DesigApi();

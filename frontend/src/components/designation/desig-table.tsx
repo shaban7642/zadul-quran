@@ -14,15 +14,15 @@ import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import { Grid, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Collapse } from "@mui/material";
-import { DeptRow } from "./dept-row";
-import { DeptHeads } from "./dept-heads";
+import { DesigRow } from "./desig-row";
+import { DesigHeads } from "./desig-heads";
 import { Delete } from "@mui/icons-material";
-import CreateDept from "./dept-create";
+import CreateDesig from "./desig-create";
 import toast from "react-hot-toast";
-import { deptApi } from "../../api/deptApi";
+import { desigApi } from "../../api/desigApi";
 import { useMounted } from "../../hooks/use-mounted";
 
-export interface Dept {
+export interface Desig {
   id: number;
   title: string;
 }
@@ -70,118 +70,118 @@ function stableSort<T>(
 
 export interface HeadCell {
   disablePadding: boolean;
-  id: keyof Dept;
+  id: keyof Desig;
   label: string;
   numeric: boolean;
 }
 
-export const DeptTable = () => {
+export const DesigTable = () => {
   const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof Dept>("title");
+  const [orderBy, setOrderBy] = useState<keyof Desig>("title");
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(0);
-  const [depts, setDepts] = useState([
+  const [desigs, setDesigs] = useState([
     { id: 234, title: "Marketing" },
     { id: 678, title: "Sales" },
     { id: 987, title: "IT" },
   ]);
-  const [deptCount, setDeptsCount] = useState(depts.length);
+  const [desigCount, setDesigsCount] = useState(desigs.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const numSelected = selected.length;
   const isMounted = useMounted();
   useEffect(
     () => {
-      getDepts();
+      getDesigs();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  const getDepts = useCallback(async () => {
+  const getDesigs = useCallback(async () => {
     try {
-      const data: any = await deptApi.getDepts();
+      const data: any = await desigApi.getDesigs();
       if (isMounted()) {
-        setDepts(data.data);
+        setDesigs(data.data);
       }
     } catch (err: any) {
       toast.error(err.message || "failed");
     }
   }, [isMounted]);
 
-  const deleteDepts = async (
+  const deleteDesigs = async (
     produtsToDelete: number[]
   ): Promise<{ success: boolean }> => {
-    const load = toast.loading("deleteDepts");
+    const load = toast.loading("deleteDesigs");
     try {
-      const resp = await deptApi.deleteDepts(produtsToDelete);
+      const resp = await desigApi.deleteDesigs(produtsToDelete);
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("deleteDeptsSuccess");
+        toast.success("deleteDesigsSuccess");
 
-        getDepts();
+        getDesigs();
 
         return { success: true };
       } else {
         toast.dismiss(load);
-        toast.error("deleteDeptsFailed");
+        toast.error("deleteDesigsFailed");
         return { success: false };
       }
     } catch (err: any) {
       toast.dismiss(load);
-      toast.error(err.message || "deleteDeptsFailed");
+      toast.error(err.message || "deleteDesigsFailed");
       return { success: false };
     }
   };
-  const createDepts = async (values: any): Promise<{ success: boolean }> => {
-    const load = toast.loading("createDepts");
+  const createDesigs = async (values: any): Promise<{ success: boolean }> => {
+    const load = toast.loading("createDesigs");
     try {
-      const resp = await deptApi.createDepts(values);
+      const resp = await desigApi.createDesigs(values);
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("createDeptsSuccess");
+        toast.success("createDesigsSuccess");
 
-        getDepts();
+        getDesigs();
 
         return { success: true };
       } else {
         toast.dismiss(load);
-        toast.error("createDeptsFailed");
+        toast.error("createDesigsFailed");
         return { success: false };
       }
     } catch (err: any) {
       toast.dismiss(load);
-      toast.error(err.message || "createDeptsFailed");
+      toast.error(err.message || "createDesigsFailed");
       return { success: false };
     }
   };
-  const updateDept = async (
+  const updateDesig = async (
     id: number,
     values: any
   ): Promise<{ success: boolean }> => {
-    const load = toast.loading("updateDepts");
+    const load = toast.loading("updateDesigs");
     try {
-      const resp = await deptApi.updateDept(id, values);
+      const resp = await desigApi.updateDesig(id, values);
 
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("updateDeptsSuccess");
+        toast.success("updateDesigsSuccess");
 
-        getDepts();
+        getDesigs();
 
         return { success: true };
       } else {
         toast.dismiss(load);
-        toast.error("updateDeptsFailed");
+        toast.error("updateDesigsFailed");
         return { success: false };
       }
     } catch (err: any) {
       toast.dismiss(load);
-      toast.error(err.message || "updateDeptsFailed");
+      toast.error(err.message || "updateDesigsFailed");
       return { success: false };
     }
   };
-  const handleDeleteDepts = async (usersToDelete: number[]) => {
-    const deleteResp = await deleteDepts(usersToDelete);
+  const handleDeleteDesigs = async (usersToDelete: number[]) => {
+    const deleteResp = await deleteDesigs(usersToDelete);
     if (deleteResp.success) {
       setSelected([]);
     }
@@ -196,11 +196,11 @@ export const DeptTable = () => {
     },
   ];
   useEffect(() => {
-    setDeptsCount(depts.length);
-  }, [depts.length]);
+    setDesigsCount(desigs.length);
+  }, [desigs.length]);
   const handleRequestSort = (
     event: MouseEvent<unknown>,
-    property: keyof Dept
+    property: keyof Desig
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -209,7 +209,7 @@ export const DeptTable = () => {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = depts.map((n) => n.id);
+      const newSelected = desigs.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -243,7 +243,7 @@ export const DeptTable = () => {
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Grid container>
         <Grid item lg={6} md={6} sm={6} xs={12}>
-          <CreateDept createDepts={createDepts} />
+          <CreateDesig createDesigs={createDesigs} />
         </Grid>
         <Grid item lg={6} md={6} sm={6} xs={12}>
           <Paper
@@ -287,7 +287,7 @@ export const DeptTable = () => {
                   id="tableTitle"
                   component="div"
                 >
-                  Department List
+                  Designation List
                 </Typography>
               )}
             </Toolbar>
@@ -299,29 +299,29 @@ export const DeptTable = () => {
                 aria-labelledby="tableTitle"
                 size="small"
               >
-                <DeptHeads
+                <DesigHeads
                   headCells={headCells}
                   numSelected={selected.length}
                   order={order}
                   orderBy={orderBy}
                   onSelectAllClick={handleSelectAllClick}
                   onRequestSort={handleRequestSort}
-                  rowCount={deptCount}
+                  rowCount={desigCount}
                 />
                 <TableBody>
-                  {stableSort(depts, getComparator(order, orderBy))
+                  {stableSort(desigs, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const isItemSelected = isSelected(row.id);
                       const labelId = `enhanced-table-checkbox-${index}`;
                       return (
-                        <DeptRow
+                        <DesigRow
                           key={row.id}
                           row={row}
                           handleSelectOne={handleSelectOne}
                           isItemSelected={isItemSelected}
                           labelId={labelId}
-                          updateDept={updateDept}
+                          updateDesig={updateDesig}
                         />
                       );
                     })}
@@ -331,7 +331,7 @@ export const DeptTable = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={deptCount}
+              count={desigCount}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
