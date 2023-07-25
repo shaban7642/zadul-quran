@@ -71,7 +71,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
           onClick={handleToggle}
           startIcon={icon}
           sx={{
-            color: active ? "white" : "black",
+            color: active ? "secondary.main" : "neutral.200",
             justifyContent: "flex-start",
             pl: `${paddingLeft}px`,
             pr: 3,
@@ -82,7 +82,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
               backgroundColor: "rgba(255,255,255, 0.08)",
             },
             "& .MuiButton-startIcon": {
-              color: active ? "white" : "black",
+              color: active ? "secondary.main" : "neutral.400",
             },
             "& .MuiButton-endIcon": {
               color: "black",
@@ -123,7 +123,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
             disableRipple
             sx={{
               borderRadius: 1,
-              color: "black",
+              color: "neutral.200",
               justifyContent: "flex-start",
               pl: `${paddingLeft}px`,
               pr: 3,
@@ -136,7 +136,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
                 fontWeight: "fontWeightBold",
               }),
               "& .MuiButton-startIcon": {
-                color: active ? "white" : "black",
+                color: active ? "secondary.main" : "neutral.400",
               },
               "&:hover": {
                 backgroundColor: "rgba(255,255,255, 0.08)",
@@ -158,7 +158,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
             disableRipple
             sx={{
               borderRadius: 1,
-              color: "black",
+              color: "neutral.200",
               justifyContent: "flex-start",
               pl: `${paddingLeft}px`,
               pr: 3,
@@ -171,7 +171,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
                 fontWeight: "fontWeightBold",
               }),
               "& .MuiButton-startIcon": {
-                color: active ? "white" : "black",
+                color: active ? "secondary.main" : "neutral.400",
               },
               "&:hover": {
                 backgroundColor: "rgba(255,255,255, 0.08)",

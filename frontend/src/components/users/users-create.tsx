@@ -16,6 +16,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
 import get from "lodash/get";
 import set from "lodash/set";
+import { alpha, useTheme } from "@mui/material/styles";
 import toast from "react-hot-toast";
 import { userApi } from "../../api/userApi";
 import { VisibilityOff } from "@mui/icons-material";
@@ -114,6 +115,7 @@ const CreateUser = () => {
   ) => {
     event.preventDefault();
   };
+  const theme = useTheme();
   return (
     <Box sx={{ margin: 1 }}>
       <Typography variant="h6" gutterBottom component="div" sx={{ margin: 0 }}>
@@ -126,6 +128,7 @@ const CreateUser = () => {
             "& .MuiInputBase-root": {
               height: 40,
             },
+
             mr: 1,
             marginTop: 2,
           }}
@@ -137,11 +140,24 @@ const CreateUser = () => {
             name="role"
             id="outlined-adornment-role"
             labelId="outlined-adornment-role"
+            sx={{
+              ...(true && {
+                bgcolor: (theme) =>
+                  alpha(
+                    theme.palette.info.contrastText,
+                    theme.palette.action.activatedOpacity
+                  ),
+              }),
+            }}
             value={formik.values.role}
             onChange={formik.handleChange}
           >
             {roles.map((role) => (
-              <MenuItem key={role} value={role}>
+              <MenuItem
+                key={role}
+                value={role}
+                sx={{ backgroundColor: theme.palette.background.default }}
+              >
                 {role}
               </MenuItem>
             ))}

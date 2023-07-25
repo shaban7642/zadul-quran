@@ -77,7 +77,10 @@ export const TableHeads: FC<TableHeadsProps> = (props) => {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
-              sx={{ color: (theme) => theme.palette.info.main }}
+              sx={{
+                color: (theme) => theme.palette.info.main,
+                fontSize: ".9em",
+              }}
             >
               {headCell.label}
               {orderBy === headCell.id ? (

@@ -73,7 +73,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
       <Box
         sx={{
           alignItems: "center",
-          backgroundColor: "primary.dark",
+          backgroundColor: "primary.light",
           color: "primary.contrastText",
           display: "flex",
           justifyContent: "space-between",

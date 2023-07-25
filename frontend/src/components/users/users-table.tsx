@@ -211,6 +211,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       } else {
         toast.dismiss(load);
         toast.error("deleteUserFailed");
+        return { success: false };
       }
     } catch (err) {
       toast.dismiss(load);
@@ -234,6 +235,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       } else {
         toast.dismiss(load);
         toast.error("updateUserFailed");
+        return { success: false };
       }
     } catch (err) {
       toast.dismiss(load);

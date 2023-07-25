@@ -131,18 +131,6 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
     [router.isReady, router.asPath]
   );
 
-  const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleMenuClick = async (value: string) => {
-    console.log(value);
-  };
-
   const content = (
     <>
       <Box
@@ -205,7 +193,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
   //           borderRightStyle: "solid",
   //           borderRightWidth: (theme) =>
   //             theme.palette.mode === "dark" ? 1 : 0,
-  //           color: "#FFFFFF",
+  //           color: "neutral.100",
   //           width: 280,
   //         },
   //       }}
@@ -223,7 +211,8 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       open={open}
       PaperProps={{
         sx: {
-          backgroundColor: "#aacae9",
+          backgroundColor: "neutral.700",
+          color: "neutral.100",
           width: 250,
         },
       }}

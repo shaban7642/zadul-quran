@@ -14,14 +14,7 @@ import { Menu as MenuIcon } from "../../icons/menu";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { useAuth } from "../../hooks/use-auth";
 import { AccountPopover } from "./account-popover";
-
 import { useRouter } from "next/router";
-type Language = "en" | "ar-EG";
-
-const languages: Record<Language, string> = {
-  en: "/static/icons/uk_flag.svg",
-  "ar-EG": "/static/icons/eg_flag.svg",
-};
 
 interface DashboardNavbarProps extends AppBarProps {
   onOpenSidebar?: () => void;
@@ -29,7 +22,7 @@ interface DashboardNavbarProps extends AppBarProps {
 }
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }: { theme: any }) => ({
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.default,
   ...(theme.palette.mode === "light"
     ? {
         boxShadow: theme.shadows[3],
