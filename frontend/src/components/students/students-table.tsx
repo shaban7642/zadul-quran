@@ -26,7 +26,7 @@ export interface Data {
   first_name: string;
   last_name: string;
   email: string;
-  mobile_no: string;
+  phoneNumber: string;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -88,7 +88,7 @@ export const StudentsTable = () => {
       name: "abdo",
       department: "sdsd",
       email: "e@b.com",
-      mobile_no: " + 91 - 876543210",
+      phoneNumber: " + 91 - 876543210",
     },
     {
       sl: 2,
@@ -96,7 +96,7 @@ export const StudentsTable = () => {
       name: "johndoe",
       department: "dsdsddds",
       email: "<EMAIL>",
-      mobile_no: "+91-9876543210",
+      phoneNumber: "+91-9876543210",
     },
   ]);
   const [page, setPage] = useState(0);
@@ -129,7 +129,7 @@ export const StudentsTable = () => {
       label: "Email",
     },
     {
-      id: "mobile_no",
+      id: "phoneNumber",
       numeric: true,
       disablePadding: false,
       label: "Mobile No.",

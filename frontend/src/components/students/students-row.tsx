@@ -29,7 +29,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
     row?.last_name || "no data",
     row?.department || "no data",
     row?.email || "no data",
-    row?.mobile_no || "no data",
+    row?.phoneNumber || "no data",
   ];
 
   const flattenObject = (ob: any) => {
@@ -55,7 +55,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
       last_name: row?.last_name,
       department: row?.department,
       email: row?.email,
-      mobile_no: row?.mobile_no,
+      phoneNumber: row?.phoneNumber,
       password: "",
     },
     enableReinitialize: true,
@@ -68,7 +68,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
         .email("emailAddress")
         .max(255)
         .required("emailIsRequired"),
-      mobile_no: yup
+      phoneNumber: yup
         .string()
         .min(11, "phoneNumberLengthMessage")
         .required("phoneNumberIsRequired"),
@@ -100,7 +100,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
         name: row?.name,
         department: row?.department,
         email: row?.email,
-        mobile_no: row?.mobile_no,
+        phoneNumber: row?.phoneNumber,
         password: "",
       });
     }
@@ -269,19 +269,19 @@ export const StudentsRow: FC<RowProps> = (props) => {
                     mr: 1,
                   }}
                   error={Boolean(
-                    formik.touched.mobile_no && formik.errors.mobile_no
+                    formik.touched.phoneNumber && formik.errors.phoneNumber
                   )}
                   // @ts-ignore
                   helperText={
-                    formik.touched.mobile_no && formik.errors.mobile_no
+                    formik.touched.phoneNumber && formik.errors.phoneNumber
                   }
-                  label="mobile_no"
+                  label="phoneNumber"
                   margin="normal"
-                  id="mobile_no"
-                  name="mobile_no"
+                  id="phoneNumber"
+                  name="phoneNumber"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.mobile_no}
+                  value={formik.values.phoneNumber}
                   InputProps={{
                     style: {
                       fontFamily: "sans-serif",

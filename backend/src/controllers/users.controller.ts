@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-continue */
 /* eslint-disable consistent-return */
 import { injectable } from 'inversify';

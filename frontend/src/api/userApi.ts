@@ -4,7 +4,7 @@ class UserApi {
   async getUsers(limit: number, page: number) {
     return new Promise((resolve, reject) => {
       try {
-        const users = apiService.get("/api/user/", {
+        const users = apiService.get("/user/", {
           limit,
           page: ++page,
         });
@@ -19,7 +19,7 @@ class UserApi {
   async deleteUsers(usersList?: number[]): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.delete("/api/user/delete/", {
+        const resp = apiService.delete("/user/delete/", {
           users: usersList,
         });
         resolve(resp);
@@ -32,7 +32,7 @@ class UserApi {
   async createUser(userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post("/api/create/", userData);
+        const resp = apiService.post("/user/create/", userData);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -43,7 +43,7 @@ class UserApi {
   async updateUser(id: number, userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.put(`/api/user/update/?id=${id}`, userData);
+        const resp = apiService.put(`/user/update/?id=${id}`, userData);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));

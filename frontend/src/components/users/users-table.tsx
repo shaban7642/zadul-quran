@@ -31,7 +31,7 @@ export interface Data {
   desination: String;
   department: String;
   email: String;
-  mobile_no: String;
+  phoneNumber: String;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -98,7 +98,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       desination: "Admin",
       department: "sdsd",
       email: "e@b.com",
-      mobile_no: " + 91 - 876543210",
+      phoneNumber: " + 91 - 876543210",
     },
     {
       sl: 2,
@@ -108,7 +108,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       desination: "Admin",
       department: "dsdsddds",
       email: "<EMAIL>",
-      mobile_no: "+91-9876543210",
+      phoneNumber: "+91-9876543210",
     },
     {
       sl: 3,
@@ -118,7 +118,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       desination: "Teacher",
       department: "sdsd",
       email: "e@b.com",
-      mobile_no: " + 91 - 876543210",
+      phoneNumber: " + 91 - 876543210",
     },
     {
       sl: 4,
@@ -128,7 +128,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       desination: "Teacher",
       department: "dsdsddds",
       email: "<EMAIL>",
-      mobile_no: "+91-9876543210",
+      phoneNumber: "+91-9876543210",
     },
   ]);
   const [page, setPage] = useState(0);
@@ -173,7 +173,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       label: "Email",
     },
     {
-      id: "mobile_no",
+      id: "phoneNumber",
       numeric: true,
       disablePadding: false,
       label: "Mobile No.",

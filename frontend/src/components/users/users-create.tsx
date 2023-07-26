@@ -23,10 +23,11 @@ import { VisibilityOff } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
 
-const roles = ["Admin", "Teacher", "Accountant"];
+const roleIds = ["Admin", "Teacher", "Accountant"];
 const genders = ["Male", "Female"];
 const departments = ["Admin", "Teacher", "Accountant"];
 const designations = ["Admin", "Teacher", "Accountant"];
+
 const CreateUser = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
@@ -42,8 +43,9 @@ const CreateUser = () => {
       } else {
         toast.dismiss(load);
         toast.error("createUserFailed");
+        return { success: false };
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "createUsersFailed");
       return { success: false };
@@ -52,26 +54,31 @@ const CreateUser = () => {
 
   const formik = useFormik({
     initialValues: {
-      role: roles[0],
+      roleId: roleIds[0],
       join_date: "",
-      name: "",
+      username: "",
+      firstName: "",
+      lastName: "",
+      city: "",
       gender: genders[0],
-      DOB: "",
+      birthDate: "",
       designation: designations[0],
       department: departments[0],
       email: "",
-      mobile_no: "",
+      phoneNumber: "",
       password: "",
       confirmPassword: "",
-      submit: null,
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      role: yup.string().required(),
+      roleId: yup.string().required(),
       join_date: yup.date().required("staff_idIsRequired"),
-      name: yup.string().max(255).required("nameIsRequired"),
+      username: yup.string().max(255).required("usernameIsRequired"),
+      firstName: yup.string().max(255).required("firstNameIsRequired"),
+      lastName: yup.string().max(255).required("lastNameIsRequired"),
+      city: yup.string().max(255).required("cityIsRequired"),
       gender: yup.string().required(),
-      DOB: yup.date().required(),
+      birthDate: yup.date().required(),
       designation: yup.string().required(),
       depatment: yup.string().required(),
       email: yup
@@ -79,7 +86,12 @@ const CreateUser = () => {
         .email("emailAddress")
         .max(255)
         .required("emailIsRequired"),
-      mobile_no: yup
+      gEmail: yup
+        .string()
+        .email("emailAddress")
+        .max(255)
+        .required("emailIsRequired"),
+      phoneNumber: yup
         .string()
         .min(11, "phoneNumberLengthMessage")
         .required("phoneNumberIsRequired"),
@@ -92,6 +104,7 @@ const CreateUser = () => {
     }),
     onSubmit: async (values) => {
       const { success } = await createUser(values);
+      console.log(values);
       if (success) {
         formik.resetForm();
       }
@@ -119,7 +132,7 @@ const CreateUser = () => {
   return (
     <Box sx={{ margin: 1 }}>
       <Typography variant="h6" gutterBottom component="div" sx={{ margin: 0 }}>
-        edit
+        Add
       </Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl
@@ -135,11 +148,11 @@ const CreateUser = () => {
           variant="outlined"
         >
           {" "}
-          <InputLabel id="outlined-adornment-role">Role</InputLabel>
+          <InputLabel id="outlined-adornment-roleId">Role</InputLabel>
           <Select
-            name="role"
-            id="outlined-adornment-role"
-            labelId="outlined-adornment-role"
+            name="roleId"
+            id="outlined-adornment-roleId"
+            labelId="outlined-adornment-roleId"
             sx={{
               ...(true && {
                 bgcolor: (theme) =>
@@ -149,16 +162,16 @@ const CreateUser = () => {
                   ),
               }),
             }}
-            value={formik.values.role}
+            value={formik.values.roleId}
             onChange={formik.handleChange}
           >
-            {roles.map((role) => (
+            {roleIds.map((roleId) => (
               <MenuItem
-                key={role}
-                value={role}
+                key={roleId}
+                value={roleId}
                 sx={{ backgroundColor: theme.palette.background.default }}
               >
-                {role}
+                {roleId}
               </MenuItem>
             ))}
           </Select>
@@ -195,22 +208,98 @@ const CreateUser = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.name && formik.errors.name)}
+          error={Boolean(formik.touched.username && formik.errors.username)}
           // @ts-ignore
-          helperText={formik.touched.name && formik.errors.name}
-          label="name"
+          helperText={formik.touched.username && formik.errors.username}
+          label="username"
           margin="normal"
-          id="name"
-          name="name"
+          id="username"
+          name="username"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.name}
+          value={formik.values.username}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
             },
           }}
         />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.firstName && formik.errors.firstName)}
+          // @ts-ignore
+          helperText={formik.touched.firstName && formik.errors.firstName}
+          label="firstName"
+          margin="normal"
+          id="firstName"
+          name="firstName"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.firstName}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.lastName && formik.errors.lastName)}
+          // @ts-ignore
+          helperText={formik.touched.lastName && formik.errors.lastName}
+          label="lastName"
+          margin="normal"
+          id="lastName"
+          name="lastName"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.lastName}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.city && formik.errors.city)}
+          // @ts-ignore
+          helperText={formik.touched.city && formik.errors.city}
+          label="city"
+          margin="normal"
+          id="city"
+          name="city"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.city}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+
         <FormControl
           sx={{
             width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
@@ -248,16 +337,16 @@ const CreateUser = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.DOB && formik.errors.DOB)}
+          error={Boolean(formik.touched.birthDate && formik.errors.birthDate)}
           // @ts-ignore
-          helperText={formik.touched.DOB && formik.errors.DOB}
+          helperText={formik.touched.birthDate && formik.errors.birthDate}
           label="Date Of Birth"
           margin="normal"
-          id="DOB"
-          name="DOB"
+          id="birthDate"
+          name="birthDate"
           type="date"
           onChange={formik.handleChange}
-          value={formik.values.DOB}
+          value={formik.values.birthDate}
           InputLabelProps={{
             shrink: true,
           }}
@@ -352,16 +441,18 @@ const CreateUser = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.mobile_no && formik.errors.mobile_no)}
+          error={Boolean(
+            formik.touched.phoneNumber && formik.errors.phoneNumber
+          )}
           // @ts-ignore
-          helperText={formik.touched.mobile_no && formik.errors.mobile_no}
-          label="mobile_no"
+          helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+          label="phoneNumber"
           margin="normal"
-          id="mobile_no"
-          name="mobile_no"
+          id="phoneNumber"
+          name="phoneNumber"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.mobile_no}
+          value={formik.values.phoneNumber}
           InputProps={{
             style: {
               fontFamily: "sans-serif",

@@ -242,17 +242,19 @@ export const DeptTable = () => {
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Grid container>
-        <Grid item lg={6} md={6} sm={6} xs={12}>
+        <Grid item lg={5.8} md={5.8} sm={5.8} xs={12}>
           <CreateDept createDepts={createDepts} />
         </Grid>
-        <Grid item lg={6} md={6} sm={6} xs={12}>
+        <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
+          <Box></Box>
+        </Grid>
+        <Grid item lg={5.8} md={5.8} sm={5.8} xs={12}>
           <Paper
             elevation={9}
             sx={{
               p: "10px 10px",
               width: "100%",
-              ml: 2,
-              mt: 2,
+
               ...(true && {
                 bgcolor: (theme) =>
                   alpha(

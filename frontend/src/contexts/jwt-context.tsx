@@ -14,10 +14,10 @@ interface State {
 export interface AuthContextValue extends State {
   platform: "JWT";
   login: ({
-    username,
+    email,
     password,
   }: {
-    username: string;
+    email: string;
     password: string;
   }) => Promise<void>;
   authRefresh: () => Promise<void>;
@@ -99,7 +99,7 @@ const initialState: State = {
   isAuthenticated: false,
   isInitialized: false,
   user: {
-    username: "",
+    email: "",
     password: "",
   },
 };
@@ -173,16 +173,11 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   useEffect(() => {
     const initialize = async (): Promise<void> => {
       try {
-        const { success, data, store_plan } = await authApi.refreshAuth();
+        const { success, data } = await authApi.reAuth();
 
         if (success) {
           const user = {
             ...data,
-            plan: {
-              expiration_date: store_plan?.expiration_date,
-              price: store_plan.plan?.price,
-              title: store_plan.plan?.title,
-            },
           };
 
           dispatch({
@@ -222,14 +217,14 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   }, [router.pathname]);
 
   const login = async ({
-    username,
+    email,
     password,
   }: {
-    username: string;
+    email: string;
     password: string;
   }): Promise<void> => {
     const { data: user }: any = await authApi.login({
-      username,
+      email,
       password,
     });
 
@@ -250,16 +245,11 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
 
   const authRefresh = async (): Promise<void> => {
     try {
-      const { success, data, store_plan } = await authApi.refreshAuth();
+      const { success, data } = await authApi.reAuth();
 
       if (success) {
         const user = {
           ...data,
-          plan: {
-            expiration_date: store_plan.expiration_date,
-            price: store_plan.plan.price,
-            title: store_plan.plan.title,
-          },
         };
         dispatch({
           type: ActionType.INITIALIZE,

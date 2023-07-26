@@ -1,46 +1,14 @@
 import { apiService } from "../services/api.service";
 
 class AuthApi {
-  async login({ username, password }: { username: string; password: string }) {
+  async login({ email, password }: { email: string; password: string }) {
     return new Promise((resolve, reject) => {
       try {
-        const user = apiService.post("/auth/login/", {
-          username,
-          password,
-        });
-
-        resolve(user);
-      } catch (err) {
-        reject(new Error("Internal server error"));
-      }
-    });
-  }
-
-  async register({
-    username,
-    first_name,
-    last_name,
-    email,
-    phone_number,
-    password,
-  }: {
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone_number: number;
-    password: string;
-  }) {
-    return new Promise((resolve, reject) => {
-      try {
-        const user = apiService.post("/auth/register/", {
-          username,
-          first_name,
-          last_name,
+        const user = apiService.post("/auth/login", {
           email,
-          phone_number,
           password,
         });
+
         resolve(user);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -48,10 +16,10 @@ class AuthApi {
     });
   }
 
-  async refreshAuth(): Promise<any> {
+  async reAuth(): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.get("/auth/refresh/");
+        const resp = apiService.get("/auth/reAuthorize");
 
         resolve(resp);
       } catch (err) {
@@ -63,7 +31,7 @@ class AuthApi {
   async logout(): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post("/auth/logout/", {});
+        const resp = apiService.post("/auth/logout", {});
 
         resolve(resp);
       } catch (err) {
@@ -80,21 +48,8 @@ class AuthApi {
   }): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const user = apiService.put("/auth/changePassword/", {
+        const user = apiService.put("/auth/change-password", {
           oldPassword,
-          newPassword,
-        });
-
-        resolve(user);
-      } catch (err) {
-        reject(new Error("Internal server error"));
-      }
-    });
-  }
-  async forgetPassword({ newPassword }: { newPassword: string }): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        const user = apiService.put("/auth/forgetPassword/", {
           newPassword,
         });
 

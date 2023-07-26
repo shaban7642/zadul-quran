@@ -2,12 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "src/server.ts",
   "engines": {
     "node": ">= 12.0.0"
   },
   "scripts": {
-    "start": "node dist/src/server.js",
+    "start": "node ./src/server.ts",
     "clean": "rm -rf ./dist",
     "post-build": "npm run copy-asset",
     "pre-build": "npm run lint & npm run clean",
@@ -15,19 +15,19 @@
     "build-ts": "tsc",
     "debug": "npm run build && npm run watch-debug",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
-    "serve": "node dist/src/server.js",
-    "serve-debug": "nodemon --inspect dist/src/server.js",
+    "serve": "node ./src/server.ts",
+    "serve-debug": "nodemon --inspect ./src/server.ts",
     "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
     "watch": "NODE_ENV=local concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-windows": "set NODE_ENV=local& concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
-    "watch-node": "nodemon dist/src/server.js",
+    "watch-node": "nodemon ./src/server.ts",
     "watch-test": "npm run test -- --watchAll",
     "watch-ts": "tsc -w -w",
     "db:migrate": "sequelize db:migrate",
     "db:migrate:undo": "sequelize db:migrate:undo",
     "db:skeleton": "sequelize migration:generate --name",
-    "db:task": "sequelize db:seed:all --seeders-path src/db/tasks/"
+    "db:task": "sequelize db:seed:all --seeders-path src/db/seeders/"
   },
   "keywords": [],
   "author": "",

@@ -25,18 +25,19 @@ export const LoginForm: FC = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
-      username: "",
+      email: "",
       password: "",
       submit: null,
     },
     validationSchema: Yup.object({
-      username: Yup.string().max(255).required("Email is required"),
+      email: Yup.string().max(255).required("Email is required"),
       password: Yup.string().max(255).required("Password is required"),
     }),
     onSubmit: async (values: any): Promise<void> => {
       try {
         setLoading(true);
         await login(values);
+        console.log("log");
       } catch (err) {
         toast.error(err.message || "failed");
         setLoading(false);
@@ -58,15 +59,15 @@ export const LoginForm: FC = (props) => {
     <form noValidate onSubmit={formik.handleSubmit} {...props}>
       <TextField
         // autoFocus
-        error={Boolean(formik.touched.username && formik.errors.username)}
+        error={Boolean(formik.touched.email && formik.errors.email)}
         fullWidth
         label="Username or Email"
         margin="normal"
-        name="username"
+        name="email"
         onBlur={formik.handleBlur}
         onChange={formik.handleChange}
         type="name"
-        value={formik.values.username}
+        value={formik.values.email}
         InputProps={{
           style: {
             fontFamily: "sans-serif",

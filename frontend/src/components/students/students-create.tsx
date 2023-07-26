@@ -52,9 +52,9 @@ const CreateStudent = () => {
     initialValues: {
       first_name: "",
       last_name: "",
-      DOB: "",
+      birthDate: "",
       email: "",
-      mobile_no: "",
+      phoneNumber: "",
       city: "",
       gender: options[0],
       password: "",
@@ -69,13 +69,13 @@ const CreateStudent = () => {
     validationSchema: yup.object({
       first_name: yup.string().max(255).required("nameIsRequired"),
       last_name: yup.string().max(255).required("nameIsRequired"),
-      DOB: yup.date().required(),
+      birthDate: yup.date().required(),
       email: yup
         .string()
         .email("emailAddress")
         .max(255)
         .required("emailIsRequired"),
-      mobile_no: yup
+      phoneNumber: yup
         .string()
         .min(11, "phoneNumberLengthMessage")
         .required("phoneNumberIsRequired"),
@@ -184,16 +184,16 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.DOB && formik.errors.DOB)}
+          error={Boolean(formik.touched.birthDate && formik.errors.birthDate)}
           // @ts-ignore
-          helperText={formik.touched.DOB && formik.errors.DOB}
+          helperText={formik.touched.birthDate && formik.errors.birthDate}
           label="Date Of Birth"
           margin="normal"
-          id="DOB"
-          name="DOB"
+          id="birthDate"
+          name="birthDate"
           type="date"
           onChange={formik.handleChange}
-          value={formik.values.DOB}
+          value={formik.values.birthDate}
           InputLabelProps={{
             shrink: true,
           }}
@@ -232,16 +232,18 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.mobile_no && formik.errors.mobile_no)}
+          error={Boolean(
+            formik.touched.phoneNumber && formik.errors.phoneNumber
+          )}
           // @ts-ignore
-          helperText={formik.touched.mobile_no && formik.errors.mobile_no}
-          label="mobile_no"
+          helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+          label="phoneNumber"
           margin="normal"
-          id="mobile_no"
-          name="mobile_no"
+          id="phoneNumber"
+          name="phoneNumber"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.mobile_no}
+          value={formik.values.phoneNumber}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
@@ -445,16 +447,16 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.email && formik.errors.email)}
+          error={Boolean(formik.touched.gEmail && formik.errors.gEmail)}
           // @ts-ignore
-          helperText={formik.touched.email && formik.errors.email}
-          label="email"
+          helperText={formik.touched.gEmail && formik.errors.gEmail}
+          label="gEmail"
           margin="normal"
-          id="email"
-          name="email"
-          type="email"
+          id="gEmail"
+          name="gEmail"
+          type="gEmail"
           onChange={formik.handleChange}
-          value={formik.values.email}
+          value={formik.values.gEmail}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
@@ -470,16 +472,16 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.mobile_no && formik.errors.mobile_no)}
+          error={Boolean(formik.touched.gMobile_no && formik.errors.gMobile_no)}
           // @ts-ignore
-          helperText={formik.touched.mobile_no && formik.errors.mobile_no}
-          label="mobile_no"
+          helperText={formik.touched.gMobile_no && formik.errors.gMobile_no}
+          label="gMobile_no"
           margin="normal"
-          id="mobile_no"
-          name="mobile_no"
+          id="gMobile_no"
+          name="gMobile_no"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.mobile_no}
+          value={formik.values.gMobile_no}
           InputProps={{
             style: {
               fontFamily: "sans-serif",

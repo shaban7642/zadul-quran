@@ -59,8 +59,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
         flexDirection: "column",
         p: "10px 10px",
         width: "100%",
-        ml: 1,
-        mt: 2,
+
         ...(true && {
           bgcolor: (theme) =>
             alpha(
