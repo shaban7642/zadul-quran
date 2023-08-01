@@ -27,7 +27,7 @@
     "db:migrate": "sequelize db:migrate",
     "db:migrate:undo": "sequelize db:migrate:undo",
     "db:skeleton": "sequelize migration:generate --name",
-    "db:task": "sequelize db:seed:all --seeders-path src/db/seeders/"
+    "db:task": "sequelize db:seed:all --seeders-path src/db/tasks/"
   },
   "keywords": [],
   "author": "",

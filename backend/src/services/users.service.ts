@@ -107,14 +107,11 @@ class UserService {
         userData.push(userObj);
       }
 
-      console.log({ userData });
-
       return await this.userModel.bulkCreate(
         userData.map((user) => ({ ...user })),
         { transaction }
       );
     } catch (err) {
-      console.log({ err });
       logger.log({
         level: 'error',
         label: 'User Service - create',

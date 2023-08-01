@@ -7,7 +7,13 @@ import { SERVICE_IDENTIFIER } from '../constants';
 import ServerConfig from './server.config';
 
 import { sequelize } from '../db/models/index';
-import { UserService, AuthService, UserAgentsService } from '../services';
+import {
+  UserService,
+  AuthService,
+  UserAgentsService,
+  SettingsService,
+  DepartmentsService,
+} from '../services';
 
 const container = new Container();
 
@@ -29,5 +35,13 @@ container.bind<AuthService>(SERVICE_IDENTIFIER.AUTH_SERVICE).to(AuthService);
 container
   .bind<UserAgentsService>(SERVICE_IDENTIFIER.USER_AGENTS_SERVICE)
   .to(UserAgentsService);
+
+container
+  .bind<SettingsService>(SERVICE_IDENTIFIER.SETTINGS_SERVICE)
+  .to(SettingsService);
+
+container
+  .bind<DepartmentsService>(SERVICE_IDENTIFIER.DEPARTMENTS_SERVICE)
+  .to(DepartmentsService);
 
 export default container;
