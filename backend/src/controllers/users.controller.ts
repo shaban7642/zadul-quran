@@ -9,11 +9,13 @@ import { SERVICE_IDENTIFIER } from '../constants';
 import iocContainer from '../configs/ioc.config';
 import UserModel from '../db/models/users.model';
 
-import { UserService } from '../services';
+import { ParentsService, UserService } from '../services';
 import { RequestWithIdentity } from '../types/auth.type';
 import { getPagination, getOrderOptions } from '../utils/sequelize';
 import HttpException from '../exceptions/HttpException';
 import Role from '../db/models/roles.model';
+import StudentParents from '../db/models/studentParents.model';
+import Parents from '../db/models/parents.model';
 
 @injectable()
 class UserController {
@@ -21,10 +23,18 @@ class UserController {
 
   public userService: UserService;
 
+  public parentsService: ParentsService;
+
   constructor(
-    userService = iocContainer.get<UserService>(SERVICE_IDENTIFIER.USER_SERVICE)
+    userService = iocContainer.get<UserService>(
+      SERVICE_IDENTIFIER.USER_SERVICE
+    ),
+    parentsService = iocContainer.get<ParentsService>(
+      SERVICE_IDENTIFIER.PARENTS_SERVICE
+    )
   ) {
     this.userService = userService;
+    this.parentsService = parentsService;
   }
 
   public getAllUsers = async (
@@ -75,7 +85,10 @@ class UserController {
         attributes: {
           exclude: ['password'],
         },
-        include: [{ model: Role, ...(roleQuery && { ...roleQuery }) }],
+        include: [
+          { model: Role, ...(roleQuery && { ...roleQuery }) },
+          { model: StudentParents, include: [{ model: Parents }] },
+        ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
           { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'asc' },
@@ -137,6 +150,13 @@ class UserController {
       const emailExists = await this.userService.findOne({ where: { email } });
       if (!emailExists) {
         const resp = await this.userService.create([req.body]);
+        const parentData = await this.parentsService.createOneParent(
+          req.body.parentData
+        );
+        await this.parentsService.createOneStudentParent({
+          userId: resp[0].id,
+          parentId: parentData.id,
+        });
         return res.status(200).json(resp[0]);
       }
       res.status(200).json({ message: 'Email already exists' });

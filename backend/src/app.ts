@@ -77,6 +77,7 @@ class App {
     );
     this.app.use(express.urlencoded({ limit: '1000mb', extended: false }));
     this.app.use(cookieParser());
+    this.app.use('/public', express.static('public'));
   }
 
   private initializeRoutes(routes: Route[]) {

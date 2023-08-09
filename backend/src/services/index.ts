@@ -4,3 +4,5 @@ export { default as AuthService } from './auth.service';
 export { default as UserAgentsService } from './userAgents.service';
 export { default as SettingsService } from './settings.service';
 export { default as DepartmentsService } from './departments.service';
+export { default as ParentsService } from './parents.service';
+export { default as DocumentsService } from './documents.service';

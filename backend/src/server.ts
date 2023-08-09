@@ -1,6 +1,6 @@
 import './environment';
 import App from './app';
-import { AuthRoute, SettingsRoute, UserRoute } from './routes';
+import { AuthRoute, DocumentsRoute, SettingsRoute, UserRoute } from './routes';
 import DepartmentRoute from './routes/department.route';
 
 const app = new App([
@@ -8,6 +8,7 @@ const app = new App([
   new UserRoute(),
   new DepartmentRoute(),
   new SettingsRoute(),
+  new DocumentsRoute(),
 ]);
 
 app.listen();

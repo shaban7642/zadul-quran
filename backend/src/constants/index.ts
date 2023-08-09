@@ -7,6 +7,8 @@ const SERVICE_IDENTIFIER = {
   USER_AGENTS_SERVICE: Symbol('UserAgentsService'),
   SETTINGS_SERVICE: Symbol('SettingsService'),
   DEPARTMENTS_SERVICE: Symbol('DepartmentsService'),
+  PARENTS_SERVICE: Symbol('ParentsService'),
+  DOCUMENTS_SERVICE: Symbol('DocumentsService'),
 };
 
 const UTIL = {

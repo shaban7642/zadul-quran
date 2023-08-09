@@ -34,6 +34,12 @@ const Permissions = {
     UPDATE: 'settings:update',
     DELETE: 'settings:delete',
   },
+  documents: {
+    READ: 'documents:read',
+    CREATE: 'documents:create',
+    UPDATE: 'documents:update',
+    DELETE: 'documents:delete',
+  },
 };
 
 export default {

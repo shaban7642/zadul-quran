@@ -7,6 +7,11 @@ export interface RequestWithIdentity extends Request {
   role?: { [key: string]: any };
 }
 
+export interface RequestWithDocumentType extends Request {
+  userId?: number;
+  documentType: any;
+}
+
 export interface UserIdSet {
   userId: number;
 }

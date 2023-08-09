@@ -4,6 +4,7 @@ import { values as getValues } from 'lodash';
 import enums from '../../../shared/enums';
 import Role from './roles.model';
 import UserAgents from './userAgents.model';
+import StudentParents from './studentParents.model';
 
 const { gender } = enums.User;
 
@@ -119,6 +120,7 @@ class User extends Model {
   public static initAssociation(): void {
     this.belongsTo(Role);
     this.hasMany(UserAgents);
+    this.hasMany(StudentParents);
   }
 }
 

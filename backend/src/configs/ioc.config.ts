@@ -13,6 +13,8 @@ import {
   UserAgentsService,
   SettingsService,
   DepartmentsService,
+  ParentsService,
+  DocumentsService,
 } from '../services';
 
 const container = new Container();
@@ -43,5 +45,13 @@ container
 container
   .bind<DepartmentsService>(SERVICE_IDENTIFIER.DEPARTMENTS_SERVICE)
   .to(DepartmentsService);
+
+container
+  .bind<ParentsService>(SERVICE_IDENTIFIER.PARENTS_SERVICE)
+  .to(ParentsService);
+
+container
+  .bind<DocumentsService>(SERVICE_IDENTIFIER.DOCUMENTS_SERVICE)
+  .to(DocumentsService);
 
 export default container;

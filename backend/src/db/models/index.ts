@@ -6,6 +6,10 @@ import RolePermissions from './rolePermissions.model';
 import User from './users.model';
 import UserAgents from './userAgents.model';
 import Departments from './departments.model';
+import Parents from './parents.model';
+import StudentParents from './studentParents.model';
+import Documents from './documents.model';
+import DocumentTypes from './documentTypes.model';
 
 console.info('Initializing sequelize...');
 
@@ -45,6 +49,10 @@ export const initModels = async (sequelizeInst: Sequelize) => {
     await User.initModel(sequelizeInst);
     await UserAgents.initModel(sequelizeInst);
     await Departments.initModel(sequelizeInst);
+    await Parents.initModel(sequelizeInst);
+    await StudentParents.initModel(sequelizeInst);
+    await DocumentTypes.initModel(sequelizeInst);
+    await Documents.initModel(sequelizeInst);
   } catch (error) {
     console.log(error);
   }
@@ -59,6 +67,10 @@ export const initAssociation = async () => {
     await User.initAssociation();
     await UserAgents.initAssociation();
     await Departments.initAssociation();
+    await Parents.initAssociation();
+    await StudentParents.initAssociation();
+    await DocumentTypes.initAssociation();
+    await Documents.initAssociation();
   } catch (error) {
     console.log(error);
   }
