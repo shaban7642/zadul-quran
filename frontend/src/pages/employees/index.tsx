@@ -11,7 +11,7 @@ import { DesigTable } from "../../components/designation/desig-table";
 
 const Employees: NextPage = () => {
   const [value, setValue] = useState("1");
-  const [valueTable, setValueTable] = useState("Admin");
+  const [valueTable, setValueTable] = useState("0");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -29,7 +29,6 @@ const Employees: NextPage = () => {
             sx={{
               borderBottom: 1,
               borderColor: "divider",
-              p: "5px 20px",
             }}
           >
             <TabList onChange={handleChange} aria-label="Employees options">
@@ -45,19 +44,26 @@ const Employees: NextPage = () => {
                 sx={{
                   borderBottom: 1,
                   borderColor: "GrayText",
-                  p: "5px 20px",
                 }}
               >
                 <TabList onChange={handleChangeTable} aria-label="Role options">
-                  <Tab label="Admins" value="Admin" />
-                  <Tab label="Teachers" value="Teacher" />
+                  <Tab label="All Employees" value="0" />
+                  <Tab label="Super Admins" value="1" />
+                  <Tab label="Admins" value="2" />
+                  <Tab label="Teachers" value="3" />
                 </TabList>
               </Box>
-              <TabPanel value="Admin">
-                <UsersTable role="admin" />
+              <TabPanel value="0">
+                <UsersTable />
               </TabPanel>
-              <TabPanel value="Teacher">
-                <UsersTable role="teacher" />
+              <TabPanel value="1">
+                <UsersTable roleId={1} />
+              </TabPanel>
+              <TabPanel value="2">
+                <UsersTable roleId={2} />
+              </TabPanel>
+              <TabPanel value="3">
+                <UsersTable roleId={3} />
               </TabPanel>
             </TabContext>
           </TabPanel>

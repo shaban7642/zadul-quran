@@ -27,47 +27,6 @@ export interface Dept {
   title: string;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-export type Order = "asc" | "desc";
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort<T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
 export interface HeadCell {
   disablePadding: boolean;
   id: keyof Dept;
@@ -76,19 +35,19 @@ export interface HeadCell {
 }
 
 export const DeptTable = () => {
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof Dept>("title");
-  const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(0);
   const [depts, setDepts] = useState([
-    { id: 234, title: "Marketing" },
-    { id: 678, title: "Sales" },
-    { id: 987, title: "IT" },
+    {
+      id: 12346789,
+      title: "math",
+    },
+    {
+      id: 12346789,
+      title: "Qran",
+    },
   ]);
   const [deptCount, setDeptsCount] = useState(depts.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const numSelected = selected.length;
   const isMounted = useMounted();
   useEffect(
     () => {
@@ -108,34 +67,20 @@ export const DeptTable = () => {
     }
   }, [isMounted]);
 
-  const deleteDepts = async (
-    produtsToDelete: number[]
-  ): Promise<{ success: boolean }> => {
+  const deleteDept = async (id: number) => {
     const load = toast.loading("deleteDepts");
     try {
-      const resp = await deptApi.deleteDepts(produtsToDelete);
-      if (resp.success) {
-        toast.dismiss(load);
-        toast.success("deleteDeptsSuccess");
+      const resp = await deptApi.deleteDepts(id);
 
-        getDepts();
-
-        return { success: true };
-      } else {
-        toast.dismiss(load);
-        toast.error("deleteDeptsFailed");
-        return { success: false };
-      }
+      getDepts();
     } catch (err: any) {
-      toast.dismiss(load);
-      toast.error(err.message || "deleteDeptsFailed");
-      return { success: false };
+      console.log(err);
     }
   };
-  const createDepts = async (values: any): Promise<{ success: boolean }> => {
+  const createDept = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createDepts");
     try {
-      const resp = await deptApi.createDepts(values);
+      const resp = await deptApi.createDept(values);
       if (resp.success) {
         toast.dismiss(load);
         toast.success("createDeptsSuccess");
@@ -180,12 +125,6 @@ export const DeptTable = () => {
       return { success: false };
     }
   };
-  const handleDeleteDepts = async (usersToDelete: number[]) => {
-    const deleteResp = await deleteDepts(usersToDelete);
-    if (deleteResp.success) {
-      setSelected([]);
-    }
-  };
 
   const headCells: readonly HeadCell[] = [
     {
@@ -198,31 +137,6 @@ export const DeptTable = () => {
   useEffect(() => {
     setDeptsCount(depts.length);
   }, [depts.length]);
-  const handleRequestSort = (
-    event: MouseEvent<unknown>,
-    property: keyof Dept
-  ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = depts.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleSelectOne = (name: number): void => {
-    if (!selected.includes(name)) {
-      setSelected((prevSelected) => [...prevSelected, name]);
-    } else {
-      setSelected((prevSelected) => prevSelected.filter((id) => id !== name));
-    }
-  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -233,8 +147,6 @@ export const DeptTable = () => {
     setPage(0);
   };
 
-  const isSelected = (name: any) => selected.indexOf(name) !== -1;
-
   // const handlePagination
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -243,7 +155,7 @@ export const DeptTable = () => {
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Grid container>
         <Grid item lg={5.8} md={5.8} sm={5.8} xs={12}>
-          <CreateDept createDepts={createDepts} />
+          <CreateDept createDept={createDept} />
         </Grid>
         <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
           <Box></Box>
@@ -269,29 +181,16 @@ export const DeptTable = () => {
               sx={{
                 pl: { sm: 2 },
                 pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                  bgcolor: (theme) =>
-                    alpha(
-                      theme.palette.info.main,
-                      theme.palette.action.activatedOpacity
-                    ),
-                }),
               }}
             >
-              {numSelected > 0 ? (
-                <Typography color="inherit" variant="subtitle1" component="div">
-                  {numSelected} selected
-                </Typography>
-              ) : (
-                <Typography
-                  sx={{ flex: "1 1 100%" }}
-                  variant="h5"
-                  id="tableTitle"
-                  component="div"
-                >
-                  Department List
-                </Typography>
-              )}
+              <Typography
+                sx={{ flex: "1 1 100%" }}
+                variant="h5"
+                id="tableTitle"
+                component="div"
+              >
+                Department List
+              </Typography>
             </Toolbar>
             <TableContainer>
               <Table
@@ -301,27 +200,16 @@ export const DeptTable = () => {
                 aria-labelledby="tableTitle"
                 size="small"
               >
-                <DeptHeads
-                  headCells={headCells}
-                  numSelected={selected.length}
-                  order={order}
-                  orderBy={orderBy}
-                  onSelectAllClick={handleSelectAllClick}
-                  onRequestSort={handleRequestSort}
-                  rowCount={deptCount}
-                />
+                <DeptHeads headCells={headCells} rowCount={deptCount} />
                 <TableBody>
-                  {stableSort(depts, getComparator(order, orderBy))
+                  {depts
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                      const isItemSelected = isSelected(row.id);
                       const labelId = `enhanced-table-checkbox-${index}`;
                       return (
                         <DeptRow
                           key={row.id}
                           row={row}
-                          handleSelectOne={handleSelectOne}
-                          isItemSelected={isItemSelected}
                           labelId={labelId}
                           updateDept={updateDept}
                         />

@@ -16,39 +16,17 @@ import {
 import { ChangeEvent, MouseEvent, FormEvent, useState, FC } from "react";
 
 interface CreateDeptProps {
-  createDepts: (values: any) => Promise<{ success: boolean }>;
+  createDept: (values: any) => Promise<{ success: boolean }>;
 }
 const CreateDept: FC<CreateDeptProps> = (props) => {
-  const { createDepts } = props;
-  const [formValues, setFormValues] = useState([""]);
-  let handleChange = (e: any, i: number, elements?: any) => {
-    if (elements) {
-      setFormValues(elements);
-    } else {
-      let newFormValues: string[] = [...formValues];
-      newFormValues[i] = e.target.value;
-      setFormValues(newFormValues);
-    }
-  };
-  let addFormFields = () => {
-    setFormValues([...formValues, ""]);
-  };
-
-  let removeFormFields = (e: any, i: number) => {
-    const reset: any = [];
-    formValues.forEach((element, idx) => {
-      if (i !== idx) {
-        reset.push(element);
-      }
-    });
-    handleChange(e, i, reset);
-  };
+  const { createDept } = props;
+  const [formValues, setFormValues] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { success } = await createDepts(formValues);
+    const { success } = await createDept(formValues);
     if (success) {
-      setFormValues([""]);
+      setFormValues("");
     }
   };
   return (
@@ -96,51 +74,36 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
         >
           <Table>
             <TableBody>
-              {formValues?.map((s, idx) => (
-                <TableRow
-                  key={idx}
-                  sx={{
-                    p: 0,
-                    height: "70px",
-                  }}
-                >
-                  {" "}
-                  <Grid container alignItems="center">
-                    <Grid item lg={10}>
-                      {" "}
-                      <TableCell
-                        sx={{
-                          borderBottom: 0,
-                          p: 0,
-                          width: "40%",
-                        }}
-                      >
-                        <TextField
-                          size="small"
-                          label={s}
-                          margin="normal"
-                          name="department"
-                          type="text"
-                          onChange={(e) => handleChange(e, idx)}
-                          defaultValue={s}
-                          sx={{ mr: 1, width: "100%" }}
-                        />
-                      </TableCell>
-                    </Grid>
-                    {idx === formValues.length - 1 && (
-                      <Grid item lg={2}>
-                        <IconButton
-                          type="button"
-                          onClick={(e) => removeFormFields(e, idx)}
-                          sx={{ ml: 1, width: "100%" }}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Grid>
-                    )}
+              <TableRow
+                sx={{
+                  p: 0,
+                  height: "70px",
+                }}
+              >
+                {" "}
+                <Grid container alignItems="center">
+                  <Grid item lg={10}>
+                    {" "}
+                    <TableCell
+                      sx={{
+                        borderBottom: 0,
+                        p: 0,
+                        width: "40%",
+                      }}
+                    >
+                      <TextField
+                        size="small"
+                        label="Department"
+                        margin="normal"
+                        name="department"
+                        type="text"
+                        onChange={(e) => setFormValues(e.value)}
+                        sx={{ mr: 1, width: "100%" }}
+                      />
+                    </TableCell>
                   </Grid>
-                </TableRow>
-              ))}
+                </Grid>
+              </TableRow>
             </TableBody>
           </Table>
           <Table>
@@ -160,23 +123,6 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
                     variant="contained"
                   >
                     submit
-                  </LoadingButton>
-                </TableCell>
-                <TableCell
-                  sx={{
-                    borderBottom: 0,
-                    p: 0,
-                    width: "40%",
-                  }}
-                >
-                  <LoadingButton
-                    type="button"
-                    onClick={addFormFields}
-                    size="medium"
-                    sx={{ mt: 1, width: "95%" }}
-                    variant="contained"
-                  >
-                    add
                   </LoadingButton>
                 </TableCell>
               </TableRow>

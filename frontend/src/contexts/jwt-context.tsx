@@ -24,15 +24,15 @@ export interface AuthContextValue extends State {
   logout: () => Promise<void>;
   register: ({
     username,
-    first_name,
-    last_name,
+    firstName,
+    lastName,
     email,
     phone_number,
     password,
   }: {
     username: string;
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone_number: number;
     password: string;
@@ -289,23 +289,23 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
 
   const register = async ({
     username,
-    first_name,
-    last_name,
+    firstName,
+    lastName,
     email,
     phone_number,
     password,
   }: {
     username: string;
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone_number: number;
     password: string;
   }): Promise<void> => {
     const { data: user }: any = await authApi.register({
       username,
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       phone_number,
       password,

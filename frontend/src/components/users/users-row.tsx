@@ -1,4 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
+import NextLink from "next/link";
+import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
@@ -11,6 +13,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  IconButton,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
@@ -18,24 +21,25 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
 import get from "lodash/get";
 import set from "lodash/set";
+import { useRouter } from "next/router";
+import Delete from "@mui/icons-material/Delete";
 interface RowProps {
   row: any;
-  handleSelectOne: (name: number) => void;
-  isItemSelected: boolean;
   labelId: string;
   updateUser: (id: any, userData: any) => Promise<{ success: boolean }>;
+  deleteUser: (id: any) => Promise<{ success: boolean }>;
 }
 
 const departments = ["Admin", "Teacher", "Accountant"];
 const designations = ["Admin", "Teacher", "Accountant"];
 export const UsersRow: FC<RowProps> = (props) => {
-  const { row, handleSelectOne, isItemSelected, labelId, updateUser } = props;
+  const { row, labelId, updateUser, deleteUser } = props;
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const rows = [
-    row?.sl || "no data",
-    row?.staff_id || "no data",
-    row?.name || "no data",
+    row?.id || "no data",
+    row?.username || "no data",
     row?.designation || "no data",
     row?.department || "no data",
     row?.email || "no data",
@@ -61,9 +65,8 @@ export const UsersRow: FC<RowProps> = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      sl: row?.sl,
-      staff_id: row?.staff_id,
-      name: row?.name,
+      id: row?.id,
+      username: row?.username,
       designation: row?.designation,
       department: row?.department,
       email: row?.email,
@@ -72,11 +75,10 @@ export const UsersRow: FC<RowProps> = (props) => {
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      sl: yup.string().max(255).required("slIsRequired"),
-      staff_id: yup.string().max(255).required("staff_idIsRequired"),
-      name: yup.string().max(255).required("nameIsRequired"),
-      designation: yup.string().max(255).required("designationIsRequired"),
-      department: yup.string().max(255).required("departmentIsRequired"),
+      id: yup.string().max(255).required("idIsRequired"),
+      username: yup.string().max(255),
+      designation: yup.string().max(255),
+      department: yup.string().max(255),
       email: yup
         .string()
         .email("emailAddress")
@@ -102,6 +104,7 @@ export const UsersRow: FC<RowProps> = (props) => {
       const { success } = await updateUser(row.id, resultObject);
       if (success) {
         setOpen(false);
+        console.log("done");
       }
     },
   });
@@ -109,9 +112,8 @@ export const UsersRow: FC<RowProps> = (props) => {
   useEffect(() => {
     if (row) {
       formik.setValues({
-        sl: row?.sl,
-        staff_id: row?.staff_id,
-        name: row?.name,
+        id: row?.id,
+        username: row?.username,
         designation: row?.designation,
         department: row?.department,
         email: row?.email,
@@ -124,19 +126,6 @@ export const UsersRow: FC<RowProps> = (props) => {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            sx={{
-              color: theme.palette.info.main,
-            }}
-            onClick={() => handleSelectOne(row.sl)}
-            checked={isItemSelected}
-            inputProps={{
-              "aria-labelledby": labelId,
-            }}
-          />
-        </TableCell>
         {rows?.map((r: any, idx) => (
           <TableCell
             key={idx}
@@ -149,6 +138,26 @@ export const UsersRow: FC<RowProps> = (props) => {
             {r}
           </TableCell>
         ))}
+        <TableCell scope="row" sx={{}}>
+          <NextLink href={`/employees/${row.id}`} passHref>
+            <ArrowForwardIosSharp
+              sx={{
+                color: "black",
+                bgcolor: theme.palette.info.light,
+                cursor: "pointer",
+                border: "1px",
+                borderRadius: "70%",
+                ":hover": { bgcolor: theme.palette.info.main },
+              }}
+            />
+          </NextLink>
+          <IconButton
+            onClick={() => deleteUser(row.id)}
+            sx={{ p: 0, ml: 1, mb: 1.5 }}
+          >
+            <Delete color="error" />
+          </IconButton>
+        </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>
         <TableCell
@@ -175,16 +184,16 @@ export const UsersRow: FC<RowProps> = (props) => {
                     },
                     mr: 1,
                   }}
-                  error={Boolean(formik.touched.sl && formik.errors.sl)}
+                  error={Boolean(formik.touched.id && formik.errors.id)}
                   // @ts-ignore
-                  helperText={formik.touched.sl && formik.errors.sl}
-                  label="sl"
+                  helperText={formik.touched.id && formik.errors.id}
+                  label="id"
                   margin="normal"
-                  id="sl"
-                  name="sl"
+                  id="id"
+                  name="id"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.sl}
+                  value={formik.values.id}
                   InputProps={{
                     style: {
                       fontFamily: "sans-serif",
@@ -201,42 +210,17 @@ export const UsersRow: FC<RowProps> = (props) => {
                     mr: 1,
                   }}
                   error={Boolean(
-                    formik.touched.staff_id && formik.errors.staff_id
+                    formik.touched.username && formik.errors.username
                   )}
                   // @ts-ignore
-                  helperText={formik.touched.staff_id && formik.errors.staff_id}
-                  label="staff_id"
+                  helperText={formik.touched.username && formik.errors.username}
+                  label="username"
                   margin="normal"
-                  id="staff_id"
-                  name="staff_id"
+                  id="username"
+                  name="username"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.staff_id}
-                  InputProps={{
-                    style: {
-                      fontFamily: "sans-serif",
-                    },
-                  }}
-                />
-                <TextField
-                  size="small"
-                  sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  error={Boolean(formik.touched.name && formik.errors.name)}
-                  // @ts-ignore
-                  helperText={formik.touched.name && formik.errors.name}
-                  label="name"
-                  margin="normal"
-                  id="name"
-                  name="name"
-                  type="text"
-                  onChange={formik.handleChange}
-                  value={formik.values.name}
+                  value={formik.values.username}
                   InputProps={{
                     style: {
                       fontFamily: "sans-serif",

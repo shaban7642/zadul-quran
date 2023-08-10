@@ -3,6 +3,11 @@ import { ThemeOptions } from "@mui/material";
 // Colors
 
 const neutral = {
+  10: "#CDB4DB",
+  20: "#FFC8DD",
+  30: "#FFAFCC",
+  40: "#BDE0FE",
+  50: "#A2D2FF",
   100: "#CAF0F8",
   200: "#ADE8F4",
   300: "#90E0EF",

@@ -17,7 +17,7 @@ const Students: NextPage = () => {
     <DashboardLayout>
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <TabList onChange={handleChange} aria-label="Students options">
               <Tab label="List Students" value="1" />
               <Tab label="Add Students" value="2" />
@@ -25,22 +25,12 @@ const Students: NextPage = () => {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <Typography color="inherit" variant="h4">
-              List of student
-            </Typography>
             <StudentsTable />
           </TabPanel>
           <TabPanel value="2">
-            <Typography color="inherit" variant="h4">
-              Add new student
-            </Typography>
             <CreateStudent />
           </TabPanel>
-          <TabPanel value="3">
-            <Typography color="inherit" variant="h4">
-              List of student
-            </Typography>
-          </TabPanel>
+          <TabPanel value="3"></TabPanel>
         </TabContext>
       </Box>
     </DashboardLayout>

@@ -16,12 +16,21 @@ class UserApi {
     });
   }
 
-  async deleteUsers(usersList?: number[]): Promise<any> {
+  async getUserById(id: number): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.delete("/user/delete/", {
-          users: usersList,
-        });
+        const user = apiService.get(`/user/${id}`);
+        resolve(user);
+      } catch (err) {
+        reject(new Error("Internal server error"));
+      }
+    });
+  }
+
+  async deleteUser(id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        const resp = apiService.delete(`/user/${id}`);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -43,7 +52,7 @@ class UserApi {
   async updateUser(id: number, userData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.put(`/user/update/?id=${id}`, userData);
+        const resp = apiService.put(`/user/${id}`, userData);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));

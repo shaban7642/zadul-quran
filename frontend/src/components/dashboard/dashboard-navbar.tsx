@@ -1,48 +1,37 @@
-import { useRef, useState } from 'react';
-import type { FC } from 'react';
-import { AppBarProps, ButtonBase } from '@mui/material';
-import {
-    AppBar,
-    Box,
-    IconButton,
-    Toolbar,
-    Tooltip,
-    Typography,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { Menu as MenuIcon } from '../../icons/menu';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import { useAuth } from '../../hooks/use-auth';
-import { AccountPopover } from './account-popover';
-import { useRouter } from 'next/router';
+import { useRef, useState } from "react";
+import type { FC } from "react";
+import { ButtonBase } from "@mui/material";
+import { Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import { styled } from "@mui/material/styles";
+import { Menu as MenuIcon } from "../../icons/menu";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { useAuth } from "../../hooks/use-auth";
+import { AccountPopover } from "./account-popover";
+import { useRouter } from "next/router";
+import { drawerWidth } from "./dashboard-sidebar";
 
-interface DashboardNavbarProps extends AppBarProps {
-    onOpenSidebar?: () => void;
-    open?: boolean;
+interface DashboardNavbarProps extends MuiAppBarProps {
+  toggle?: () => void;
+  open?: boolean;
 }
-
-const DashboardNavbarRoot = styled(AppBar)(({ theme }: { theme: any }) => ({
-    backgroundColor: theme.palette.background.default,
-    ...(theme.palette.mode === 'light'
-        ? {
-              boxShadow: theme.shadows[3],
-          }
-        : {
-              backgroundColor: theme.palette.background.paper,
-              borderBottomColor: theme.palette.divider,
-              borderBottomStyle: 'solid',
-              borderBottomWidth: 1,
-              boxShadow: 'none',
-          }),
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})<MuiAppBarProps>(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  ...(theme.palette.mode === "light"
+    ? {
+        boxShadow: theme.shadows[3],
+      }
+    : {
+        backgroundColor: theme.palette.background.paper,
+        borderBottomColor: theme.palette.divider,
+        borderBottomStyle: "solid",
+        borderBottomWidth: 1,
+        boxShadow: "none",
+      }),
+  zIndex: 1100,
 }));
-
-interface LanguageButtonProps {
-    text?: string;
-}
-
-interface LanguageConfig {
-    [language: string]: { name: string };
-}
 
 // const HomeLogo = () => {
 //   const router = useRouter();
@@ -65,90 +54,80 @@ interface LanguageConfig {
 // };
 
 const AccountButton = () => {
-    const anchorRef = useRef<HTMLButtonElement | null>(null);
-    const [openPopover, setOpenPopover] = useState<boolean>(false);
-    const { user } = useAuth();
+  const anchorRef = useRef<HTMLButtonElement | null>(null);
+  const [openPopover, setOpenPopover] = useState<boolean>(false);
+  const { user } = useAuth();
 
-    const handleOpenPopover = (): void => {
-        setOpenPopover(true);
-    };
+  const handleOpenPopover = (): void => {
+    setOpenPopover(true);
+  };
 
-    const handleClosePopover = (): void => {
-        setOpenPopover(false);
-    };
+  const handleClosePopover = (): void => {
+    setOpenPopover(false);
+  };
 
-    return (
-        <>
-            <Box
-                component={ButtonBase}
-                onClick={handleOpenPopover}
-                ref={anchorRef}
-                sx={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    ml: 2,
-                }}
-            >
-                <Tooltip title={`user.profile`}>
-                    <IconButton sx={{ ml: 1 }}>
-                        <ManageAccountsIcon>
-                            {user?.username}
-                        </ManageAccountsIcon>
-                    </IconButton>
-                </Tooltip>
-            </Box>
-            <AccountPopover
-                anchorEl={anchorRef.current}
-                onClose={handleClosePopover}
-                open={openPopover}
-            />
-        </>
-    );
+  return (
+    <>
+      <Box
+        component={ButtonBase}
+        onClick={handleOpenPopover}
+        ref={anchorRef}
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          ml: 2,
+        }}
+      >
+        <Tooltip title={`user.profile`}>
+          <IconButton sx={{ ml: 1 }}>
+            <ManageAccountsIcon>{user?.username}</ManageAccountsIcon>
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <AccountPopover
+        anchorEl={anchorRef.current}
+        onClose={handleClosePopover}
+        open={openPopover}
+      />
+    </>
+  );
 };
 
 export const DashboardNavbar: FC<DashboardNavbarProps> = (props) => {
-    const { onOpenSidebar, open, ...other } = props;
+  const { toggle, open, ...other } = props;
 
-    return (
-        <>
-            <DashboardNavbarRoot
-                sx={{
-                    transition: 'all .13s linear',
-                    left: {
-                        lg: open && 250,
-                    },
-                    width: {
-                        lg: `calc(100% - ${open ? '250px' : '0'})`,
-                    },
-                }}
-                {...other}
-            >
-                <Toolbar
-                    disableGutters
-                    sx={{
-                        minHeight: 64,
-                        left: 0,
-                        px: 2,
-                    }}
-                >
-                    {!open && (
-                        <IconButton
-                            onClick={onOpenSidebar}
-                            sx={{
-                                display: {
-                                    xs: 'inline-flex',
-                                    // lg: 'none',
-                                },
-                            }}
-                        >
-                            <MenuIcon fontSize='small' />
-                        </IconButton>
-                    )}
-                    <Box sx={{ flexGrow: 1 }} />
-                    {/* <HomeLogo /> */}
-                    {/* <AccountButton /> */}
-                </Toolbar>
-            </DashboardNavbarRoot>
-        </>
-    );
+  return (
+    <AppBar position="fixed" open={open}>
+      <Toolbar
+        disableGutters
+        sx={{
+          minHeight: 64,
+          left: 0,
+          px: 2,
+        }}
+      >
+        <IconButton
+          onClick={toggle}
+          edge="start"
+          sx={{
+            backgroundColor: "neutral.700",
+            color: "neutral.40",
+            ":hover": {
+              backgroundColor: "neutral.800",
+            },
+          }}
+        >
+          <MenuIcon
+            sx={{
+              cursor: "pointer",
+            }}
+          />
+        </IconButton>
+
+        <Box sx={{ flexGrow: 1 }} />
+        {/* <HomeLogo /> */}
+        <AccountButton />
+      </Toolbar>
+    </AppBar>
+  );
 };

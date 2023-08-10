@@ -41,19 +41,6 @@ export const DeptRow: FC<RowProps> = (props) => {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            sx={{
-              color: theme.palette.info.main,
-            }}
-            onClick={() => handleSelectOne(row.id)}
-            checked={isItemSelected}
-            inputProps={{
-              "aria-labelledby": labelId,
-            }}
-          />
-        </TableCell>
         <TableCell
           scope="row"
           onClick={() => setOpen(!open)}

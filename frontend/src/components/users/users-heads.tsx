@@ -7,35 +7,18 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { visuallyHidden } from "@mui/utils";
-import { Data, Order } from "./users-table";
+
 import type { FC } from "react";
 
 interface TableHeadsProps {
   tableName: string;
   headCells: readonly any[];
-  numSelected: number;
-  onRequestSort: (event: MouseEvent<unknown>, property: keyof Data) => void;
-  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
-  order: Order;
-  orderBy: string;
   rowCount: number;
 }
 
 export const TableHeads: FC<TableHeadsProps> = (props) => {
-  const {
-    tableName,
-    headCells,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
-  const createSortHandler =
-    (property: keyof Data) => (event: MouseEvent<unknown>) => {
-      onRequestSort(event, property);
-    };
+  const { tableName, headCells, rowCount } = props;
+
   const theme = useTheme();
 
   return (
@@ -53,42 +36,15 @@ export const TableHeads: FC<TableHeadsProps> = (props) => {
       }}
     >
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            sx={{
-              color: theme.palette.info.main,
-            }}
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all desserts",
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell, idx) => (
           <TableCell
             key={headCell.id}
             padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            sx={{
+              color: (theme) => theme.palette.info.main,
+            }}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-              sx={{
-                color: (theme) => theme.palette.info.main,
-                fontSize: ".9em",
-              }}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.label}
           </TableCell>
         ))}
       </TableRow>

@@ -34,70 +34,6 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
     title,
     ...other
   } = props;
-  const [open, setOpen] = useState<boolean>(!!openProp);
-
-  const handleToggle = (): void => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-
-  let paddingLeft = 24;
-
-  if (depth > 0) {
-    paddingLeft = 32 + 8 * depth;
-  }
-
-  // Branch
-  if (children) {
-    return (
-      <ListItem
-        disableGutters
-        sx={{
-          display: "block",
-          mb: 0.5,
-          py: 0,
-          px: 2,
-        }}
-        {...other}
-      >
-        <Button
-          endIcon={
-            !open ? (
-              <ChevronRightIcon fontSize="small" />
-            ) : (
-              <ChevronDownIcon fontSize="small" />
-            )
-          }
-          disableRipple
-          onClick={handleToggle}
-          startIcon={icon}
-          sx={{
-            color: active ? "secondary.main" : "neutral.200",
-            justifyContent: "flex-start",
-            pl: `${paddingLeft}px`,
-            pr: 3,
-            textAlign: "left",
-            textTransform: "none",
-            width: "100%",
-            "&:hover": {
-              backgroundColor: "rgba(255,255,255, 0.08)",
-            },
-            "& .MuiButton-startIcon": {
-              color: active ? "secondary.main" : "neutral.400",
-            },
-            "& .MuiButton-endIcon": {
-              color: "black",
-            },
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }}>{title}</Box>
-          {info}
-        </Button>
-        <Collapse in={open} sx={{ mt: 0.5 }}>
-          {children}
-        </Collapse>
-      </ListItem>
-    );
-  }
 
   // Leaf
   return (
@@ -123,9 +59,9 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
             disableRipple
             sx={{
               borderRadius: 1,
-              color: "neutral.200",
+              color: "neutral.100",
               justifyContent: "flex-start",
-              pl: `${paddingLeft}px`,
+              pl: `2px`,
               pr: 3,
               textAlign: "left",
               textTransform: "none",
@@ -143,7 +79,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
               },
             }}
           >
-            <Box sx={{ flexGrow: 1 }}>{title}</Box>
+            <Box sx={{ flexGrow: 1, ml: 2, color: "neutral.100" }}>{title}</Box>
             {info}
           </Button>
         </Tooltip>
@@ -160,7 +96,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
               borderRadius: 1,
               color: "neutral.200",
               justifyContent: "flex-start",
-              pl: `${paddingLeft}px`,
+              pl: `2px`,
               pr: 3,
               textAlign: "left",
               textTransform: "none",
@@ -178,7 +114,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
               },
             }}
           >
-            <Box sx={{ flexGrow: 1 }}>{title}</Box>
+            <Box sx={{ flexGrow: 1, ml: 2, color: "neutral.100" }}>{title}</Box>
             {info}
           </Button>
         </NextLink>

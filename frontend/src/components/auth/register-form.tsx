@@ -32,8 +32,8 @@ export const RegisterForm: FC = (props) => {
   const formik = useFormik({
     initialValues: {
       username: "",
-      first_name: "",
-      last_name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       phone_number: "",
       password: "",
@@ -42,8 +42,8 @@ export const RegisterForm: FC = (props) => {
     },
     validationSchema: Yup.object({
       username: Yup.string().max(255).required("usernameIsRequired"),
-      first_name: Yup.string().max(255).required("first_nameIsRequired"),
-      last_name: Yup.string().max(255).required("last_nameIsRequired"),
+      firstName: Yup.string().max(255).required("firstNameIsRequired"),
+      lastName: Yup.string().max(255).required("lastNameIsRequired"),
       email: Yup.string()
         .email("emailAddress")
         .max(255)
@@ -63,18 +63,12 @@ export const RegisterForm: FC = (props) => {
     }),
     onSubmit: async (values, helpers): Promise<void> => {
       try {
-        const {
-          username,
-          first_name,
-          last_name,
-          email,
-          phone_number,
-          password,
-        } = values;
+        const { username, firstName, lastName, email, phone_number, password } =
+          values;
         await register({
           username,
-          first_name,
-          last_name,
+          firstName,
+          lastName,
           email,
           phone_number,
           password,
@@ -140,16 +134,16 @@ export const RegisterForm: FC = (props) => {
         }}
       />
       <TextField
-        error={Boolean(formik.touched.first_name && formik.errors.first_name)}
+        error={Boolean(formik.touched.firstName && formik.errors.firstName)}
         fullWidth
-        helperText={formik.touched.first_name && formik.errors.first_name}
-        label="first_name"
+        helperText={formik.touched.firstName && formik.errors.firstName}
+        label="firstName"
         margin="normal"
-        name="first_name"
+        name="firstName"
         onBlur={formik.handleBlur}
         onChange={formik.handleChange}
         type="name"
-        value={formik.values.first_name}
+        value={formik.values.firstName}
         InputProps={{
           style: {
             fontFamily: "sans-serif",
@@ -157,16 +151,16 @@ export const RegisterForm: FC = (props) => {
         }}
       />
       <TextField
-        error={Boolean(formik.touched.last_name && formik.errors.last_name)}
+        error={Boolean(formik.touched.lastName && formik.errors.lastName)}
         fullWidth
-        helperText={formik.touched.last_name && formik.errors.last_name}
-        label="last_name"
+        helperText={formik.touched.lastName && formik.errors.lastName}
+        label="lastName"
         margin="normal"
-        name="last_name"
+        name="lastName"
         onBlur={formik.handleBlur}
         onChange={formik.handleChange}
         type="name"
-        value={formik.values.last_name}
+        value={formik.values.lastName}
         InputProps={{
           style: {
             fontFamily: "sans-serif",

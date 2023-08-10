@@ -1,8 +1,10 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import TableCell from "@mui/material/TableCell";
+import { TableCell, IconButton } from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import NextLink from "next/link";
+import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
 import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
 import { useTheme } from "@mui/material/styles";
@@ -12,21 +14,20 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
 import get from "lodash/get";
 import set from "lodash/set";
+import Delete from "@mui/icons-material/Delete";
 interface RowProps {
   row: any;
-  handleSelectOne: (name: number) => void;
-  isItemSelected: boolean;
   labelId: string;
   updateStudent: (id: any, userData: any) => Promise<{ success: boolean }>;
+  deleteStudent: (id: any) => Promise<{ success: boolean }>;
 }
 export const StudentsRow: FC<RowProps> = (props) => {
-  const { row, handleSelectOne, isItemSelected, labelId, updateStudent } =
-    props;
+  const { row, labelId, updateStudent, deleteStudent } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const rows = [
-    row?.first_name || "no data",
-    row?.last_name || "no data",
+    row?.firstName || "no data",
+    row?.lastName || "no data",
     row?.department || "no data",
     row?.email || "no data",
     row?.phoneNumber || "no data",
@@ -51,8 +52,8 @@ export const StudentsRow: FC<RowProps> = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      first_name: row?.first_name,
-      last_name: row?.last_name,
+      firstName: row?.firstName,
+      lastName: row?.lastName,
       department: row?.department,
       email: row?.email,
       phoneNumber: row?.phoneNumber,
@@ -95,9 +96,8 @@ export const StudentsRow: FC<RowProps> = (props) => {
   useEffect(() => {
     if (row) {
       formik.setValues({
-        sl: row?.sl,
-        staff_id: row?.staff_id,
-        name: row?.name,
+        firstName: row?.firstName,
+        lastName: row?.lastName,
         department: row?.department,
         email: row?.email,
         phoneNumber: row?.phoneNumber,
@@ -109,19 +109,6 @@ export const StudentsRow: FC<RowProps> = (props) => {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            sx={{
-              color: theme.palette.info.main,
-            }}
-            onClick={() => handleSelectOne(row.sl)}
-            checked={isItemSelected}
-            inputProps={{
-              "aria-labelledby": labelId,
-            }}
-          />
-        </TableCell>
         {rows?.map((r: any, idx) => (
           <TableCell
             key={idx}
@@ -134,13 +121,33 @@ export const StudentsRow: FC<RowProps> = (props) => {
             {r}
           </TableCell>
         ))}
+        <TableCell scope="row" sx={{}}>
+          <NextLink href={`/students/${row.id}`} passHref>
+            <ArrowForwardIosSharp
+              sx={{
+                color: "black",
+                bgcolor: theme.palette.info.light,
+                cursor: "pointer",
+                border: "1px",
+                borderRadius: "70%",
+                ":hover": { bgcolor: theme.palette.info.main },
+              }}
+            />
+          </NextLink>
+          <IconButton
+            onClick={() => deleteStudent(row.id)}
+            sx={{ p: 0, ml: 1, mb: 1.5 }}
+          >
+            <Delete color="error" />
+          </IconButton>
+        </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>
         <TableCell
           style={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
           colSpan={6}
         >
-          {/* <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography
                 variant="h6"
@@ -151,7 +158,6 @@ export const StudentsRow: FC<RowProps> = (props) => {
                 edit
               </Typography>
               <form onSubmit={formik.handleSubmit}>
-              
                 <TextField
                   size="small"
                   sx={{
@@ -162,17 +168,19 @@ export const StudentsRow: FC<RowProps> = (props) => {
                     mr: 1,
                   }}
                   error={Boolean(
-                    formik.touched.staff_id && formik.errors.staff_id
+                    formik.touched.firstName && formik.errors.firstName
                   )}
                   // @ts-ignore
-                  helperText={formik.touched.staff_id && formik.errors.staff_id}
-                  label="staff_id"
+                  helperText={
+                    formik.touched.firstName && formik.errors.firstName
+                  }
+                  label="name"
                   margin="normal"
-                  id="staff_id"
-                  name="staff_id"
+                  id="name"
+                  name="name"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.staff_id}
+                  value={formik.values.firstName}
                   InputProps={{
                     style: {
                       fontFamily: "sans-serif",
@@ -188,23 +196,24 @@ export const StudentsRow: FC<RowProps> = (props) => {
                     },
                     mr: 1,
                   }}
-                  error={Boolean(formik.touched.name && formik.errors.name)}
+                  error={Boolean(
+                    formik.touched.lastName && formik.errors.lastName
+                  )}
                   // @ts-ignore
-                  helperText={formik.touched.name && formik.errors.name}
+                  helperText={formik.touched.lastName && formik.errors.lastName}
                   label="name"
                   margin="normal"
                   id="name"
                   name="name"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.name}
+                  value={formik.values.lastName}
                   InputProps={{
                     style: {
                       fontFamily: "sans-serif",
                     },
                   }}
                 />
-
                 <TextField
                   size="small"
                   sx={{
@@ -331,7 +340,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                 </LoadingButton>
               </form>
             </Box>
-          </Collapse> */}
+          </Collapse>
         </TableCell>
       </TableRow>
     </Fragment>

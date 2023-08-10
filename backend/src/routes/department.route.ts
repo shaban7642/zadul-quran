@@ -22,29 +22,29 @@ class DepartmentRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.departments.READ]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.departments.READ]),
       this.departmentController.getAllDepartments
     );
 
     this.router.post(
       `${this.path}/create`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.departments.CREATE]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.departments.CREATE]),
       this.departmentController.createDepartment
     );
 
     this.router.put(
       `${this.path}/:id`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.departments.UPDATE]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.departments.UPDATE]),
       this.departmentController.updateDepartment
     );
 
     this.router.delete(
       `${this.path}/:id`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.departments.DELETE]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.departments.DELETE]),
       this.departmentController.deleteDepartment
     );
   }
