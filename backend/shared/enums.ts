@@ -40,6 +40,18 @@ const Permissions = {
     UPDATE: 'documents:update',
     DELETE: 'documents:delete',
   },
+  sessions: {
+    READ: 'sessions:read',
+    CREATE: 'sessions:create',
+    UPDATE: 'sessions:update',
+    DELETE: 'sessions:delete',
+  },
+  reports: {
+    READ: 'reports:read',
+    CREATE: 'reports:create',
+    UPDATE: 'reports:update',
+    DELETE: 'reports:delete',
+  },
 };
 
 export default {

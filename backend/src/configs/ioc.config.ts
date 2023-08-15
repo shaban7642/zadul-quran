@@ -15,6 +15,8 @@ import {
   DepartmentsService,
   ParentsService,
   DocumentsService,
+  SessionsService,
+  ReportsService,
 } from '../services';
 
 const container = new Container();
@@ -53,5 +55,13 @@ container
 container
   .bind<DocumentsService>(SERVICE_IDENTIFIER.DOCUMENTS_SERVICE)
   .to(DocumentsService);
+
+container
+  .bind<SessionsService>(SERVICE_IDENTIFIER.SESSIONS_SERVICE)
+  .to(SessionsService);
+
+container
+  .bind<ReportsService>(SERVICE_IDENTIFIER.REPORTS_SERVICE)
+  .to(ReportsService);
 
 export default container;

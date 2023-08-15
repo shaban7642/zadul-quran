@@ -1,4 +1,5 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
+import Sessions from './sessions.model';
 
 class Departments extends Model {
   public id!: number;
@@ -34,7 +35,9 @@ class Departments extends Model {
     );
   }
 
-  public static initAssociation(): void {}
+  public static initAssociation(): void {
+    this.hasMany(Sessions);
+  }
 }
 
 export default Departments;

@@ -10,6 +10,9 @@ import Parents from './parents.model';
 import StudentParents from './studentParents.model';
 import Documents from './documents.model';
 import DocumentTypes from './documentTypes.model';
+import Patches from './patches.model';
+import Sessions from './sessions.model';
+import Reports from './reports.model';
 
 console.info('Initializing sequelize...');
 
@@ -53,6 +56,9 @@ export const initModels = async (sequelizeInst: Sequelize) => {
     await StudentParents.initModel(sequelizeInst);
     await DocumentTypes.initModel(sequelizeInst);
     await Documents.initModel(sequelizeInst);
+    await Patches.initModel(sequelizeInst);
+    await Sessions.initModel(sequelizeInst);
+    await Reports.initModel(sequelizeInst);
   } catch (error) {
     console.log(error);
   }
@@ -71,6 +77,9 @@ export const initAssociation = async () => {
     await StudentParents.initAssociation();
     await DocumentTypes.initAssociation();
     await Documents.initAssociation();
+    await Patches.initAssociation();
+    await Sessions.initAssociation();
+    await Reports.initAssociation();
   } catch (error) {
     console.log(error);
   }

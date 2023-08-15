@@ -9,6 +9,8 @@ const SERVICE_IDENTIFIER = {
   DEPARTMENTS_SERVICE: Symbol('DepartmentsService'),
   PARENTS_SERVICE: Symbol('ParentsService'),
   DOCUMENTS_SERVICE: Symbol('DocumentsService'),
+  SESSIONS_SERVICE: Symbol('SessionsService'),
+  REPORTS_SERVICE: Symbol('ReportsService'),
 };
 
 const UTIL = {
