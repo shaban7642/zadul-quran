@@ -16,7 +16,7 @@ class DeptApi {
     return new Promise((resolve, reject) => {
       try {
         const resp = apiService.post(`/department/create`, {
-          depts: deptData,
+          name: deptData,
         });
         resolve(resp);
       } catch (err) {

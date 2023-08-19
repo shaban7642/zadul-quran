@@ -13,14 +13,14 @@ import uploadMiddleware from '../middlewares/upload.middleware';
 const { Permissions } = enums;
 
 const multerStorage = multer.diskStorage({
-  destination: (req: any, file, cb) => {
+  destination: (req: any, file: any, cb: any) => {
     const { documentType } = req;
     const path = `public/uploads/documents/${documentType.name}/${req.userId}`;
     fs.mkdirSync(path, { recursive: true });
 
     cb(null, path);
   },
-  filename: (req: any, file, cb) => {
+  filename: (req: any, file: any, cb: any) => {
     const ext = file.mimetype.split('/')[1];
     cb(null, `${file.fieldname}-${Date.now()}.${ext}`);
   },

@@ -1,27 +1,22 @@
 import { ChangeEvent, MouseEvent } from "react";
 import { alpha, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { visuallyHidden } from "@mui/utils";
 import type { FC } from "react";
-import { Dept } from "./dept-table";
 
-interface DeptHeadsProps {
+interface RolesHeadsProps {
   headCells: readonly any[];
-
   rowCount: number;
 }
 
-export const DeptHeads: FC<DeptHeadsProps> = (props) => {
+export const RolesHeads: FC<RolesHeadsProps> = (props) => {
   const {
     headCells,
 
     rowCount,
   } = props;
+
   const theme = useTheme();
 
   return (
@@ -43,9 +38,7 @@ export const DeptHeads: FC<DeptHeadsProps> = (props) => {
           <TableCell
             key={headCell.id}
             padding={headCell.disablePadding ? "none" : "normal"}
-            sx={{
-              color: (theme) => theme.palette.info.main,
-            }}
+            sx={{ color: (theme) => theme.palette.info.main }}
           >
             {headCell.label}
           </TableCell>

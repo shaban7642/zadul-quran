@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
 import {
@@ -24,20 +24,48 @@ import { userApi } from "../../api/userApi";
 import { VisibilityOff } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
+import { rolesApi } from "../../api/rolesApi";
+import { useMounted } from "../../hooks/use-mounted";
+import { deptApi } from "../../api/deptApi";
 
-const roleIds = [
-  { label: "Admin", id: 1 },
-  { label: "Teacher", id: 2 },
-  { label: "Student", id: 3 },
-];
 const genders = ["male", "female"];
-const departments = ["Admin", "Teacher", "Accountant"];
-const designations = ["Admin", "Teacher", "Accountant"];
 
 const CreateUser = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+  const [depts, setDepts] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const isMounted = useMounted();
+  const getRoles = useCallback(
+    async () => {
+      try {
+        const data: any = await rolesApi.getRoles();
 
+        if (isMounted()) {
+          setRoles(data.resp);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isMounted]
+  );
+  const getDepts = useCallback(
+    async () => {
+      try {
+        const data: any = await deptApi.getDepts();
+
+        if (isMounted()) {
+          setDepts(data.rows);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isMounted]
+  );
   const createUser = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("create");
     try {
@@ -57,10 +85,13 @@ const CreateUser = () => {
       return { success: false };
     }
   };
-
+  useEffect(() => {
+    getRoles();
+    getDepts();
+  }, []);
   const formik = useFormik({
     initialValues: {
-      roleId: roleIds[0].id,
+      roleId: roles[0]?.id,
       join_date: "2/3/2012",
       username: "abdo",
       firstName: "abdo",
@@ -68,8 +99,7 @@ const CreateUser = () => {
       city: "giza",
       gender: genders[0],
       birthDate: "2/3/2012",
-      designation: designations[0],
-      department: departments[0],
+      department: depts[0],
       email: "abdo.abd@gmail.com",
       phoneNumber: "011212324545",
       password: "Abdo@001",
@@ -85,7 +115,6 @@ const CreateUser = () => {
       city: yup.string().max(255).required("cityIsRequired"),
       gender: yup.string().required(),
       birthDate: yup.date().required(),
-      designation: yup.string().required(),
       depatment: yup.string().required(),
       email: yup
         .string()
@@ -171,13 +200,13 @@ const CreateUser = () => {
             value={formik.values.roleId}
             onChange={formik.handleChange}
           >
-            {roleIds.map((roleId) => (
+            {roles.map((roleId) => (
               <MenuItem
-                key={roleId.id}
-                value={roleId.id}
+                key={roleId?.id}
+                value={roleId?.id}
                 sx={{ backgroundColor: theme.palette.background.default }}
               >
-                {roleId.label}
+                {roleId?.displayName}
               </MenuItem>
             ))}
           </Select>
@@ -225,38 +254,9 @@ const CreateUser = () => {
             value={formik.values.department}
             onChange={formik.handleChange}
           >
-            {departments.map((department) => (
-              <MenuItem key={department} value={department}>
-                {department}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-            marginTop: 2,
-          }}
-          variant="outlined"
-        >
-          {" "}
-          <InputLabel id="outlined-adornment-designation">
-            Designation
-          </InputLabel>
-          <Select
-            name="designation"
-            id="outlined-adornment-designation"
-            labelId="outlined-adornment-designation"
-            value={formik.values.designation}
-            onChange={formik.handleChange}
-          >
-            {designations.map((designation) => (
-              <MenuItem key={designation} value={designation}>
-                {designation}
+            {depts.map((department) => (
+              <MenuItem key={department?.id} value={department?.name}>
+                {department?.name}
               </MenuItem>
             ))}
           </Select>

@@ -24,7 +24,7 @@ import { useMounted } from "../../hooks/use-mounted";
 
 export interface Dept {
   id: number;
-  title: string;
+  name: string;
 }
 
 export interface HeadCell {
@@ -36,17 +36,8 @@ export interface HeadCell {
 
 export const DeptTable = () => {
   const [page, setPage] = useState(0);
-  const [depts, setDepts] = useState([
-    {
-      id: 12346789,
-      title: "math",
-    },
-    {
-      id: 12346789,
-      title: "Qran",
-    },
-  ]);
-  const [deptCount, setDeptsCount] = useState(depts.length);
+  const [depts, setDepts] = useState([]);
+  const [deptCount, setDeptsCount] = useState(depts?.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMounted = useMounted();
   useEffect(
@@ -80,19 +71,14 @@ export const DeptTable = () => {
   const createDept = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createDepts");
     try {
-      const resp = await deptApi.createDept(values);
-      if (resp.success) {
-        toast.dismiss(load);
-        toast.success("createDeptsSuccess");
+      await deptApi.createDept(values);
 
-        getDepts();
+      toast.dismiss(load);
+      toast.success("createDeptsSuccess");
 
-        return { success: true };
-      } else {
-        toast.dismiss(load);
-        toast.error("createDeptsFailed");
-        return { success: false };
-      }
+      getDepts();
+
+      return { success: true };
     } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "createDeptsFailed");
@@ -128,15 +114,15 @@ export const DeptTable = () => {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "title",
+      id: "name",
       numeric: false,
       disablePadding: true,
       label: "Title",
     },
   ];
   useEffect(() => {
-    setDeptsCount(depts.length);
-  }, [depts.length]);
+    setDeptsCount(depts?.length);
+  }, [depts?.length]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -146,10 +132,6 @@ export const DeptTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  // const handlePagination
-
-  // Avoid a layout jump when reaching the last page with empty rows.
 
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
@@ -202,19 +184,17 @@ export const DeptTable = () => {
               >
                 <DeptHeads headCells={headCells} rowCount={deptCount} />
                 <TableBody>
-                  {depts
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      const labelId = `enhanced-table-checkbox-${index}`;
-                      return (
-                        <DeptRow
-                          key={row.id}
-                          row={row}
-                          labelId={labelId}
-                          updateDept={updateDept}
-                        />
-                      );
-                    })}
+                  {depts?.map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    return (
+                      <DeptRow
+                        key={row.id}
+                        row={row}
+                        labelId={labelId}
+                        updateDept={updateDept}
+                      />
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  FC,
   MouseEvent,
   useCallback,
   useEffect,
@@ -35,9 +36,11 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
 }
-
-export const StudentsTable = () => {
-  const tableName: string = "users";
+interface StudentsTableProps {
+  roleId?: number;
+}
+export const StudentsTable: FC<StudentsTableProps> = (props) => {
+  const { roleId } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
@@ -88,8 +91,11 @@ export const StudentsTable = () => {
         const data: any = await userApi.getUsers(rowsPerPage, page);
 
         if (isMounted()) {
-          setUsersCount(data.count);
-          setUsers(data.rows);
+          const filtered: any[] = data.rows.filter(
+            (row: { roleId: number }) => row?.roleId === roleId
+          );
+          setUsers(filtered);
+          setUsersCount(filtered.length);
         }
       } catch (err) {
         console.log(err);
@@ -198,28 +204,22 @@ export const StudentsTable = () => {
             aria-labelledby="tableTitle"
             size="small"
           >
-            <TableHeads
-              tableName={tableName}
-              headCells={headCells}
-              rowCount={usersCount}
-            />
+            <TableHeads headCells={headCells} />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
               rows.slice().sort(getComparator(order, orderBy)) */}
-              {users
-                .filter((row) => row?.roleId === 4)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <StudentsRow
-                      key={row?.id}
-                      row={row}
-                      labelId={labelId}
-                      deleteStudent={deleteUser}
-                      updateStudent={updateUser}
-                    />
-                  );
-                })}
+              {users.map((row, index) => {
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <StudentsRow
+                    key={row?.id}
+                    row={row}
+                    labelId={labelId}
+                    deleteStudent={deleteUser}
+                    updateStudent={updateUser}
+                  />
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

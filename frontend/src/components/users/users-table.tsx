@@ -27,7 +27,6 @@ export interface Data {
   id: String;
   username: String;
   roleId: String;
-  desination: String;
   department: String;
   email: String;
   phoneNumber: String;
@@ -64,12 +63,6 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       label: "username",
     },
     {
-      id: "desination",
-      numeric: false,
-      disablePadding: true,
-      label: "Desination",
-    },
-    {
       id: "department",
       numeric: false,
       disablePadding: true,
@@ -101,8 +94,19 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         const data: any = await userApi.getUsers(rowsPerPage, page);
 
         if (isMounted()) {
-          setUsersCount(data.count);
-          setUsers(data.rows);
+          if (roleId) {
+            const filtered: any[] = data.rows.filter(
+              (row: { roleId: number }) => row?.roleId === roleId
+            );
+            setUsers(filtered);
+            setUsersCount(filtered.length);
+          } else {
+            const filtered: any[] = data.rows.filter(
+              (row: { roleId: number }) => row?.roleId !== (4 || 5)
+            );
+            setUsers(filtered);
+            setUsersCount(filtered.length);
+          }
         }
       } catch (err) {
         console.log(err);
@@ -211,48 +215,22 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
             aria-labelledby="tableTitle"
             size="small"
           >
-            <TableHeads
-              tableName={tableName}
-              headCells={headCells}
-              rowCount={usersCount}
-            />
-            {roleId ? (
-              <TableBody>
-                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.slice().sort(getComparator(order, orderBy)) */}
-                {users
-                  .filter((row) => row?.roleId === roleId)
-                  .map((row, index) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <UsersRow
-                        key={row?.id}
-                        row={row}
-                        deleteUser={deleteUser}
-                        labelId={labelId}
-                        updateUser={updateUser}
-                      />
-                    );
-                  })}
-              </TableBody>
-            ) : (
-              <TableBody>
-                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.slice().sort(getComparator(order, orderBy)) */}
-                {users.map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <UsersRow
-                      key={row?.username}
-                      row={row}
-                      deleteUser={deleteUser}
-                      labelId={labelId}
-                      updateUser={updateUser}
-                    />
-                  );
-                })}
-              </TableBody>
-            )}
+            <TableHeads headCells={headCells} />
+
+            <TableBody>
+              {users.map((row, index) => {
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <UsersRow
+                    key={row?.id}
+                    row={row}
+                    deleteUser={deleteUser}
+                    labelId={labelId}
+                    updateUser={updateUser}
+                  />
+                );
+              })}
+            </TableBody>
           </Table>
         </TableContainer>
         <TablePagination

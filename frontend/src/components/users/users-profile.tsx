@@ -26,10 +26,9 @@ import { Data } from "./users-table";
 import { userApi } from "../../api/userApi";
 /* eslint-disable */
 const departments = ["Admin", "Teacher", "Accountant"];
-const designations = ["Admin", "Teacher", "Accountant"];
 
 interface profileProps {
-  id: number;
+  id: string;
 }
 export const Profile: FC<profileProps> = (props) => {
   const { id } = props;
@@ -37,7 +36,7 @@ export const Profile: FC<profileProps> = (props) => {
     id: "",
     username: "",
     roleId: "",
-    desination: "",
+
     department: "",
     email: "",
     phoneNumber: "",
@@ -56,7 +55,7 @@ export const Profile: FC<profileProps> = (props) => {
     initialValues: {
       id: userData?.id,
       username: userData?.username,
-      designation: userData?.desination,
+
       department: userData?.department,
       email: userData?.email,
       phoneNumber: userData?.phoneNumber,
@@ -66,7 +65,7 @@ export const Profile: FC<profileProps> = (props) => {
     validationSchema: yup.object({
       id: yup.string().max(255).required("idIsRequired"),
       username: yup.string().max(255),
-      designation: yup.string().max(255),
+
       department: yup.string().max(255),
       email: yup
         .string()
@@ -242,36 +241,7 @@ export const Profile: FC<profileProps> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl
-                sx={{
-                  width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                  "& .MuiInputBase-root": {
-                    height: 40,
-                  },
-                  mr: 1,
-                  mb: 0,
-                  mt: 2,
-                }}
-                variant="outlined"
-              >
-                {" "}
-                <InputLabel id="outlined-adornment-designation">
-                  Designation
-                </InputLabel>
-                <Select
-                  name="designation"
-                  id="outlined-adornment-designation"
-                  labelId="outlined-adornment-designation"
-                  value={formik.values.designation}
-                  onChange={formik.handleChange}
-                >
-                  {designations.map((designation) => (
-                    <MenuItem key={designation} value={designation}>
-                      {designation}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+
               <TextField
                 size="small"
                 sx={{

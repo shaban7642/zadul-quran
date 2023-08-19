@@ -16,6 +16,7 @@ import { BillsIcon } from "../../icons/bills";
 import { giveAccess } from "../../utils/component-guard";
 import { useAuth } from "../../hooks/use-auth";
 import { get } from "lodash";
+import { Settings } from "@mui/icons-material";
 
 interface DashboardSidebarProps {
   onClose?: () => void;
@@ -129,9 +130,9 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       title: user && user.role === "owner" ? "managment" : "",
       items: [
         {
-          title: "users",
-          path: "/users",
-          icon: <UsersIcon fontSize="small" />,
+          title: "roles",
+          path: "/roles",
+          icon: <Settings fontSize="small" sx={{ color: "#FFFCF2" }} />,
           disabled: false,
           accessed: true, //giveAccess(["owner"])
         },

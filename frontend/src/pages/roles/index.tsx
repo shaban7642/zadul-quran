@@ -3,10 +3,10 @@ import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 import { NextPage } from "next";
 import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import CreateStudent from "../../components/students/students-create";
-import { StudentsTable } from "../../components/students/students-table";
+import CreateSetting from "../../components/roles/roles-create";
+import { RolesTable } from "../../components/roles/roles-table";
 
-const Students: NextPage = () => {
+const Roles: NextPage = () => {
   const [value, setValue] = useState("1");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -16,26 +16,24 @@ const Students: NextPage = () => {
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleChange} aria-label="Students options">
-              <Tab label="List Students" value="1" />
-              <Tab label="Add Students" value="2" />
-              <Tab label=" Students" value="3" />
+            <TabList onChange={handleChange} aria-label="Roles options">
+              <Tab label="List Roles" value="1" />
+              <Tab label="Add Roles" value="2" />
             </TabList>
           </Box>
           <TabPanel value="1">
-            <StudentsTable roleId={4} />
+            <RolesTable />
           </TabPanel>
           <TabPanel value="2">
-            <CreateStudent />
+            <CreateSetting />
           </TabPanel>
-          <TabPanel value="3"></TabPanel>
         </TabContext>
       </Box>
     </DashboardLayout>
   );
 };
 
-// Students.getLayout = (page) => (
+// Roles.getLayout = (page) => (
 //   // <AuthGuard>
 //   //   <OwnerGuard>
 
@@ -43,4 +41,4 @@ const Students: NextPage = () => {
 //   // </AuthGuard>
 // );
 
-export default Students;
+export default Roles;

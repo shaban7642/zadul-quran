@@ -11,13 +11,11 @@ import { visuallyHidden } from "@mui/utils";
 import type { FC } from "react";
 
 interface TableHeadsProps {
-  tableName: string;
   headCells: readonly any[];
-  rowCount: number;
 }
 
 export const TableHeads: FC<TableHeadsProps> = (props) => {
-  const { tableName, headCells, rowCount } = props;
+  const { headCells } = props;
 
   const theme = useTheme();
 

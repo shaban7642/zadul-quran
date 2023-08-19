@@ -7,7 +7,6 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { RegisterForm } from "../../components/auth/register-form";
 import CreateUser from "../../components/users/users-create";
 import { DeptTable } from "../../components/department/dept-table";
-import { DesigTable } from "../../components/designation/desig-table";
 
 const Employees: NextPage = () => {
   const [value, setValue] = useState("1");
@@ -35,7 +34,6 @@ const Employees: NextPage = () => {
               <Tab label="List Employees" value="1" />
               <Tab label="Add Employees" value="2" />
               <Tab label="Add Department" value="3" />
-              <Tab label="Add Designation" value="4" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -72,9 +70,6 @@ const Employees: NextPage = () => {
           </TabPanel>
           <TabPanel value="3">
             <DeptTable></DeptTable>
-          </TabPanel>
-          <TabPanel value="4">
-            <DesigTable />
           </TabPanel>
         </TabContext>
       </Box>

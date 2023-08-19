@@ -31,7 +31,6 @@ interface RowProps {
 }
 
 const departments = ["Admin", "Teacher", "Accountant"];
-const designations = ["Admin", "Teacher", "Accountant"];
 export const UsersRow: FC<RowProps> = (props) => {
   const { row, labelId, updateUser, deleteUser } = props;
   const router = useRouter();
@@ -40,7 +39,6 @@ export const UsersRow: FC<RowProps> = (props) => {
   const rows = [
     row?.id || "no data",
     row?.username || "no data",
-    row?.designation || "no data",
     row?.department || "no data",
     row?.email || "no data",
     row?.phoneNumber || "no data",
@@ -67,7 +65,6 @@ export const UsersRow: FC<RowProps> = (props) => {
     initialValues: {
       id: row?.id,
       username: row?.username,
-      designation: row?.designation,
       department: row?.department,
       email: row?.email,
       phoneNumber: row?.phoneNumber,
@@ -77,7 +74,6 @@ export const UsersRow: FC<RowProps> = (props) => {
     validationSchema: yup.object({
       id: yup.string().max(255).required("idIsRequired"),
       username: yup.string().max(255),
-      designation: yup.string().max(255),
       department: yup.string().max(255),
       email: yup
         .string()
@@ -114,7 +110,6 @@ export const UsersRow: FC<RowProps> = (props) => {
       formik.setValues({
         id: row?.id,
         username: row?.username,
-        designation: row?.designation,
         department: row?.department,
         email: row?.email,
         phoneNumber: row?.phoneNumber,
@@ -257,35 +252,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl
-                  sx={{
-                    width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                    marginTop: 2,
-                  }}
-                  variant="outlined"
-                >
-                  {" "}
-                  <InputLabel id="outlined-adornment-designation">
-                    Designation
-                  </InputLabel>
-                  <Select
-                    name="designation"
-                    id="outlined-adornment-designation"
-                    labelId="outlined-adornment-designation"
-                    value={formik.values.designation}
-                    onChange={formik.handleChange}
-                  >
-                    {designations.map((designation) => (
-                      <MenuItem key={designation} value={designation}>
-                        {designation}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+
                 <TextField
                   size="small"
                   sx={{

@@ -1,5 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
+import NextLink from "next/link";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
@@ -7,33 +8,33 @@ import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import WidgetsIcon from "@mui/icons-material/Widgets";
 
 interface RowProps {
   row: any;
-  updateDesig: (id: number, values: any) => void;
-  handleSelectOne: (name: number) => void;
-  isItemSelected: boolean;
+  updateRoles: (id: number, values: any) => void;
+
   labelId: string;
 }
-export const DesigRow: FC<RowProps> = (props) => {
-  const { row, handleSelectOne, updateDesig, isItemSelected, labelId } = props;
+export const RolesRow: FC<RowProps> = (props) => {
+  const { row, updateRoles, labelId } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const formik = useFormik({
     initialValues: {
-      title: row?.title,
+      role: row?.role,
     },
     onSubmit: (values) => {
-      updateDesig(row.id, values);
+      updateRoles(row.id, values);
       setOpen(false);
     },
   });
   useEffect(() => {
     if (row) {
       formik.setValues({
-        title: row?.title,
+        role: row?.role,
       });
     }
   }, [row]);
@@ -41,19 +42,6 @@ export const DesigRow: FC<RowProps> = (props) => {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            sx={{
-              color: theme.palette.info.main,
-            }}
-            onClick={() => handleSelectOne(row.id)}
-            checked={isItemSelected}
-            inputProps={{
-              "aria-labelledby": labelId,
-            }}
-          />
-        </TableCell>
         <TableCell
           scope="row"
           onClick={() => setOpen(!open)}
@@ -61,7 +49,12 @@ export const DesigRow: FC<RowProps> = (props) => {
             color: "black",
           }}
         >
-          {row.title}
+          {row.role}
+        </TableCell>
+        <TableCell scope="row" sx={{}}>
+          <NextLink href={`/roles/${row.id}`} passHref>
+            <Button startIcon={<WidgetsIcon />}>Permissions</Button>
+          </NextLink>
         </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>
@@ -82,14 +75,14 @@ export const DesigRow: FC<RowProps> = (props) => {
               <form onSubmit={formik.handleSubmit}>
                 <TextField
                   size="small"
-                  error={Boolean(formik.touched.title && formik.errors.title)}
-                  label="title"
+                  error={Boolean(formik.touched.role && formik.errors.role)}
+                  label="role"
                   margin="normal"
-                  id="title"
-                  name="title"
+                  id="role"
+                  name="role"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.title}
+                  value={formik.values.role}
                   sx={{ mr: 1 }}
                 />
                 <LoadingButton
