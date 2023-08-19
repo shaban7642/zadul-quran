@@ -14,18 +14,36 @@ import {
   Typography,
 } from "@mui/material";
 import { ChangeEvent, MouseEvent, FormEvent, useState, FC } from "react";
+import { desigApi } from "../../api/rolesApi";
+import toast from "react-hot-toast";
 
-interface CreateDeptProps {
-  createDept: (values: any) => Promise<{ success: boolean }>;
-}
-const CreateDept: FC<CreateDeptProps> = (props) => {
-  const { createDept } = props;
+const CreateSettings = () => {
   const [formValues, setFormValues] = useState("");
+  const createSettings = async (values: any): Promise<{ success: boolean }> => {
+    const load = toast.loading("createSettings");
+    try {
+      const resp = await desigApi.createSettings(values);
+      if (resp.success) {
+        toast.dismiss(load);
+        toast.success("createSettingsSuccess");
 
+        getSettings();
+
+        return { success: true };
+      } else {
+        toast.dismiss(load);
+        toast.error("createSettingsFailed");
+        return { success: false };
+      }
+    } catch (err: any) {
+      toast.dismiss(load);
+      toast.error(err.message || "createSettingsFailed");
+      return { success: false };
+    }
+  };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formValues);
-    const { success } = await createDept(formValues);
+    const { success } = await createSettings(formValues);
     if (success) {
       setFormValues("");
     }
@@ -60,7 +78,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
         }}
       >
         <Typography color="inherit" variant="h6">
-          Add Departments
+          Add Settings
         </Typography>
       </Box>
       <Box sx={{ margin: 1 }}>
@@ -75,13 +93,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
         >
           <Table>
             <TableBody>
-              <TableRow
-                sx={{
-                  p: 0,
-                  height: "70px",
-                }}
-              >
-                {" "}
+              <TableRow>
                 <Grid container alignItems="center">
                   <Grid item lg={10}>
                     {" "}
@@ -94,11 +106,11 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
                     >
                       <TextField
                         size="small"
-                        label="Department"
+                        label="Settings"
                         margin="normal"
                         name="department"
                         type="text"
-                        onChange={(e) => setFormValues(e.target.value)}
+                        onChange={(e) => setFormValues(e.value)}
                         sx={{ mr: 1, width: "100%" }}
                       />
                     </TableCell>
@@ -135,4 +147,4 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
   );
 };
 
-export default CreateDept;
+export default CreateSettings;

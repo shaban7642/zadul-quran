@@ -10,6 +10,8 @@ import {
   InputLabel,
   OutlinedInput,
   MenuItem,
+  Divider,
+  Chip,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
@@ -21,9 +23,8 @@ import { VisibilityOff } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
 import Select from "@material-ui/core/Select";
-import { CssBaseline } from "@material-ui/core";
 
-const options = ["Male", "Female"];
+const genders = ["male", "female"];
 const CreateStudent = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
@@ -32,7 +33,7 @@ const CreateStudent = () => {
     const load = toast.loading("create");
     try {
       const resp = await userApi.createUser(values);
-      if (resp.success) {
+      if (resp) {
         toast.dismiss(load);
         toast.success("createStudentSuccess");
         return { success: true };
@@ -50,15 +51,17 @@ const CreateStudent = () => {
 
   const formik = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
+      roleId: 4,
+      username: "abdo",
+      firstName: "abdo",
+      lastName: "abbas",
+      city: "giza",
       birthDate: "",
-      email: "",
-      phoneNumber: "",
-      city: "",
-      gender: options[0],
-      password: "",
-      confirmPassword: "",
+      email: "A.ai@gmail.com",
+      phoneNumber: "023245345345",
+      gender: genders[0],
+      password: "Abdo@001",
+      confirmPassword: "Abdo@001",
       gName: "",
       relation: "",
       gEmail: "",
@@ -67,8 +70,9 @@ const CreateStudent = () => {
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      first_name: yup.string().max(255).required("nameIsRequired"),
-      last_name: yup.string().max(255).required("nameIsRequired"),
+      firstName: yup.string().max(255).required("nameIsRequired"),
+      lastName: yup.string().max(255).required("nameIsRequired"),
+      username: yup.string().max(255).required("usernameIsRequired"),
       birthDate: yup.date().required(),
       email: yup
         .string()
@@ -120,10 +124,10 @@ const CreateStudent = () => {
   };
   return (
     <Box sx={{ margin: 1 }}>
-      <Typography variant="h6" gutterBottom component="div" sx={{ margin: 0 }}>
-        Student Details
-      </Typography>
       <form onSubmit={formik.handleSubmit}>
+        <Divider textAlign="left" sx={{ m: 1 }}>
+          <Chip label="Student Details" sx={{ fontWeight: "600" }} />
+        </Divider>
         <TextField
           size="small"
           sx={{
@@ -133,16 +137,16 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.first_name && formik.errors.first_name)}
+          error={Boolean(formik.touched.firstName && formik.errors.firstName)}
           // @ts-ignore
-          helperText={formik.touched.first_name && formik.errors.first_name}
-          label="first_name"
+          helperText={formik.touched.firstName && formik.errors.firstName}
+          label="firstName"
           margin="normal"
-          id="first_name"
-          name="first_name"
+          id="firstName"
+          name="firstName"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.first_name}
+          value={formik.values.firstName}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
@@ -158,16 +162,16 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
-          error={Boolean(formik.touched.last_name && formik.errors.last_name)}
+          error={Boolean(formik.touched.lastName && formik.errors.lastName)}
           // @ts-ignore
-          helperText={formik.touched.last_name && formik.errors.last_name}
-          label="last_name"
+          helperText={formik.touched.lastName && formik.errors.lastName}
+          label="lastName"
           margin="normal"
-          id="last_name"
-          name="last_name"
+          id="lastName"
+          name="lastName"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.last_name}
+          value={formik.values.lastName}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
@@ -198,31 +202,7 @@ const CreateStudent = () => {
             shrink: true,
           }}
         />
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.email && formik.errors.email)}
-          // @ts-ignore
-          helperText={formik.touched.email && formik.errors.email}
-          label="email"
-          margin="normal"
-          id="email"
-          name="email"
-          type="email"
-          onChange={formik.handleChange}
-          value={formik.values.email}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
+
         <TextField
           size="small"
           sx={{
@@ -270,9 +250,9 @@ const CreateStudent = () => {
             value={formik.values.gender}
             onChange={formik.handleChange}
           >
-            {options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+            {genders.map((gender) => (
+              <MenuItem key={gender} value={gender}>
+                {gender}
               </MenuItem>
             ))}
           </Select>
@@ -296,6 +276,60 @@ const CreateStudent = () => {
           type="text"
           onChange={formik.handleChange}
           value={formik.values.city}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <Divider textAlign="left" sx={{ m: 1 }}>
+          <Chip label="Login Details" sx={{ fontWeight: "600" }} />
+        </Divider>
+        {/* username */}
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.username && formik.errors.username)}
+          // @ts-ignore
+          helperText={formik.touched.username && formik.errors.username}
+          label="username"
+          margin="normal"
+          id="username"
+          name="username"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.username}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 150, sm: 175, md: 200, lg: 225, xl: 250 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.email && formik.errors.email)}
+          // @ts-ignore
+          helperText={formik.touched.email && formik.errors.email}
+          label="email"
+          margin="normal"
+          id="email"
+          name="email"
+          type="email"
+          onChange={formik.handleChange}
+          value={formik.values.email}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
@@ -378,15 +412,10 @@ const CreateStudent = () => {
             },
           }}
         />
-        <CssBaseline />
-        <Typography
-          variant="h6"
-          gutterBottom
-          component="div"
-          sx={{ margin: 0 }}
-        >
-          Guardian Details
-        </Typography>
+        <Divider textAlign="left" sx={{ m: 1 }}>
+          <Chip label="Guardian Details" sx={{ fontWeight: "600" }} />
+        </Divider>
+
         <TextField
           size="small"
           sx={{
@@ -488,15 +517,15 @@ const CreateStudent = () => {
             },
           }}
         />
+        <Divider sx={{ m: 1 }}></Divider>
         <LoadingButton
           type="submit"
           sx={{
-            width: "90%",
+            width: "100%",
             "& .MuiInputBase-root": {
               height: 40,
             },
             m: 0.5,
-            mt: 2,
           }}
           variant="contained"
         >

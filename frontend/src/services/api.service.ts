@@ -189,7 +189,7 @@ class ApiService implements ApiServiceProps {
     return this.request(url, parsedOptions);
   }
 
-  public async delete(endpoint: string, data: Data, options?: Settings) {
+  public async delete(endpoint: string, data?: Data, options?: Settings) {
     const url = this.parseEndpoint(endpoint);
     const parsedOptions = this.parseOptions({
       method: "delete",

@@ -99,26 +99,7 @@ export const DashboardSidebarSection: FC<DashboardSidebarSectionProps> = (
   const { items, path, title, ...other } = props;
 
   return (
-    <List
-      subheader={
-        <ListSubheader
-          disableGutters
-          disableSticky
-          sx={{
-            color: "neutral.100",
-            fontSize: "1rem",
-            fontWeight: 700,
-            lineHeight: 2.5,
-            letterSpacing: 1,
-            ml: 4,
-            textTransform: "uppercase",
-          }}
-        >
-          {title}
-        </ListSubheader>
-      }
-      {...other}
-    >
+    <List {...other}>
       {renderNavItems({
         items,
         path,

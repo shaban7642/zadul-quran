@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Profile } from "../../components/users/users-profile";
+
 import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 
 const User: NextPage = () => {
@@ -9,7 +9,7 @@ const User: NextPage = () => {
 
   return (
     <DashboardLayout>
-      <Profile id={id} />
+      <h1>{id}</h1>
     </DashboardLayout>
   );
 };

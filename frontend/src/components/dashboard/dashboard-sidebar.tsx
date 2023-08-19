@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useMemo } from "react";
-import { Box, Drawer, Theme, useMediaQuery } from "@mui/material";
-
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
+import { Box, IconButton, Theme, useMediaQuery } from "@mui/material";
+import * as React from "react";
+import { styled, useTheme, CSSObject } from "@mui/material/styles";
+import MuiDrawer from "@mui/material/Drawer";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import { DashboardSidebarSection } from "./dashboard-sidebar-section";
@@ -13,10 +13,10 @@ import { UsersIcon } from "../../icons/users";
 import { FoodMenuIcon } from "../../icons/food-menu";
 import { ShiftsIcon } from "../../icons/shifts";
 import { BillsIcon } from "../../icons/bills";
-
 import { giveAccess } from "../../utils/component-guard";
 import { useAuth } from "../../hooks/use-auth";
 import { get } from "lodash";
+import { Settings } from "@mui/icons-material";
 
 interface DashboardSidebarProps {
   onClose?: () => void;
@@ -38,6 +38,55 @@ interface Section {
   items: Item[];
   accessed: boolean;
 }
+export const drawerWidth = 200;
+
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.easeIn,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: "hidden",
+  height: "90%",
+  top: "9%",
+  border: "10px",
+  borderRadius: "20px",
+});
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  top: "9%",
+  border: "10px",
+  borderRadius: "20px",
+  height: "90%",
+  overflowX: "hidden",
+  width: "50px",
+});
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  zIndex: 1,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+  "&:hover": {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
+  },
+}));
 
 export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
   const { onClose, open } = props;
@@ -46,8 +95,6 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
   // const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"), {
   //   noSsr: true,
   // });
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(anchorEl);
 
   // const isSubscriped = get(user, "store.is_subscribed", false);
 
@@ -70,8 +117,8 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           accessed: true,
         },
         {
-          title: "sidebar.dashboard.bills",
-          path: "/bills",
+          title: "Live Classes",
+          path: "/liveClasses",
           icon: <BillsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
@@ -80,24 +127,24 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       accessed: true,
     },
     {
-      title: user && user.role === "owner" ? "sidebar.dashboard.managment" : "",
+      title: user && user.role === "owner" ? "managment" : "",
       items: [
         {
-          title: "sidebar.dashboard.users",
-          path: "/users",
-          icon: <UsersIcon fontSize="small" />,
+          title: "roles",
+          path: "/roles",
+          icon: <Settings fontSize="small" sx={{ color: "#FFFCF2" }} />,
           disabled: false,
           accessed: true, //giveAccess(["owner"])
         },
         {
-          title: "sidebar.dashboard.menu",
+          title: "menu",
           path: "/menu",
           icon: <FoodMenuIcon fontSize="small" />,
           disabled: false,
           accessed: true,
         },
         {
-          title: "sidebar.dashboard.shifts",
+          title: "shifts",
           path: "/shifts",
           icon: <ShiftsIcon fontSize="small" />,
           disabled: false,
@@ -142,7 +189,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           px: 2.5,
         }}
       >
-        <Box sx={{ mt: 1 }}>
+        {/* <Box sx={{ mt: 1 }}>
           <NextLink href="/" passHref>
             <a>
               <Box
@@ -153,12 +200,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
               />
             </a>
           </NextLink>
-        </Box>
-
-        <ArrowBackIosNewIcon
-          onClick={() => onClose()}
-          sx={{ color: "black", cursor: "pointer" }}
-        />
+        </Box> */}
       </Box>
       <Box sx={{ flexGrow: 1 }}>
         {sections.map((section) => (
@@ -213,11 +255,9 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
         sx: {
           backgroundColor: "neutral.700",
           color: "neutral.100",
-          width: 250,
         },
       }}
-      sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
-      variant="temporary"
+      variant="permanent"
     >
       {content}
     </Drawer>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
 import {
@@ -11,6 +11,8 @@ import {
   OutlinedInput,
   Select,
   MenuItem,
+  Divider,
+  Chip,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
@@ -22,16 +24,48 @@ import { userApi } from "../../api/userApi";
 import { VisibilityOff } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
+import { rolesApi } from "../../api/rolesApi";
+import { useMounted } from "../../hooks/use-mounted";
+import { deptApi } from "../../api/deptApi";
 
-const roleIds = ["Admin", "Teacher", "Accountant"];
-const genders = ["Male", "Female"];
-const departments = ["Admin", "Teacher", "Accountant"];
-const designations = ["Admin", "Teacher", "Accountant"];
+const genders = ["male", "female"];
 
 const CreateUser = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+  const [depts, setDepts] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const isMounted = useMounted();
+  const getRoles = useCallback(
+    async () => {
+      try {
+        const data: any = await rolesApi.getRoles();
 
+        if (isMounted()) {
+          setRoles(data.resp);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isMounted]
+  );
+  const getDepts = useCallback(
+    async () => {
+      try {
+        const data: any = await deptApi.getDepts();
+
+        if (isMounted()) {
+          setDepts(data.rows);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isMounted]
+  );
   const createUser = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("create");
     try {
@@ -51,23 +85,25 @@ const CreateUser = () => {
       return { success: false };
     }
   };
-
+  useEffect(() => {
+    getRoles();
+    getDepts();
+  }, []);
   const formik = useFormik({
     initialValues: {
-      roleId: roleIds[0],
-      join_date: "",
-      username: "",
-      firstName: "",
-      lastName: "",
-      city: "",
+      roleId: roles[0]?.id,
+      join_date: "2/3/2012",
+      username: "abdo",
+      firstName: "abdo",
+      lastName: "abbas",
+      city: "giza",
       gender: genders[0],
-      birthDate: "",
-      designation: designations[0],
-      department: departments[0],
-      email: "",
-      phoneNumber: "",
-      password: "",
-      confirmPassword: "",
+      birthDate: "2/3/2012",
+      department: depts[0],
+      email: "abdo.abd@gmail.com",
+      phoneNumber: "011212324545",
+      password: "Abdo@001",
+      confirmPassword: "Abdo@001",
     },
     enableReinitialize: true,
     validationSchema: yup.object({
@@ -79,7 +115,6 @@ const CreateUser = () => {
       city: yup.string().max(255).required("cityIsRequired"),
       gender: yup.string().required(),
       birthDate: yup.date().required(),
-      designation: yup.string().required(),
       depatment: yup.string().required(),
       email: yup
         .string()
@@ -130,11 +165,11 @@ const CreateUser = () => {
   };
   const theme = useTheme();
   return (
-    <Box sx={{ margin: 1 }}>
-      <Typography variant="h6" gutterBottom component="div" sx={{ margin: 0 }}>
-        Add
-      </Typography>
+    <Box sx={{ margin: 1, scrollBehavior: "auto" }}>
       <form onSubmit={formik.handleSubmit}>
+        <Divider textAlign="left" sx={{ mb: 1 }}>
+          <Chip label="Academic Details" sx={{ fontWeight: "600" }} />
+        </Divider>
         <FormControl
           sx={{
             width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
@@ -165,13 +200,13 @@ const CreateUser = () => {
             value={formik.values.roleId}
             onChange={formik.handleChange}
           >
-            {roleIds.map((roleId) => (
+            {roles.map((roleId) => (
               <MenuItem
-                key={roleId}
-                value={roleId}
+                key={roleId?.id}
+                value={roleId?.id}
                 sx={{ backgroundColor: theme.palette.background.default }}
               >
-                {roleId}
+                {roleId?.displayName}
               </MenuItem>
             ))}
           </Select>
@@ -199,31 +234,37 @@ const CreateUser = () => {
             shrink: true,
           }}
         />
-        <TextField
-          size="small"
+        <FormControl
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
             "& .MuiInputBase-root": {
               height: 40,
             },
             mr: 1,
+            marginTop: 2,
           }}
-          error={Boolean(formik.touched.username && formik.errors.username)}
-          // @ts-ignore
-          helperText={formik.touched.username && formik.errors.username}
-          label="username"
-          margin="normal"
-          id="username"
-          name="username"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.username}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
+          variant="outlined"
+        >
+          {" "}
+          <InputLabel id="outlined-adornment-department">Department</InputLabel>
+          <Select
+            name="department"
+            id="outlined-adornment-department"
+            labelId="outlined-adornment-department"
+            value={formik.values.department}
+            onChange={formik.handleChange}
+          >
+            {depts.map((department) => (
+              <MenuItem key={department?.id} value={department?.name}>
+                {department?.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Divider textAlign="left" sx={{ m: 1 }}>
+          <Chip label="Employee Details" sx={{ fontWeight: "600" }} />
+        </Divider>
+        {/* firstname */}
         <TextField
           size="small"
           sx={{
@@ -236,7 +277,7 @@ const CreateUser = () => {
           error={Boolean(formik.touched.firstName && formik.errors.firstName)}
           // @ts-ignore
           helperText={formik.touched.firstName && formik.errors.firstName}
-          label="firstName"
+          label="First Name"
           margin="normal"
           id="firstName"
           name="firstName"
@@ -249,6 +290,7 @@ const CreateUser = () => {
             },
           }}
         />
+        {/* lastname */}
         <TextField
           size="small"
           sx={{
@@ -261,7 +303,7 @@ const CreateUser = () => {
           error={Boolean(formik.touched.lastName && formik.errors.lastName)}
           // @ts-ignore
           helperText={formik.touched.lastName && formik.errors.lastName}
-          label="lastName"
+          label="Last Name"
           margin="normal"
           id="lastName"
           name="lastName"
@@ -351,87 +393,6 @@ const CreateUser = () => {
             shrink: true,
           }}
         />
-        <FormControl
-          sx={{
-            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-            marginTop: 2,
-          }}
-          variant="outlined"
-        >
-          {" "}
-          <InputLabel id="outlined-adornment-department">Department</InputLabel>
-          <Select
-            name="department"
-            id="outlined-adornment-department"
-            labelId="outlined-adornment-department"
-            value={formik.values.department}
-            onChange={formik.handleChange}
-          >
-            {departments.map((department) => (
-              <MenuItem key={department} value={department}>
-                {department}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-            marginTop: 2,
-          }}
-          variant="outlined"
-        >
-          {" "}
-          <InputLabel id="outlined-adornment-designation">
-            Designation
-          </InputLabel>
-          <Select
-            name="designation"
-            id="outlined-adornment-designation"
-            labelId="outlined-adornment-designation"
-            value={formik.values.designation}
-            onChange={formik.handleChange}
-          >
-            {designations.map((designation) => (
-              <MenuItem key={designation} value={designation}>
-                {designation}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.email && formik.errors.email)}
-          // @ts-ignore
-          helperText={formik.touched.email && formik.errors.email}
-          label="email"
-          margin="normal"
-          id="email"
-          name="email"
-          type="email"
-          onChange={formik.handleChange}
-          value={formik.values.email}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
         <TextField
           size="small"
           sx={{
@@ -453,6 +414,60 @@ const CreateUser = () => {
           type="text"
           onChange={formik.handleChange}
           value={formik.values.phoneNumber}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <Divider textAlign="left" sx={{ m: 1 }}>
+          <Chip label="Login Details" sx={{ fontWeight: "600" }} />
+        </Divider>
+        {/* username */}
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.username && formik.errors.username)}
+          // @ts-ignore
+          helperText={formik.touched.username && formik.errors.username}
+          label="username"
+          margin="normal"
+          id="username"
+          name="username"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.username}
+          InputProps={{
+            style: {
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: 150, sm: 175, md: 200, lg: 225, xl: 250 },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.email && formik.errors.email)}
+          // @ts-ignore
+          helperText={formik.touched.email && formik.errors.email}
+          label="email"
+          margin="normal"
+          id="email"
+          name="email"
+          type="email"
+          onChange={formik.handleChange}
+          value={formik.values.email}
           InputProps={{
             style: {
               fontFamily: "sans-serif",
@@ -535,15 +550,15 @@ const CreateUser = () => {
             },
           }}
         />
+        <Divider sx={{ m: 1 }}></Divider>
         <LoadingButton
           type="submit"
           sx={{
-            width: { xs: 15, sm: 20, md: 30, lg: 40, xl: 50 },
+            width: "100%",
             "& .MuiInputBase-root": {
               height: 40,
             },
             m: 0.5,
-            mt: 2,
           }}
           variant="contained"
         >

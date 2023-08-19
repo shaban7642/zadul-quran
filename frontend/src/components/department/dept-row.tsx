@@ -13,17 +13,15 @@ import LoadingButton from "@mui/lab/LoadingButton";
 interface RowProps {
   row: any;
   updateDept: (id: number, values: any) => void;
-  handleSelectOne: (name: number) => void;
-  isItemSelected: boolean;
   labelId: string;
 }
 export const DeptRow: FC<RowProps> = (props) => {
-  const { row, handleSelectOne, updateDept, isItemSelected, labelId } = props;
+  const { row, updateDept, labelId } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const formik = useFormik({
     initialValues: {
-      title: row?.title,
+      name: row?.name,
     },
     onSubmit: (values) => {
       updateDept(row.id, values);
@@ -33,7 +31,7 @@ export const DeptRow: FC<RowProps> = (props) => {
   useEffect(() => {
     if (row) {
       formik.setValues({
-        title: row?.title,
+        name: row?.name,
       });
     }
   }, [row]);
@@ -41,19 +39,6 @@ export const DeptRow: FC<RowProps> = (props) => {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            sx={{
-              color: theme.palette.info.main,
-            }}
-            onClick={() => handleSelectOne(row.id)}
-            checked={isItemSelected}
-            inputProps={{
-              "aria-labelledby": labelId,
-            }}
-          />
-        </TableCell>
         <TableCell
           scope="row"
           onClick={() => setOpen(!open)}
@@ -61,7 +46,7 @@ export const DeptRow: FC<RowProps> = (props) => {
             color: "black",
           }}
         >
-          {row.title}
+          {row.name}
         </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>
@@ -82,14 +67,14 @@ export const DeptRow: FC<RowProps> = (props) => {
               <form onSubmit={formik.handleSubmit}>
                 <TextField
                   size="small"
-                  error={Boolean(formik.touched.title && formik.errors.title)}
-                  label="title"
+                  error={Boolean(formik.touched.name && formik.errors.name)}
+                  label="name"
                   margin="normal"
-                  id="title"
-                  name="title"
+                  id="name"
+                  name="name"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.title}
+                  value={formik.values.name}
                   sx={{ mr: 1 }}
                 />
                 <LoadingButton

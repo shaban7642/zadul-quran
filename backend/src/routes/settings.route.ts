@@ -51,7 +51,7 @@ class SettingsRoute implements Route {
     this.router.post(
       `${this.path}/remove/permission`,
       authMiddleware,
-      accessControlMiddleware([Permissions.settings.CREATE]),
+      accessControlMiddleware([Permissions.settings.DELETE]),
       this.settingsController.removeRolePermissions
     );
   }

@@ -1,36 +1,45 @@
 import { apiService } from "../services/api.service";
 
-class UserApi {
-  async getUsers(limit: number, page: number) {
+class RolesApi {
+  async getRoles() {
     return new Promise((resolve, reject) => {
       try {
-        const users = apiService.get("/user/", {
-          limit,
-          page: ++page,
+        const roles = apiService.get("/settings/all/roles");
+        resolve(roles);
+      } catch (err) {
+        reject(new Error("Internal server error"));
+      }
+    });
+  }
+
+  async getAllPermissions() {
+    return new Promise((resolve, reject) => {
+      try {
+        const menus = apiService.get("/settings/all/permissions");
+        resolve(menus);
+      } catch (err) {
+        reject(new Error("Internal server error"));
+      }
+    });
+  }
+  async getRolePermissions() {
+    return new Promise((resolve, reject) => {
+      try {
+        const menus = apiService.get("/settings/all/rolePermissions");
+        resolve(menus);
+      } catch (err) {
+        reject(new Error("Internal server error"));
+      }
+    });
+  }
+
+  async addPermission(ids: number[], roleId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        const resp = apiService.post(`/settings/add/permission/`, {
+          permissionIds: ids,
+          roleId,
         });
-
-        resolve(users);
-      } catch (err) {
-        reject(new Error("Internal server error"));
-      }
-    });
-  }
-
-  async getUserById(id: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        const user = apiService.get(`/user/${id}`);
-        resolve(user);
-      } catch (err) {
-        reject(new Error("Internal server error"));
-      }
-    });
-  }
-
-  async deleteUser(id: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        const resp = apiService.delete(`/user/${id}`);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -38,21 +47,12 @@ class UserApi {
     });
   }
 
-  async createUser(userData: any): Promise<any> {
+  async deletePermission(ids?: number[]): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post("/user/create/", userData);
-        resolve(resp);
-      } catch (err) {
-        reject(new Error("Internal server error"));
-      }
-    });
-  }
-
-  async updateUser(id: number, userData: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        const resp = apiService.put(`/user/${id}`, userData);
+        const resp = apiService.post("/settings/remove/permission", {
+          rolePermissionsIds: ids,
+        });
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));
@@ -61,4 +61,4 @@ class UserApi {
   }
 }
 
-export const userApi = new UserApi();
+export const rolesApi = new RolesApi();
