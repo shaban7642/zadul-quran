@@ -1,27 +1,16 @@
-import {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
-import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
-import { Grid, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import { Collapse } from "@mui/material";
+import { Toolbar, Typography } from "@mui/material";
 import { RolesRow } from "./roles-row";
 import { RolesHeads } from "./roles-heads";
-import { Delete } from "@mui/icons-material";
-import CreateRoles from "./roles-create";
 import toast from "react-hot-toast";
 import { rolesApi } from "../../api/rolesApi";
 import { useMounted } from "../../hooks/use-mounted";
-
 export interface Roles {
   id: number;
   role: string;
@@ -36,14 +25,7 @@ export interface HeadCell {
 }
 
 export const RolesTable = () => {
-  const [page, setPage] = useState(0);
-  const [roles, setRoles] = useState([
-    { id: 234, role: "Marketing" },
-    { id: 678, role: "Sales" },
-    { id: 987, role: "IT" },
-  ]);
-  const [roleCount, setRolesCount] = useState(roles.length);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [roles, setRoles] = useState<Roles[]>();
 
   const isMounted = useMounted();
   useEffect(
@@ -57,39 +39,12 @@ export const RolesTable = () => {
     try {
       const data: any = await rolesApi.getRoles();
       if (isMounted()) {
-        setRoles(data.data);
+        setRoles(data.resp);
       }
     } catch (err: any) {
       toast.error(err.message || "failed");
     }
   }, [isMounted]);
-
-  const updateRoles = async (
-    id: number,
-    values: any
-  ): Promise<{ success: boolean }> => {
-    const load = toast.loading("updateRoles");
-    try {
-      const resp = await rolesApi.updateRoles(id, values);
-
-      if (resp.success) {
-        toast.dismiss(load);
-        toast.success("updateRolesSuccess");
-
-        getRoles();
-
-        return { success: true };
-      } else {
-        toast.dismiss(load);
-        toast.error("updateRolesFailed");
-        return { success: false };
-      }
-    } catch (err: any) {
-      toast.dismiss(load);
-      toast.error(err.message || "updateRolesFailed");
-      return { success: false };
-    }
-  };
 
   const headCells: readonly HeadCell[] = [
     {
@@ -105,18 +60,6 @@ export const RolesTable = () => {
       label: "Action",
     },
   ];
-  useEffect(() => {
-    setRolesCount(roles.length);
-  }, [roles.length]);
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
@@ -159,31 +102,15 @@ export const RolesTable = () => {
             aria-labelledby="tableTitle"
             size="small"
           >
-            <RolesHeads headCells={headCells} rowCount={roleCount} />
+            <RolesHeads headCells={headCells} />
             <TableBody>
-              {roles.map((row, index) => {
+              {roles?.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
-                return (
-                  <RolesRow
-                    key={row.id}
-                    row={row}
-                    labelId={labelId}
-                    updateRoles={updateRoles}
-                  />
-                );
+                return <RolesRow key={row.id} row={row} labelId={labelId} />;
               })}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={roleCount}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
     </Box>
   );

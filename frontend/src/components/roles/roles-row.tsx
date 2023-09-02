@@ -14,30 +14,11 @@ import WidgetsIcon from "@mui/icons-material/Widgets";
 
 interface RowProps {
   row: any;
-  updateRoles: (id: number, values: any) => void;
-
   labelId: string;
 }
 export const RolesRow: FC<RowProps> = (props) => {
-  const { row, updateRoles, labelId } = props;
+  const { row, labelId } = props;
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
-  const formik = useFormik({
-    initialValues: {
-      role: row?.role,
-    },
-    onSubmit: (values) => {
-      updateRoles(row.id, values);
-      setOpen(false);
-    },
-  });
-  useEffect(() => {
-    if (row) {
-      formik.setValues({
-        role: row?.role,
-      });
-    }
-  }, [row]);
 
   return (
     <Fragment>
@@ -49,10 +30,13 @@ export const RolesRow: FC<RowProps> = (props) => {
             color: "black",
           }}
         >
-          {row.role}
+          {row.displayName}
         </TableCell>
         <TableCell scope="row" sx={{}}>
-          <NextLink href={`/roles/${row.id}`} passHref>
+          <NextLink
+            href={`/roles/${row.id}?role=${row.displayName}&name=${row.name}`}
+            passHref
+          >
             <Button startIcon={<WidgetsIcon />}>Permissions</Button>
           </NextLink>
         </TableCell>
@@ -61,42 +45,7 @@ export const RolesRow: FC<RowProps> = (props) => {
         <TableCell
           style={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
           colSpan={4}
-        >
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                component="div"
-                sx={{ margin: 0 }}
-              >
-                edit
-              </Typography>
-              <form onSubmit={formik.handleSubmit}>
-                <TextField
-                  size="small"
-                  error={Boolean(formik.touched.role && formik.errors.role)}
-                  label="role"
-                  margin="normal"
-                  id="role"
-                  name="role"
-                  type="text"
-                  onChange={formik.handleChange}
-                  value={formik.values.role}
-                  sx={{ mr: 1 }}
-                />
-                <LoadingButton
-                  type="submit"
-                  size="medium"
-                  sx={{ m: 1, mt: 2 }}
-                  variant="contained"
-                >
-                  submit
-                </LoadingButton>
-              </form>
-            </Box>
-          </Collapse>
-        </TableCell>
+        ></TableCell>
       </TableRow>
     </Fragment>
   );

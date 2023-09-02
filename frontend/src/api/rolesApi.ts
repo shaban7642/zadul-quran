@@ -15,25 +15,27 @@ class RolesApi {
   async getAllPermissions() {
     return new Promise((resolve, reject) => {
       try {
-        const menus = apiService.get("/settings/all/permissions");
-        resolve(menus);
+        const permissions = apiService.get("/settings/all/permissions");
+        resolve(permissions);
       } catch (err) {
         reject(new Error("Internal server error"));
       }
     });
   }
-  async getRolePermissions() {
+  async getRolePermissions(name: string) {
     return new Promise((resolve, reject) => {
       try {
-        const menus = apiService.get("/settings/all/rolePermissions");
-        resolve(menus);
+        const permissions = apiService.get(
+          `/settings/all/rolePermissions/?roleId=${name}`
+        );
+        resolve(permissions);
       } catch (err) {
         reject(new Error("Internal server error"));
       }
     });
   }
 
-  async addPermission(ids: number[], roleId: number): Promise<any> {
+  async addPermissions(ids: number[], roleId: number): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         const resp = apiService.post(`/settings/add/permission/`, {
@@ -47,7 +49,7 @@ class RolesApi {
     });
   }
 
-  async deletePermission(ids?: number[]): Promise<any> {
+  async removePermissions(ids?: number[]): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         const resp = apiService.post("/settings/remove/permission", {

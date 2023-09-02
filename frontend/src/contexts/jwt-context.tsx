@@ -238,7 +238,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       });
 
       const returnUrl =
-        (router.query.returnUrl as string | undefined) || "/sessions";
+        (router.query.returnUrl as string | undefined) || "/employees";
       router.push(returnUrl).catch(console.error);
     }
   };

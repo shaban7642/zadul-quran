@@ -130,22 +130,22 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       title: user && user.role === "owner" ? "managment" : "",
       items: [
         {
-          title: "roles",
+          title: "Roles",
           path: "/roles",
           icon: <Settings fontSize="small" sx={{ color: "#FFFCF2" }} />,
           disabled: false,
           accessed: true, //giveAccess(["owner"])
         },
         {
-          title: "menu",
-          path: "/menu",
-          icon: <FoodMenuIcon fontSize="small" />,
+          title: "Reports",
+          path: "/reports",
+          icon: <BillsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
         },
         {
-          title: "shifts",
-          path: "/shifts",
+          title: "Documents",
+          path: "/documents",
           icon: <ShiftsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
