@@ -1,4 +1,6 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
+import User from './users.model';
+import Departments from './departments.model';
 
 class Patches extends Model {
   public id!: number;
@@ -15,6 +17,33 @@ class Patches extends Model {
           autoIncrement: true,
           primaryKey: true,
         },
+        teacherId: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: User,
+            key: 'id',
+          },
+        },
+        studentId: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: User,
+            key: 'id',
+          },
+        },
+        departmentId: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: Departments,
+            key: 'id',
+          },
+        },
+        fromDate: {
+          type: DataTypes.DATE,
+        },
+        toDate: {
+          type: DataTypes.DATE,
+        },
       },
       {
         sequelize,
@@ -24,7 +53,11 @@ class Patches extends Model {
     );
   }
 
-  public static initAssociation(): void {}
+  public static initAssociation(): void {
+    this.belongsTo(User, { as: 'student' });
+    this.belongsTo(User, { as: 'teacher' });
+    this.belongsTo(Departments);
+  }
 }
 
 export default Patches;

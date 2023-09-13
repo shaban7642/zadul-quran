@@ -9,6 +9,33 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+      teacherId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+      },
+      studentId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+      },
+      departmentId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'departments',
+          key: 'id',
+        },
+      },
+      fromDate: {
+        type: Sequelize.DATE,
+      },
+      toDate: {
+        type: Sequelize.DATE,
+      },
       createdAt: {
         type: Sequelize.DATE,
       },

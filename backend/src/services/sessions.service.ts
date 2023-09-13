@@ -18,24 +18,85 @@ class SessionsService {
   public userModel = UserModel;
 
   public async createMany({
-    userId,
-    dataToCreate,
+    studentId,
+    teacherId,
+    departmentId,
+    fromDate,
+    toDate,
+    dayOfWeek,
+    startTime,
+    endTime,
+    title,
+    sessionMethod,
   }: {
-    userId: number;
-    dataToCreate: [{ date: Date; startTime: Date; endTime: Date }];
-  }): Promise<Session[]> {
+    studentId: number;
+    teacherId: number;
+    departmentId: number;
+    fromDate: Date;
+    toDate: Date;
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+    title: string;
+    sessionMethod: string;
+  }): Promise<any> {
     try {
-      const patch = await this.patchesModel.create({});
-      const sessions: SessionsModel[] = await this.sessionsModel.bulkCreate([
-        {
-          patchId: patch.id,
-          userId,
-          meetingId: `${Math.random()}`.substring(2, 8),
-          ...dataToCreate,
-        },
-      ]);
-      return sessions.map((s) => s.toJSON() as Session);
+      const patch = await this.patchesModel.create({
+        studentId,
+        teacherId,
+        departmentId,
+        fromDate,
+        toDate,
+      });
+      const start = new Date(fromDate);
+      const end = new Date(toDate);
+      const targetIndex = dayOfWeek;
+      const daysToAdd = (targetIndex - start.getDay() + 7) % 7;
+
+      console.log({ start, end, targetIndex, daysToAdd });
+      const result = [];
+      const currentDate = new Date(start);
+      currentDate.setDate(start.getDate() + daysToAdd);
+
+      while (currentDate <= end) {
+        if (currentDate >= start) {
+          result.push(new Date(currentDate).toString());
+        }
+        currentDate.setDate(currentDate.getDate() + 7);
+      }
+
+      console.log({
+        patchId: patch.id,
+        meetingId: `${Math.random()}`.substring(2, 8),
+        // date: res,
+        startTime,
+        endTime,
+        title,
+      });
+
+      let sessions;
+      for (const res of result) {
+        sessions = await this.sessionsModel.create(
+          {
+            title,
+            sessionMethod,
+            patchId: patch.id,
+            meetingId: `${Math.random()}`.substring(2, 8),
+            date: res,
+            startTime,
+            endTime,
+          },
+          {
+            returning: false,
+          }
+        );
+      }
+
+      console.log({ sessions });
+
+      return { success: true };
     } catch (err) {
+      console.log(err);
       logger.log({
         level: 'error',
         label: 'Sessions Service - createMany',

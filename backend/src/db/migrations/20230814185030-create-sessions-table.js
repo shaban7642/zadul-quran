@@ -16,19 +16,8 @@ module.exports = {
           key: 'id',
         },
       },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id',
-        },
-      },
-      departmentId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'departments',
-          key: 'id',
-        },
+      title: {
+        type: Sequelize.STRING,
       },
       sessionMethod: {
         type: Sequelize.STRING,
@@ -47,7 +36,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values: ['waiting', 'expired', 'done', 'cancelled'],
+        values: ['waiting', 'expired', 'running', 'done', 'cancelled'],
         defaultValue: 'waiting',
       },
       createdAt: {

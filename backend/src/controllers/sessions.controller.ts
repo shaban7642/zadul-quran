@@ -11,6 +11,22 @@ import UserModel from '../db/models/users.model';
 import { SessionsService } from '../services';
 import { RequestWithIdentity } from '../types/auth.type';
 import { getPagination, getOrderOptions } from '../utils/sequelize';
+import Patches from '../db/models/patches.model';
+import Departments from '../db/models/departments.model';
+
+const attributes = [
+  'id',
+  'title',
+  'patchId',
+  'sessionMethod',
+  'meetingId',
+  'date',
+  'startTime',
+  'endTime',
+  'status',
+  'createdAt',
+  'updatedAt',
+];
 
 @injectable()
 class SessionsController {
@@ -35,6 +51,17 @@ class SessionsController {
       const { offset, limit, sortDir, sortBy } = req.query;
 
       const query: FindOptions = {
+        attributes,
+        include: [
+          {
+            model: Patches,
+            include: [
+              { model: UserModel, as: 'student' },
+              { model: UserModel, as: 'teacher' },
+              { model: Departments },
+            ],
+          },
+        ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
           { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'asc' },
@@ -54,11 +81,30 @@ class SessionsController {
     next: NextFunction
   ) => {
     try {
-      const { userId } = req;
+      const {
+        studentId,
+        teacherId,
+        departmentId,
+        fromDate,
+        toDate,
+        dayOfWeek,
+        startTime,
+        endTime,
+        title,
+        sessionMethod,
+      } = req.body;
 
       const resp = await this.sessionsService.createMany({
-        userId,
-        dataToCreate: req.body,
+        studentId,
+        teacherId,
+        departmentId,
+        fromDate,
+        toDate,
+        dayOfWeek,
+        startTime,
+        endTime,
+        title,
+        sessionMethod,
       });
       return res.status(200).json(resp);
     } catch (error) {
