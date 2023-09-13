@@ -62,7 +62,7 @@ class SettingsController {
         ...getOrderOptions([
           { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'asc' },
         ]),
-        group: ['roleId'],
+        // group: ['role.id', 'rolePermissions.id', 'permission.id'],
         raw: true,
       };
 
