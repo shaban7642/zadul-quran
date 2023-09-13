@@ -142,12 +142,6 @@ export const ReportsTable = () => {
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Grid container>
         <Grid item lg={5.8} md={5.8} sm={5.8} xs={12}>
-          <CreateReport createReport={createReport} />
-        </Grid>
-        <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
-          <Box></Box>
-        </Grid>
-        <Grid item lg={5.8} md={5.8} sm={5.8} xs={12}>
           <Paper
             elevation={9}
             sx={{
@@ -213,6 +207,12 @@ export const ReportsTable = () => {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
+        </Grid>
+        <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
+          <Box></Box>
+        </Grid>
+        <Grid item lg={5.8} md={5.8} sm={5.8} xs={12}>
+          <CreateReport createReport={createReport} />
         </Grid>
       </Grid>
     </Box>

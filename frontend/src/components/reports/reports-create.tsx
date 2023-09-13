@@ -25,24 +25,22 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         flexDirection: "column",
         p: "10px 10px",
         width: "100%",
-        ...(true && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.info.contrastText,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
       }}
     >
       <Box
         sx={{
+          p: 1,
           alignItems: "center",
-          backgroundColor: "primary.light",
-          color: "primary.contrastText",
-          display: "flex",
+          ...(true && {
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.info.contrastText,
+                theme.palette.action.activatedOpacity
+              ),
+          }),
+          color: "primary.dark",
+          display: "block",
           justifyContent: "space-between",
-          px: 3,
-          py: 2,
         }}
       >
         <Typography color="inherit" variant="h6">
@@ -52,25 +50,15 @@ const CreateReport: FC<CreateReportProps> = (props) => {
           value={formValues}
           onChange={(event) => setFormValues(event.target?.value)}
           style={{
-            width: "50vw",
-            height: "4vh",
-            resize: "none",
+            width: "95%",
+            height: "50vh",
             borderStyle: "solid",
-            borderColor: "black",
-            borderWidth: ".7em ",
-            borderRadius: ".8rem",
-            paddingLeft: ".5em",
+            borderColor: "#ffcccb",
+            borderWidth: "1px",
+            borderRadius: "5px",
             margin: ".5em .5em ",
             outlineColor: "#ffcccb",
-            outlineWidth: ".5em",
             overflowX: "hidden",
-            overflowY: "scroll",
-            backgroundSize: "cover",
-            boxShadow: `inset -1px -1px ${alpha(
-              "#fff",
-              0
-            )}, inset  1px   1px ${alpha("rgba(0, 0, 0,.2)", 0)}`,
-            fontSize: "xx-large",
             fontFamily: "cursive",
             fontWeight: "bold",
             textAlign: "justify",
@@ -79,6 +67,21 @@ const CreateReport: FC<CreateReportProps> = (props) => {
             whiteSpace: "pre-wrap",
           }}
         />
+        <div style={{ textAlign: "right" }}>
+          <LoadingButton
+            type="submit"
+            sx={{
+              "& .MuiInputBase-root": {
+                height: 40,
+              },
+              m: 0.5,
+              p: 1,
+            }}
+            variant="contained"
+          >
+            Save
+          </LoadingButton>
+        </div>
       </Box>
     </Paper>
   );

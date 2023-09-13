@@ -117,14 +117,21 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
                     width: "90%",
                   }}
                 >
-                  <LoadingButton
-                    type="submit"
-                    size="medium"
-                    sx={{ mt: 1 }}
-                    variant="contained"
-                  >
-                    submit
-                  </LoadingButton>
+                  <div style={{ textAlign: "right" }}>
+                    <LoadingButton
+                      type="submit"
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          height: 40,
+                        },
+                        m: 0.5,
+                        p: 1,
+                      }}
+                      variant="contained"
+                    >
+                      Save
+                    </LoadingButton>
+                  </div>
                 </TableCell>
               </TableRow>
             </TableBody>

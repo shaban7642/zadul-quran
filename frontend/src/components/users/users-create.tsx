@@ -172,11 +172,10 @@ const CreateUser = () => {
         </Divider>
         <FormControl
           sx={{
-            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
-
             mr: 1,
             marginTop: 2,
           }}
@@ -214,7 +213,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -236,7 +235,7 @@ const CreateUser = () => {
         />
         <FormControl
           sx={{
-            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -268,7 +267,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -294,7 +293,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -319,7 +318,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -344,7 +343,7 @@ const CreateUser = () => {
 
         <FormControl
           sx={{
-            width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -354,11 +353,11 @@ const CreateUser = () => {
           variant="outlined"
         >
           {" "}
-          <InputLabel id="outlined-adornment-gender">Gender</InputLabel>
+          <InputLabel id="outlined-gender">Gender</InputLabel>
           <Select
             name="gender"
-            id="outlined-adornment-gender"
-            labelId="outlined-adornment-gender"
+            id="outlined-gender"
+            labelId="outlined-gender"
             value={formik.values.gender}
             onChange={formik.handleChange}
           >
@@ -373,7 +372,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -396,7 +395,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "32%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -427,7 +426,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+            width: { xs: "100%", sm: "35%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -452,7 +451,7 @@ const CreateUser = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: 150, sm: 175, md: 200, lg: 225, xl: 250 },
+            width: { xs: "100%", sm: "45%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -476,7 +475,7 @@ const CreateUser = () => {
         />
         <FormControl
           sx={{
-            width: { xs: 200, sm: 250, md: 300, lg: 350, xl: 400 },
+            width: { xs: "100%", sm: "40%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -486,13 +485,13 @@ const CreateUser = () => {
           variant="outlined"
         >
           <InputLabel htmlFor="outlined-adornment-password">
-            password
+            Password
           </InputLabel>
           <OutlinedInput
             error={Boolean(formik.touched.password && formik.errors.password)}
             fullWidth
             // helperText={formik.touched.password && formik.errors.password}
-            label="password"
+            label="Password"
             name="password"
             onBlur={onBlur}
             onChange={formik.handleChange}
@@ -524,7 +523,7 @@ const CreateUser = () => {
         </FormControl>
         <TextField
           sx={{
-            width: { xs: 200, sm: 250, md: 300, lg: 350, xl: 400 },
+            width: { xs: "100%", sm: "40%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -537,7 +536,7 @@ const CreateUser = () => {
           helperText={
             formik.touched.confirmPassword && formik.errors.confirmPassword
           }
-          label="confirmPassword"
+          label="Confirm Password"
           margin="normal"
           name="confirmPassword"
           onBlur={formik.handleBlur}
@@ -551,19 +550,21 @@ const CreateUser = () => {
           }}
         />
         <Divider sx={{ m: 1 }}></Divider>
-        <LoadingButton
-          type="submit"
-          sx={{
-            width: "100%",
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            m: 0.5,
-          }}
-          variant="contained"
-        >
-          submit
-        </LoadingButton>
+        <div style={{ textAlign: "right" }}>
+          <LoadingButton
+            type="submit"
+            sx={{
+              "& .MuiInputBase-root": {
+                height: 40,
+              },
+              m: 0.5,
+              p: 1,
+            }}
+            variant="contained"
+          >
+            Save
+          </LoadingButton>
+        </div>
       </form>
     </Box>
   );

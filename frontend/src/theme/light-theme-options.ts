@@ -83,7 +83,7 @@ export const lightThemeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           backgroundColor: neutral[500],
-          color: "#CAF0F8",
+          color: "#222",
         },
       },
     },
