@@ -1,17 +1,10 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
-import DocumentTypes from './documentTypes.model';
-import User from './users.model';
 import Patches from './patches.model';
-import Departments from './departments.model';
 
 class Sessions extends Model {
   public id!: number;
 
   public patchId?: number;
-
-  public userId?: number;
-
-  public departmentId?: number;
 
   public sessionMethod?: string;
 
@@ -44,19 +37,8 @@ class Sessions extends Model {
             key: 'id',
           },
         },
-        userId: {
-          type: DataTypes.INTEGER,
-          references: {
-            model: User,
-            key: 'id',
-          },
-        },
-        departmentId: {
-          type: DataTypes.INTEGER,
-          references: {
-            model: Departments,
-            key: 'id',
-          },
+        title: {
+          type: DataTypes.STRING,
         },
         sessionMethod: {
           type: DataTypes.STRING,
@@ -75,7 +57,7 @@ class Sessions extends Model {
         },
         status: {
           type: DataTypes.ENUM,
-          values: ['waiting', 'expired', 'done', 'cancelled'],
+          values: ['waiting', 'expired', 'running', 'done', 'cancelled'],
           defaultValue: 'waiting',
         },
       },
@@ -88,9 +70,7 @@ class Sessions extends Model {
   }
 
   public static initAssociation(): void {
-    this.belongsTo(User);
     this.belongsTo(Patches);
-    this.belongsTo(Departments);
   }
 }
 
