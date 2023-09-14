@@ -227,7 +227,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       email,
       password,
     });
-
+    console.log("sssssssss");
     if (user) {
       dispatch({
         type: ActionType.INITIALIZE,

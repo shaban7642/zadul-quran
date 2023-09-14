@@ -38,7 +38,7 @@ class RolesApi {
   async addPermissions(ids: number[], roleId: number): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post(`/settings/add/permission/`, {
+        const resp = apiService.post(`/settings/add/permission`, {
           permissionIds: ids,
           roleId,
         });

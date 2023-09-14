@@ -35,7 +35,7 @@ export const LoginForm: FC = (props) => {
     }),
     onSubmit: async (values: any): Promise<void> => {
       try {
-        setLoading(true);
+        // setLoading(true);
         await login(values);
         console.log("log");
       } catch (err) {

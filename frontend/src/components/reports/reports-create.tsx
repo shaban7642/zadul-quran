@@ -9,10 +9,13 @@ const CreateReport: FC<CreateReportProps> = (props) => {
   const { createReport } = props;
   const [formValues, setFormValues] = useState("");
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(formValues);
-    const { success } = await createReport(formValues);
+    const { success } = await createReport({
+      // userId : id,
+      reportContent: formValues,
+    });
     if (success) {
       setFormValues("");
     }
@@ -69,7 +72,8 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         />
         <div style={{ textAlign: "right" }}>
           <LoadingButton
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             sx={{
               "& .MuiInputBase-root": {
                 height: 40,

@@ -52,12 +52,6 @@ export const PermissionsRow: FC<RowProps> = (props) => {
           </ToggleButton>
         </TableCell>
       </TableRow>
-      <TableRow sx={{ border: 0 }}>
-        <TableCell
-          style={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
-          colSpan={4}
-        ></TableCell>
-      </TableRow>
     </Fragment>
   );
 };

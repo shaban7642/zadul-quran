@@ -11,6 +11,8 @@ import { RolesHeads } from "./roles-heads";
 import toast from "react-hot-toast";
 import { useMounted } from "../../hooks/use-mounted";
 import { rolesApi } from "../../api/rolesApi";
+import { LoadingButton } from "@mui/lab";
+import { preventDefault } from "@fullcalendar/core/internal";
 interface Permissions {
   id: number;
   permission: string;
@@ -36,9 +38,9 @@ interface PermissionsTableProps {
 export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
   const { roleId, role, name } = props;
   const [permission, setPermissions] = useState<Permissions[]>();
-  const [rolePermission, setRolePermissions] = useState<RolePermissions[]>();
-  const [addedIds, setAddedIds] = useState<Number[]>([]);
-  const [deletedIds, setDeletedIds] = useState<Number[]>([]);
+  const [rolePermissions, setRolePermissions] = useState<RolePermissions[]>();
+  const [addedIds, setAddedIds] = useState<number[]>([]);
+  const [deletedIds, setDeletedIds] = useState<number[]>([]);
   const sentPermissions = (checked: boolean, id: number) => {
     if (!checked) {
       // add to added ids array and remove it from deleted ones.
@@ -59,24 +61,23 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
       }
     }
   };
-  console.log(addedIds);
-  console.log(deletedIds);
+  // console.log(addedIds);
+  // console.log(deletedIds);
   const isMounted = useMounted();
   useEffect(
     () => {
       getPermissions();
-      getRolePermissions();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  // useEffect(
-  //   () => {
-  //     getRolePermissions();
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [name]
-  // );
+  useEffect(
+    () => {
+      getRolePermissions();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [name]
+  );
   const getPermissions = useCallback(async () => {
     try {
       const data: any = await rolesApi.getAllPermissions();
@@ -123,8 +124,7 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
     }
   };
   const removePremissions = async (
-    ids: number[],
-    values: any
+    ids: number[]
   ): Promise<{ success: boolean }> => {
     const load = toast.loading("removePremissions");
     try {
@@ -144,6 +144,15 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
       toast.error(err.message || "removePremissionsFailed");
       return { success: false };
     }
+  };
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    await addPermissions(addedIds, roleId);
+    await removePremissions(deletedIds);
+    getRolePermissions();
+    setAddedIds([]);
+    setDeletedIds([]);
+    console.log("ooo");
   };
 
   const headCells: readonly HeadCell[] = [
@@ -205,7 +214,7 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
             <TableBody>
               {permission?.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
-                const checked = rolePermission?.find(
+                const checked = rolePermissions?.find(
                   (rP) => rP.permissionId === row.id
                 );
                 return (
@@ -213,7 +222,7 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
                     key={row.id}
                     row={row}
                     labelId={labelId}
-                    checked={checked ? true : false}
+                    checked={true}
                     sentPermissions={sentPermissions}
                   />
                 );
@@ -221,6 +230,22 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <div style={{ textAlign: "right" }}>
+          <LoadingButton
+            type="button"
+            onClick={onSubmit}
+            sx={{
+              "& .MuiInputBase-root": {
+                height: 40,
+              },
+              m: 0.5,
+              p: 1,
+            }}
+            variant="contained"
+          >
+            Save
+          </LoadingButton>
+        </div>
       </Paper>
     </Box>
   );

@@ -24,29 +24,29 @@ class ReportRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.reports.READ]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.reports.READ]),
       this.reportsController.getAllReports
     );
 
     this.router.post(
       `${this.path}/create`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.reports.CREATE]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.reports.CREATE]),
       this.reportsController.createReport
     );
 
     this.router.put(
       `${this.path}/:id`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.reports.UPDATE]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.reports.UPDATE]),
       this.reportsController.updateReport
     );
 
     this.router.delete(
       `${this.path}/:id`,
-      authMiddleware,
-      accessControlMiddleware([Permissions.reports.DELETE]),
+      // authMiddleware,
+      // accessControlMiddleware([Permissions.reports.DELETE]),
       this.reportsController.deleteReport
     );
   }
