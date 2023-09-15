@@ -5,6 +5,7 @@ import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CreateReport from "../../components/reports/reports-create";
 import { ReportsTable } from "../../components/reports/reports-table";
+import { AuthGuard } from "../../components/auth/auth-guard";
 
 const Reports: NextPage = () => {
   const [value, setValue] = useState("1");
@@ -31,12 +32,12 @@ const Reports: NextPage = () => {
   );
 };
 
-// Reports.getLayout = (page) => (
-//   // <AuthGuard>
-//   //   <OwnerGuard>
-
-//   //   </OwnerGuard>
-//   // </AuthGuard>
-// );
+Reports.getLayout = (page) => (
+  <AuthGuard>
+    {/* <OwnerGuard> */}
+    <DashboardLayout>{page}</DashboardLayout>
+    {/* </OwnerGuard> */}
+  </AuthGuard>
+);
 
 export default Reports;

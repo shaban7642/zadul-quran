@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 
 import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 import { PermissionsTable } from "../../components/roles/permissions-table";
+import { AuthGuard } from "../../components/auth/auth-guard";
 
-const User: NextPage = () => {
+const Permissions: NextPage = () => {
   const router = useRouter();
   const { id, role, name } = router.query;
 
@@ -18,12 +19,12 @@ const User: NextPage = () => {
     </DashboardLayout>
   );
 };
-User.getLayout = (page) => (
-  // <AuthGuard>
-  //   <OwnerGuard>
-  <DashboardLayout>{page}</DashboardLayout>
-  //   </OwnerGuard>
-  // </AuthGuard>
+Permissions.getLayout = (page) => (
+  <AuthGuard>
+    {/* <OwnerGuard> */}
+    <DashboardLayout>{page}</DashboardLayout>
+    {/* </OwnerGuard> */}
+  </AuthGuard>
 );
 
-export default User;
+export default Permissions;

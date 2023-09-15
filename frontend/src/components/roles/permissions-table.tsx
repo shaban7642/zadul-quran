@@ -17,6 +17,7 @@ interface Permissions {
   id: number;
   permission: string;
   action: string;
+  matched: boolean;
 }
 interface RolePermissions {
   id: number;
@@ -37,8 +38,9 @@ interface PermissionsTableProps {
 }
 export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
   const { roleId, role, name } = props;
-  const [permission, setPermissions] = useState<Permissions[]>();
-  const [rolePermissions, setRolePermissions] = useState<RolePermissions[]>();
+  const [permissions, setPermissions] = useState<Permissions[]>([]);
+  const [rolePermissions, setRolePermissions] = useState<RolePermissions[]>([]);
+  const [result, setResult] = useState<Permissions[]>();
   const [addedIds, setAddedIds] = useState<number[]>([]);
   const [deletedIds, setDeletedIds] = useState<number[]>([]);
   const sentPermissions = (checked: boolean, id: number) => {
@@ -61,23 +63,8 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
       }
     }
   };
-  // console.log(addedIds);
-  // console.log(deletedIds);
   const isMounted = useMounted();
-  useEffect(
-    () => {
-      getPermissions();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-  useEffect(
-    () => {
-      getRolePermissions();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [name]
-  );
+
   const getPermissions = useCallback(async () => {
     try {
       const data: any = await rolesApi.getAllPermissions();
@@ -93,12 +80,23 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
       const data: any = await rolesApi.getRolePermissions(name);
       if (isMounted()) {
         setRolePermissions(data.rows);
+        getResult();
       }
     } catch (err: any) {
       toast.error(err.message || "failed");
     }
   }, [isMounted]);
-
+  const getResult = () => {
+    console.log(permissions);
+    console.log(rolePermissions);
+    const data = permissions.map((row, index) => {
+      return {
+        ...row,
+        matched: rolePermissions.some((rP) => rP.permissionId === row.id),
+      };
+    });
+    setResult(data);
+  };
   const addPermissions = async (
     ids: number[],
     roleId: any
@@ -147,12 +145,17 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
   };
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    await addPermissions(addedIds, roleId);
-    await removePremissions(deletedIds);
-    getRolePermissions();
-    setAddedIds([]);
-    setDeletedIds([]);
-    console.log("ooo");
+    if (addedIds.length > 0) {
+      await addPermissions(addedIds, roleId);
+      setAddedIds([]);
+    }
+    if (deletedIds.length > 0) {
+      await removePremissions(deletedIds);
+      setDeletedIds([]);
+    }
+    if (addedIds.length > 0 || deletedIds.length > 0) {
+      getRolePermissions();
+    }
   };
 
   const headCells: readonly HeadCell[] = [
@@ -169,6 +172,25 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
       label: "Action",
     },
   ];
+  useEffect(
+    () => {
+      getPermissions();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  useEffect(
+    () => {
+      getRolePermissions();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [name]
+  );
+  useEffect(() => {
+    if (permissions?.length > 0 && rolePermissions?.length >= 0) {
+      getResult();
+    }
+  }, [permissions, rolePermissions]);
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Paper
@@ -212,17 +234,15 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
           >
             <RolesHeads headCells={headCells} />
             <TableBody>
-              {permission?.map((row, index) => {
+              {result?.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
-                const checked = rolePermissions?.find(
-                  (rP) => rP.permissionId === row.id
-                );
+
                 return (
                   <PermissionsRow
-                    key={row.id}
+                    key={row?.id}
                     row={row}
                     labelId={labelId}
-                    checked={true}
+                    checked={row?.matched}
                     sentPermissions={sentPermissions}
                   />
                 );

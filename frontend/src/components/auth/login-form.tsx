@@ -15,8 +15,8 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useAuth } from "../../hooks/use-auth";
 import toast from "react-hot-toast";
+import { useAuth } from "../../hooks/use-auth";
 
 export const LoginForm: FC = (props) => {
   const { login } = useAuth();
@@ -37,7 +37,7 @@ export const LoginForm: FC = (props) => {
       try {
         // setLoading(true);
         await login(values);
-        console.log("log");
+        console.log("user");
       } catch (err) {
         toast.error(err.message || "failed");
         setLoading(false);

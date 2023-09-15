@@ -22,21 +22,6 @@ export interface AuthContextValue extends State {
   }) => Promise<void>;
   authRefresh: () => Promise<void>;
   logout: () => Promise<void>;
-  register: ({
-    username,
-    firstName,
-    lastName,
-    email,
-    phone_number,
-    password,
-  }: {
-    username: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone_number: number;
-    password: string;
-  }) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -48,7 +33,6 @@ enum ActionType {
   LOGIN = "LOGIN",
   AUTHREFRESH = "AUTHREFRESH",
   LOGOUT = "LOGOUT",
-  REGISTER = "REGISTER",
 }
 
 type InitializeAction = {
@@ -78,20 +62,7 @@ type LogoutAction = {
   type: ActionType.LOGOUT;
 };
 
-type RegisterAction = {
-  type: ActionType.REGISTER;
-  payload: {
-    isAuthenticated: boolean;
-    user: User;
-  };
-};
-
-type Action =
-  | InitializeAction
-  | LoginAction
-  | LogoutAction
-  | RegisterAction
-  | AuthRefreshAction;
+type Action = InitializeAction | LoginAction | LogoutAction | AuthRefreshAction;
 
 type Handler = (state: State, action: any) => State;
 
@@ -141,16 +112,6 @@ const handlers: Record<ActionType, Handler> = {
     ...state,
     isAuthenticated: false,
   }),
-
-  REGISTER: (state: State, action: RegisterAction): State => {
-    const { user } = action.payload;
-
-    return {
-      ...state,
-      isAuthenticated: true,
-      user,
-    };
-  },
 };
 
 const reducer = (state: State, action: Action): State =>
@@ -162,7 +123,6 @@ export const AuthContext = createContext<AuthContextValue>({
   login: () => Promise.resolve(),
   authRefresh: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  register: () => Promise.resolve(),
 });
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
@@ -223,7 +183,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     email: string;
     password: string;
   }): Promise<void> => {
-    const { data: user }: any = await authApi.login({
+    const user: any = await authApi.login({
       email,
       password,
     });
@@ -287,39 +247,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     router.push("/").catch(console.error);
   };
 
-  const register = async ({
-    username,
-    firstName,
-    lastName,
-    email,
-    phone_number,
-    password,
-  }: {
-    username: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone_number: number;
-    password: string;
-  }): Promise<void> => {
-    const { data: user }: any = await authApi.register({
-      username,
-      firstName,
-      lastName,
-      email,
-      phone_number,
-      password,
-    });
-
-    dispatch({
-      type: ActionType.REGISTER,
-      payload: {
-        user,
-        isAuthenticated: true,
-      },
-    });
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -328,7 +255,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         login,
         authRefresh,
         logout,
-        register,
       }}
     >
       {children}

@@ -7,6 +7,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { RegisterForm } from "../../components/auth/register-form";
 import CreateUser from "../../components/users/users-create";
 import { DeptTable } from "../../components/department/dept-table";
+import { AuthGuard } from "../../components/auth/auth-guard";
 
 const Employees: NextPage = () => {
   const [value, setValue] = useState("1");
@@ -78,11 +79,11 @@ const Employees: NextPage = () => {
 };
 
 Employees.getLayout = (page) => (
-  // <AuthGuard>
-  //   <OwnerGuard>
-  <DashboardLayout>{page}</DashboardLayout>
-  //   </OwnerGuard>
-  // </AuthGuard>
+  <AuthGuard>
+    {/* <OwnerGuard> */}
+    <DashboardLayout>{page}</DashboardLayout>
+    {/* </OwnerGuard> */}
+  </AuthGuard>
 );
 
 export default Employees;

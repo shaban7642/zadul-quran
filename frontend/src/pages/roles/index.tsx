@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { Box, Tab, Typography } from "@mui/material";
 
 import { RolesTable } from "../../components/roles/roles-table";
+import { AuthGuard } from "../../components/auth/auth-guard";
 
 const Roles: NextPage = () => {
   return (
@@ -15,12 +16,12 @@ const Roles: NextPage = () => {
   );
 };
 
-// Roles.getLayout = (page) => (
-//   // <AuthGuard>
-//   //   <OwnerGuard>
-
-//   //   </OwnerGuard>
-//   // </AuthGuard>
-// );
+Roles.getLayout = (page) => (
+  <AuthGuard>
+    {/* <OwnerGuard> */}
+    <DashboardLayout>{page}</DashboardLayout>
+    {/* </OwnerGuard> */}
+  </AuthGuard>
+);
 
 export default Roles;

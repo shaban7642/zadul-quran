@@ -36,7 +36,7 @@ const Students: NextPage = () => {
 };
 
 // Students.getLayout = (page) => (
-//   // <AuthGuard>
+//   <AuthGuard>
 //   //   <OwnerGuard>
 
 //   //   </OwnerGuard>
