@@ -28,13 +28,14 @@ class SettingsService {
     roleId?: number;
   }): Promise<RolePermission> {
     try {
+      console.log({ permissionIds });
       const rolePermissions: any = await this.rolePermissionsModel.bulkCreate(
         permissionIds.map((p) => ({
           roleId,
-          permissionsId: p,
+          permissionId: p,
         }))
       );
-      return rolePermissions.toJSON() as RolePermission;
+      return rolePermissions.map((rp: any) => rp.toJSON() as RolePermission);
     } catch (err) {
       logger.log({
         level: 'error',
