@@ -53,13 +53,14 @@ const CreateReport: FC<CreateReportProps> = (props) => {
           value={formValues}
           onChange={(event) => setFormValues(event.target?.value)}
           style={{
-            width: "95%",
-            height: "50vh",
+            width: "100%",
+            height: "40vh",
             borderStyle: "solid",
             borderColor: "#ffcccb",
             borderWidth: "1px",
             borderRadius: "5px",
-            margin: ".5em .5em ",
+            margin: 1,
+            marginLeft: 0,
             outlineColor: "#ffcccb",
             overflowX: "hidden",
             fontFamily: "cursive",

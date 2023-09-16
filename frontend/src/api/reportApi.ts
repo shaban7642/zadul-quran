@@ -4,7 +4,7 @@ class ReportApi {
   async getReports() {
     return new Promise((resolve, reject) => {
       try {
-        const reports = apiService.get("/reports/");
+        const reports = apiService.get("/reports");
         resolve(reports);
       } catch (err) {
         reject(new Error("Internal server error"));

@@ -7,16 +7,18 @@ import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
-import { TextField } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Delete } from "@mui/icons-material";
 
 interface RowProps {
   row: any;
-  updateReport: (id: number, values: any) => void;
+  deleteReport: (id: number) => Promise<{ success: boolean }>;
+  updateReport: (id: number, values: any) => Promise<{ success: boolean }>;
   labelId: string;
 }
 export const ReportRow: FC<RowProps> = (props) => {
-  const { row, updateReport, labelId } = props;
+  const { row, updateReport, deleteReport, labelId } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const formik = useFormik({
@@ -47,6 +49,14 @@ export const ReportRow: FC<RowProps> = (props) => {
           }}
         >
           {row.name}
+        </TableCell>
+        <TableCell scope="row" sx={{}}>
+          <IconButton
+            onClick={() => deleteReport(row.id)}
+            sx={{ p: 0, ml: 1, mb: 1.5 }}
+          >
+            <Delete color="error" />
+          </IconButton>
         </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>

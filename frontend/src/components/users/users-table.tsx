@@ -15,8 +15,6 @@ import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import { TableHeads } from "./users-heads";
 import { IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import Add from "@mui/icons-material/Add";
-import Delete from "@mui/icons-material/Delete";
 import { UsersRow } from "./users-row";
 import { userApi } from "../../api/userApi";
 import { useMounted } from "../../hooks/use-mounted";

@@ -24,8 +24,8 @@ class ReportRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.reports.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.reports.READ]),
       this.reportsController.getAllReports
     );
 
