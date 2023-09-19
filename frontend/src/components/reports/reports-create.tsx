@@ -12,10 +12,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(formValues);
-    const { success } = await createReport({
-      // userId : id,
-      reportContent: formValues,
-    });
+    const { success } = await createReport(formValues);
     if (success) {
       setFormValues("");
     }

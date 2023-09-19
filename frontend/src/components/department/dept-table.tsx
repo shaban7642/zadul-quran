@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  FC,
   MouseEvent,
   useCallback,
   useEffect,
@@ -33,10 +34,13 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
 }
-
-export const DeptTable = () => {
+interface DeptTableProps {
+  getDepts: () => void;
+  depts: any[];
+}
+export const DeptTable: FC<DeptTableProps> = (props) => {
+  const { getDepts, depts } = props;
   const [page, setPage] = useState(0);
-  const [depts, setDepts] = useState([]);
   const [deptCount, setDeptsCount] = useState(depts?.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMounted = useMounted();
@@ -47,16 +51,6 @@ export const DeptTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  const getDepts = useCallback(async () => {
-    try {
-      const data: any = await deptApi.getDepts();
-      if (isMounted()) {
-        setDepts(data.data);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "failed");
-    }
-  }, [isMounted]);
 
   const deleteDept = async (id: number) => {
     const load = toast.loading("deleteDepts");

@@ -31,7 +31,7 @@ class AuthApi {
   async logout(): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post("/auth/logout", {});
+        const resp = apiService.get("/auth/logout", {});
 
         resolve(resp);
       } catch (err) {

@@ -22,50 +22,50 @@ class UserRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.READ]),
       this.userController.getAllUsers
     );
 
     this.router.get(
       `${this.path}/email`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.READ]),
       this.userController.getUserByEmail
     );
 
     this.router.get(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.READ]),
       this.userController.getUserById
     );
 
     this.router.post(
       `${this.path}/create`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.CREATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.CREATE]),
       this.userController.createUser
     );
 
     this.router.put(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.UPDATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.UPDATE]),
       this.userController.updateUser
     );
 
     this.router.put(
       `${this.path}/update/role/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.UPDATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.UPDATE]),
       this.userController.updateUserRole
     );
 
     this.router.delete(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.users.DELETE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.DELETE]),
       this.userController.deleteUser
     );
   }

@@ -4,7 +4,7 @@ import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import Checkbox from "@mui/material/Checkbox";
+import { alpha } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import {
   Box,
@@ -26,13 +26,13 @@ import Delete from "@mui/icons-material/Delete";
 interface RowProps {
   row: any;
   labelId: string;
+  depts: any[];
   updateUser: (id: any, userData: any) => Promise<{ success: boolean }>;
   deleteUser: (id: any) => Promise<{ success: boolean }>;
 }
 
-const departments = ["Admin", "Teacher", "Accountant"];
 export const UsersRow: FC<RowProps> = (props) => {
-  const { row, labelId, updateUser, deleteUser } = props;
+  const { row, labelId, depts, updateUser, deleteUser } = props;
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -154,13 +154,17 @@ export const UsersRow: FC<RowProps> = (props) => {
           </IconButton>
         </TableCell>
       </TableRow>
-      <TableRow sx={{ border: 0 }}>
+      <TableRow sx={{ border: 0, p: 0 }}>
         <TableCell
-          style={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
-          colSpan={6}
+          style={{
+            paddingLeft: "8px",
+            padding: 0,
+            border: 0,
+          }}
+          colSpan={7}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            <Box sx={{ margin: 1, mr: 0 }}>
               <Typography
                 variant="h6"
                 gutterBottom
@@ -173,32 +177,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  error={Boolean(formik.touched.id && formik.errors.id)}
-                  // @ts-ignore
-                  helperText={formik.touched.id && formik.errors.id}
-                  label="id"
-                  margin="normal"
-                  id="id"
-                  name="id"
-                  type="text"
-                  onChange={formik.handleChange}
-                  value={formik.values.id}
-                  InputProps={{
-                    style: {
-                      fontFamily: "sans-serif",
-                    },
-                  }}
-                />
-                <TextField
-                  size="small"
-                  sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "18%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -218,6 +197,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                   value={formik.values.username}
                   InputProps={{
                     style: {
+                      color: "black",
                       fontFamily: "sans-serif",
                     },
                   }}
@@ -225,7 +205,7 @@ export const UsersRow: FC<RowProps> = (props) => {
 
                 <FormControl
                   sx={{
-                    width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
+                    width: { xs: "18%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -235,7 +215,19 @@ export const UsersRow: FC<RowProps> = (props) => {
                   variant="outlined"
                 >
                   {" "}
-                  <InputLabel id="outlined-adornment-department">
+                  <InputLabel
+                    id="outlined-adornment-department"
+                    sx={{
+                      top: -6,
+                      ...(true && {
+                        bgcolor: (theme) =>
+                          alpha(
+                            theme.palette.info.contrastText,
+                            theme.palette.action.activatedOpacity
+                          ),
+                      }),
+                    }}
+                  >
                     Department
                   </InputLabel>
                   <Select
@@ -244,10 +236,35 @@ export const UsersRow: FC<RowProps> = (props) => {
                     labelId="outlined-adornment-department"
                     value={formik.values.department}
                     onChange={formik.handleChange}
+                    sx={{
+                      color: "black",
+                      ...(true && {
+                        bgcolor: (theme) =>
+                          alpha(
+                            theme.palette.info.contrastText,
+                            theme.palette.action.activatedOpacity
+                          ),
+                      }),
+                      fontFamily: "sans-serif",
+                    }}
                   >
-                    {departments.map((department) => (
-                      <MenuItem key={department} value={department}>
-                        {department}
+                    {depts?.map((department) => (
+                      <MenuItem
+                        key={department}
+                        value={department}
+                        sx={{
+                          color: "black",
+                          ...(true && {
+                            bgcolor: (theme) =>
+                              alpha(
+                                theme.palette.info.contrastText,
+                                theme.palette.action.activatedOpacity
+                              ),
+                          }),
+                          fontFamily: "sans-serif",
+                        }}
+                      >
+                        {department.name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -256,7 +273,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "18%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -274,6 +291,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                   value={formik.values.email}
                   InputProps={{
                     style: {
+                      color: "black",
                       fontFamily: "sans-serif",
                     },
                   }}
@@ -281,7 +299,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "18%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -303,6 +321,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                   value={formik.values.phoneNumber}
                   InputProps={{
                     style: {
+                      color: "black",
                       fontFamily: "sans-serif",
                     },
                   }}
@@ -310,7 +329,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "18%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -330,6 +349,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                   value={formik.values.password}
                   InputProps={{
                     style: {
+                      color: "black",
                       fontFamily: "sans-serif",
                     },
                   }}
@@ -337,7 +357,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <LoadingButton
                   type="submit"
                   sx={{
-                    width: { xs: 15, sm: 20, md: 30, lg: 40, xl: 50 },
+                    width: { xs: 15, sm: 18, md: 30, lg: 40, xl: 50 },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },

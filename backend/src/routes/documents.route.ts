@@ -4,7 +4,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { Route } from '../types/routes.type';
 import authMiddleware from '../middlewares/auth.middleware';
-// import accessControlMiddleware from '../middlewares/accessControl.middleware';
+import accessControlMiddleware from '../middlewares/accessControl.middleware';
 import { DocumentsController } from '../controllers';
 
 import enums from '../../shared/enums';
@@ -44,31 +44,31 @@ class DocumentRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.documents.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.documents.READ]),
       this.documentsController.getAllDocuments
     );
 
     this.router.post(
       `${this.path}/upload`,
-      // authMiddleware,
-      // uploadMiddleware,
+      authMiddleware,
+      uploadMiddleware,
       upload.single('file'),
-      // accessControlMiddleware([Permissions.documents.CREATE]),
+      accessControlMiddleware([Permissions.documents.CREATE]),
       this.documentsController.uploadDocument
     );
 
     this.router.put(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.documents.UPDATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.documents.UPDATE]),
       this.documentsController.updateDocument
     );
 
     this.router.delete(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.documents.DELETE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.documents.DELETE]),
       this.documentsController.deleteDocument
     );
   }

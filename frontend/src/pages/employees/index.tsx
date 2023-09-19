@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 import { NextPage } from "next";
 import { UsersTable } from "../../components/users/users-table";
@@ -8,10 +8,15 @@ import { RegisterForm } from "../../components/auth/register-form";
 import CreateUser from "../../components/users/users-create";
 import { DeptTable } from "../../components/department/dept-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
+import { deptApi } from "../../api/deptApi";
+import { useMounted } from "../../hooks/use-mounted";
+import toast from "react-hot-toast";
 
 const Employees: NextPage = () => {
   const [value, setValue] = useState("1");
   const [valueTable, setValueTable] = useState("0");
+  const [depts, setDepts] = useState([]);
+  const isMounted = useMounted();
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -21,6 +26,19 @@ const Employees: NextPage = () => {
   ) => {
     setValueTable(newValueTable);
   };
+  const getDepts = useCallback(async () => {
+    try {
+      const data: any = await deptApi.getDepts();
+      if (isMounted()) {
+        setDepts(data.rows);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "failed");
+    }
+  }, [isMounted]);
+  useEffect(() => {
+    getDepts();
+  }, []);
   return (
     <DashboardLayout>
       <Box sx={{ width: "100%", typography: "body1" }}>
@@ -53,24 +71,24 @@ const Employees: NextPage = () => {
                 </TabList>
               </Box>
               <TabPanel value="0">
-                <UsersTable />
+                <UsersTable depts={depts} />
               </TabPanel>
               <TabPanel value="1">
-                <UsersTable roleId={1} />
+                <UsersTable depts={depts} roleId={1} />
               </TabPanel>
               <TabPanel value="2">
-                <UsersTable roleId={2} />
+                <UsersTable depts={depts} roleId={2} />
               </TabPanel>
               <TabPanel value="3">
-                <UsersTable roleId={3} />
+                <UsersTable depts={depts} roleId={3} />
               </TabPanel>
             </TabContext>
           </TabPanel>
           <TabPanel value="2">
-            <CreateUser />
+            <CreateUser depts={depts} />
           </TabPanel>
           <TabPanel value="3">
-            <DeptTable></DeptTable>
+            <DeptTable getDepts={getDepts} depts={depts}></DeptTable>
           </TabPanel>
         </TabContext>
       </Box>

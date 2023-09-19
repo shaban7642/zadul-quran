@@ -17,14 +17,17 @@ const CreateDocument: FC<CreateDocumentProps> = (props) => {
     setLoading(false);
     console.log(file);
   };
-  const uploadFile = async () => {
+  const uploadFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!file) return;
     try {
       setLoading(true);
-      await createDocument({
-        userId: 1,
-        file,
-        documentType: { name: "book", id: 1 },
-      });
+      const data = new FormData();
+      data.set("userId", "1");
+      data.set("file", file);
+      data.set("documentType", JSON.stringify({ name: "book", id: 1 }));
+
+      await createDocument(data);
 
       setFile(undefined);
     } catch (error) {
@@ -73,32 +76,19 @@ const CreateDocument: FC<CreateDocumentProps> = (props) => {
 
         <MuiFileInput
           size="small"
+          name="file"
           variant="outlined"
           value={file}
-          onChange={handleChange}
+          onChange={(e: any) => {
+            setFile(e);
+          }}
           helperText={!file ? "upload your file" : "uploaded"}
           sx={{ ml: 0, cursor: "pointer" }}
         />
-        {file && (
-          <LoadingButton
-            sx={{
-              ml: 2,
-            }}
-            size="large"
-            variant="contained"
-            loading={loading}
-            type="submit"
-            onClick={uploadFile}
-          >
-            Check
-            <FindInPageOutlinedIcon sx={{ ml: 2 }} />
-          </LoadingButton>
-        )}
-        {/* documentType */}
-
         <Divider sx={{ m: 1 }}></Divider>
         <LoadingButton
-          type="submit"
+          type="button"
+          onClick={uploadFile}
           sx={{
             width: "100%",
             "& .MuiInputBase-root": {

@@ -5,6 +5,7 @@ import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CreateStudent from "../../components/students/students-create";
 import { StudentsTable } from "../../components/students/students-table";
+import { AuthGuard } from "../../components/auth/auth-guard";
 
 const Students: NextPage = () => {
   const [value, setValue] = useState("1");
@@ -19,7 +20,6 @@ const Students: NextPage = () => {
             <TabList onChange={handleChange} aria-label="Students options">
               <Tab label="List Students" value="1" />
               <Tab label="Add Students" value="2" />
-              <Tab label=" Students" value="3" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -28,19 +28,18 @@ const Students: NextPage = () => {
           <TabPanel value="2">
             <CreateStudent />
           </TabPanel>
-          <TabPanel value="3"></TabPanel>
         </TabContext>
       </Box>
     </DashboardLayout>
   );
 };
 
-// Students.getLayout = (page) => (
-//   <AuthGuard>
-//   //   <OwnerGuard>
-
-//   //   </OwnerGuard>
-//   // </AuthGuard>
-// );
+Students.getLayout = (page) => (
+  <AuthGuard>
+    {/* <OwnerGuard> */}
+    <DashboardLayout>{page}</DashboardLayout>
+    {/* </OwnerGuard> */}
+  </AuthGuard>
+);
 
 export default Students;

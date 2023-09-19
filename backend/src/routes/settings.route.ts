@@ -22,36 +22,36 @@ class SettingsRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}/all/rolePermissions`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.settings.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.settings.READ]),
       this.settingsController.getAllRolePermissions
     );
 
     this.router.get(
       `${this.path}/all/permissions`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.settings.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.settings.READ]),
       this.settingsController.findAllPermissions
     );
 
     this.router.get(
       `${this.path}/all/roles`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.settings.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.settings.READ]),
       this.settingsController.findAllRoles
     );
 
     this.router.post(
       `${this.path}/add/permission`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.settings.CREATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.settings.CREATE]),
       this.settingsController.addPermissions
     );
 
     this.router.post(
       `${this.path}/remove/permission`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.settings.DELETE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.settings.DELETE]),
       this.settingsController.removeRolePermissions
     );
   }

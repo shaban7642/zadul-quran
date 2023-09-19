@@ -9,18 +9,13 @@ import { reportApi } from "../../api/reportApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { Report, ReportsTable } from "../../components/reports/reports-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
+import { useAuth } from "../../hooks/use-auth";
 
 const Reports: NextPage = () => {
+  const { user } = useAuth();
   const [value, setValue] = useState("1");
   const [reports, setReports] = useState<Report[]>([]);
   const isMounted = useMounted();
-  useEffect(
-    () => {
-      getReports();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
   const getReports = useCallback(async () => {
     try {
       const data: any = await reportApi.getReports();
@@ -32,20 +27,24 @@ const Reports: NextPage = () => {
     }
   }, [isMounted]);
 
-  const deleteReport = async (id: number) => {
+  const deleteReport = async (id: number): Promise<{ success: boolean }> => {
     const load = toast.loading("deleteReports");
     try {
       const resp = await reportApi.deleteReport(id);
-
+      toast.dismiss(load);
+      toast.success("deleteReportsSuccess");
       getReports();
+      return { success: true };
     } catch (err: any) {
       console.log(err);
+      toast.error(err.message || "deleteReportsFailed");
+      return { success: false };
     }
   };
   const createReport = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createReports");
     try {
-      await reportApi.createReport(values);
+      await reportApi.createReport(user?.id, values);
 
       toast.dismiss(load);
       toast.success("createReportsSuccess");
@@ -101,6 +100,7 @@ const Reports: NextPage = () => {
           <TabPanel value="1">
             <ReportsTable
               reports={reports}
+              getReports={getReports}
               deleteReport={deleteReport}
               updateReport={updateReport}
             />

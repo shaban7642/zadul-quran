@@ -12,11 +12,12 @@ class ReportApi {
     });
   }
 
-  async createReport(reportData: any): Promise<any> {
+  async createReport(userId: number, reportData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         const resp = apiService.post(`/reports/create`, {
-          name: reportData,
+          userId,
+          reportContent: reportData,
         });
         resolve(resp);
       } catch (err) {

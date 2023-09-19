@@ -31,11 +31,12 @@ export interface HeadCell {
 }
 interface ReportsTableProps {
   reports: Report[];
+  getReports: () => void;
   deleteReport: (id: number) => Promise<{ success: boolean }>;
   updateReport: (id: number, values: any) => Promise<{ success: boolean }>;
 }
 export const ReportsTable: FC<ReportsTableProps> = (props) => {
-  const { reports, deleteReport, updateReport } = props;
+  const { reports, deleteReport, updateReport, getReports } = props;
   const [page, setPage] = useState(0);
 
   const [reportCount, setReportsCount] = useState(reports?.length);
@@ -49,6 +50,13 @@ export const ReportsTable: FC<ReportsTableProps> = (props) => {
       label: "Title",
     },
   ];
+  useEffect(
+    () => {
+      getReports();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   useEffect(() => {
     setReportsCount(reports?.length);
   }, [reports?.length]);

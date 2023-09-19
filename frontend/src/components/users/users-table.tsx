@@ -36,12 +36,13 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
 }
+
 interface UsersTableProps {
   roleId?: number;
+  depts: any[];
 }
 export const UsersTable: FC<UsersTableProps> = (props) => {
-  const { roleId } = props;
-  const tableName: string = "users";
+  const { roleId, depts } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
@@ -222,6 +223,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
                   <UsersRow
                     key={row?.id}
                     row={row}
+                    depts={depts}
                     deleteUser={deleteUser}
                     labelId={labelId}
                     updateUser={updateUser}

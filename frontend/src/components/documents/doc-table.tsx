@@ -36,14 +36,7 @@ export interface HeadCell {
 
 export const DocumentTable = () => {
   const [page, setPage] = useState(0);
-  const [documents, setDocuments] = useState([
-    { id: 1, fileName: "parth", fileType: "book" },
-    {
-      id: 2,
-      fileName: "rajesh",
-      fileType: "video",
-    },
-  ]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [documentCount, setDocumentsCount] = useState(documents?.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMounted = useMounted();

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
 import {
@@ -30,10 +30,14 @@ import { deptApi } from "../../api/deptApi";
 
 const genders = ["male", "female"];
 
-const CreateUser = () => {
+interface CreateTableProps {
+  depts: any[];
+}
+
+const CreateUser: FC<CreateTableProps> = (props) => {
+  const { depts } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
-  const [depts, setDepts] = useState([]);
   const [roles, setRoles] = useState([]);
   const isMounted = useMounted();
   const getRoles = useCallback(
@@ -43,21 +47,6 @@ const CreateUser = () => {
 
         if (isMounted()) {
           setRoles(data.resp);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isMounted]
-  );
-  const getDepts = useCallback(
-    async () => {
-      try {
-        const data: any = await deptApi.getDepts();
-
-        if (isMounted()) {
-          setDepts(data.rows);
         }
       } catch (err) {
         console.log(err);
@@ -87,23 +76,22 @@ const CreateUser = () => {
   };
   useEffect(() => {
     getRoles();
-    getDepts();
   }, []);
   const formik = useFormik({
     initialValues: {
-      roleId: roles[0]?.id,
-      join_date: "2/3/2012",
-      username: "abdo",
-      firstName: "abdo",
-      lastName: "abbas",
-      city: "giza",
+      roleId: "",
+      join_date: "",
+      username: "",
+      firstName: "",
+      lastName: "",
+      city: "",
       gender: genders[0],
-      birthDate: "2/3/2012",
-      department: depts[0],
-      email: "abdo.abd@gmail.com",
-      phoneNumber: "011212324545",
-      password: "Abdo@001",
-      confirmPassword: "Abdo@001",
+      birthDate: "",
+      department: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
     },
     enableReinitialize: true,
     validationSchema: yup.object({
@@ -182,28 +170,36 @@ const CreateUser = () => {
           variant="outlined"
         >
           {" "}
-          <InputLabel id="outlined-adornment-roleId">Role</InputLabel>
+          <InputLabel
+            sx={{
+              top: -6,
+            }}
+            id="outlined-adornment-roleId"
+          >
+            Role
+          </InputLabel>
           <Select
             name="roleId"
             id="outlined-adornment-roleId"
             labelId="outlined-adornment-roleId"
-            sx={{
-              ...(true && {
-                bgcolor: (theme) =>
-                  alpha(
-                    theme.palette.info.contrastText,
-                    theme.palette.action.activatedOpacity
-                  ),
-              }),
-            }}
             value={formik.values.roleId}
             onChange={formik.handleChange}
           >
             {roles.map((roleId) => (
               <MenuItem
+                sx={{
+                  color: "black",
+                  ...(true && {
+                    bgcolor: (theme) =>
+                      alpha(
+                        theme.palette.info.contrastText,
+                        theme.palette.action.activatedOpacity
+                      ),
+                  }),
+                  fontFamily: "sans-serif",
+                }}
                 key={roleId?.id}
                 value={roleId?.id}
-                sx={{ backgroundColor: theme.palette.background.default }}
               >
                 {roleId?.displayName}
               </MenuItem>
@@ -245,7 +241,14 @@ const CreateUser = () => {
           variant="outlined"
         >
           {" "}
-          <InputLabel id="outlined-adornment-department">Department</InputLabel>
+          <InputLabel
+            sx={{
+              top: -6,
+            }}
+            id="outlined-adornment-department"
+          >
+            Department
+          </InputLabel>
           <Select
             name="department"
             id="outlined-adornment-department"
@@ -254,7 +257,21 @@ const CreateUser = () => {
             onChange={formik.handleChange}
           >
             {depts.map((department) => (
-              <MenuItem key={department?.id} value={department?.name}>
+              <MenuItem
+                sx={{
+                  color: "black",
+                  ...(true && {
+                    bgcolor: (theme) =>
+                      alpha(
+                        theme.palette.info.contrastText,
+                        theme.palette.action.activatedOpacity
+                      ),
+                  }),
+                  fontFamily: "sans-serif",
+                }}
+                key={department?.id}
+                value={department?.name}
+              >
                 {department?.name}
               </MenuItem>
             ))}
@@ -353,7 +370,14 @@ const CreateUser = () => {
           variant="outlined"
         >
           {" "}
-          <InputLabel id="outlined-gender">Gender</InputLabel>
+          <InputLabel
+            sx={{
+              top: -6,
+            }}
+            id="outlined-gender"
+          >
+            Gender
+          </InputLabel>
           <Select
             name="gender"
             id="outlined-gender"
@@ -362,7 +386,21 @@ const CreateUser = () => {
             onChange={formik.handleChange}
           >
             {genders.map((gender) => (
-              <MenuItem key={gender} value={gender}>
+              <MenuItem
+                sx={{
+                  color: "black",
+                  ...(true && {
+                    bgcolor: (theme) =>
+                      alpha(
+                        theme.palette.info.contrastText,
+                        theme.palette.action.activatedOpacity
+                      ),
+                  }),
+                  fontFamily: "sans-serif",
+                }}
+                key={gender}
+                value={gender}
+              >
                 {gender}
               </MenuItem>
             ))}
@@ -484,7 +522,12 @@ const CreateUser = () => {
           }}
           variant="outlined"
         >
-          <InputLabel htmlFor="outlined-adornment-password">
+          <InputLabel
+            sx={{
+              top: -6,
+            }}
+            htmlFor="outlined-adornment-password"
+          >
             Password
           </InputLabel>
           <OutlinedInput

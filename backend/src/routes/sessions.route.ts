@@ -25,29 +25,29 @@ class SessionRoute implements Route {
   private initializeRoutes() {
     this.router.get(
       `${this.path}`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.sessions.READ]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.sessions.READ]),
       this.sessionsController.getAllSessions
     );
 
     this.router.post(
       `${this.path}/create`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.sessions.CREATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.sessions.CREATE]),
       this.sessionsController.createSessions
     );
 
     this.router.put(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.sessions.UPDATE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.sessions.UPDATE]),
       this.sessionsController.updateSession
     );
 
     this.router.delete(
       `${this.path}/:id`,
-      // authMiddleware,
-      // accessControlMiddleware([Permissions.sessions.DELETE]),
+      authMiddleware,
+      accessControlMiddleware([Permissions.sessions.DELETE]),
       this.sessionsController.deleteSession
     );
   }

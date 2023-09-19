@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Typography from "@mui/material/Typography";
-import { Field, useFormik } from "formik";
+import { useFormik } from "formik";
 import {
   Box,
   TextField,
@@ -12,11 +11,11 @@ import {
   MenuItem,
   Divider,
   Chip,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
-import get from "lodash/get";
-import set from "lodash/set";
 import toast from "react-hot-toast";
 import { userApi } from "../../api/userApi";
 import { VisibilityOff } from "@mui/icons-material";
@@ -24,11 +23,14 @@ import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
 import Select from "@material-ui/core/Select";
 
-const genders = ["male", "female"];
 const CreateStudent = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
-
+  const [flag, setFlag] = useState(false);
+  const genders = ["male", "female"];
+  const handleChange = () => {
+    setFlag(!flag);
+  };
   const createStudent = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("create");
     try {
@@ -62,10 +64,11 @@ const CreateStudent = () => {
       gender: genders[0],
       password: "Abdo@001",
       confirmPassword: "Abdo@001",
-      gName: "",
+      gname: "",
       relation: "",
-      gEmail: "",
-      gMobile_no: "",
+      gemail: "",
+      gphoneNumber: "",
+      gcity: "",
       submit: null,
     },
     enableReinitialize: true,
@@ -79,10 +82,7 @@ const CreateStudent = () => {
         .email("emailAddress")
         .max(255)
         .required("emailIsRequired"),
-      phoneNumber: yup
-        .string()
-        .min(11, "phoneNumberLengthMessage")
-        .required("phoneNumberIsRequired"),
+      phoneNumber: yup.string().required("phoneNumberIsRequired"),
       city: yup.string().max(200).required("cityRequired"),
       gender: yup.string().required(),
 
@@ -92,14 +92,27 @@ const CreateStudent = () => {
         .test("passwords-match", "passwordMustMatch", function (value) {
           return this.parent.password === value;
         }),
-      gName: yup.string().required(),
-      relation: yup.string().required(),
-      gEmail: yup.string().required(),
-      gMobile_no: yup.string().required(),
     }),
     onSubmit: async (values) => {
-      console.log(values);
-      const { success } = await createStudent(values);
+      const data = {
+        parentData: {
+          name: values.gname,
+          email: values.gemail,
+          relation: values.relation,
+          phoneNumber: values.gphoneNumber,
+          city: values.gcity,
+        },
+        ...values,
+      };
+      const dataAny = data as any;
+      delete dataAny.gname;
+      delete dataAny.gemail;
+      delete dataAny.relation;
+      delete dataAny.gphoneNumber;
+      delete dataAny.gcity;
+      delete dataAny.submit;
+
+      const { success } = await createStudent(data);
       if (success) {
         formik.resetForm();
       }
@@ -123,7 +136,7 @@ const CreateStudent = () => {
     event.preventDefault();
   };
   return (
-    <Box sx={{ margin: 1 }}>
+    <Box sx={{ margin: 1, scrollBehavior: "auto" }}>
       <form onSubmit={formik.handleSubmit}>
         <Divider textAlign="left" sx={{ m: 1 }}>
           <Chip label="Student Details" sx={{ fontWeight: "600" }} />
@@ -149,6 +162,7 @@ const CreateStudent = () => {
           value={formik.values.firstName}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -174,6 +188,7 @@ const CreateStudent = () => {
           value={formik.values.lastName}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -226,6 +241,7 @@ const CreateStudent = () => {
           value={formik.values.phoneNumber}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -242,7 +258,14 @@ const CreateStudent = () => {
           variant="outlined"
         >
           {" "}
-          <InputLabel id="outlined-adornment-gender">Gender</InputLabel>
+          <InputLabel
+            sx={{
+              top: -6,
+            }}
+            id="outlined-adornment-gender"
+          >
+            Gender
+          </InputLabel>
           <Select
             name="gender"
             id="outlined-adornment-gender"
@@ -278,6 +301,7 @@ const CreateStudent = () => {
           value={formik.values.city}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -307,6 +331,7 @@ const CreateStudent = () => {
           value={formik.values.username}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -332,6 +357,7 @@ const CreateStudent = () => {
           value={formik.values.email}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -408,6 +434,7 @@ const CreateStudent = () => {
           value={formik.values.confirmPassword}
           InputProps={{
             style: {
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             },
           }}
@@ -415,108 +442,185 @@ const CreateStudent = () => {
         <Divider textAlign="left" sx={{ m: 1 }}>
           <Chip label="Guardian Details" sx={{ fontWeight: "600" }} />
         </Divider>
+        <FormControlLabel
+          sx={{ width: "100%" }}
+          control={<Checkbox value={flag} onChange={handleChange} />}
+          label="Guardian Already Exist"
+        />
+        {flag ? (
+          <FormControl
+            sx={{
+              width: { xs: "100%", sm: "32%" },
+              "& .MuiInputBase-root": {
+                height: 40,
+              },
+              mr: 1,
+              marginTop: 2,
+            }}
+            variant="outlined"
+          >
+            {" "}
+            <InputLabel
+              sx={{
+                top: -6,
+              }}
+              id="outlined-adornment-guardian"
+            >
+              Guardian
+            </InputLabel>
+            <Select
+              name="Guardian"
+              id="outlined-adornment-guardian"
+              labelId="outlined-adornment-guardian"
+              value={formik.values.gender}
+              onChange={formik.handleChange}
+            >
+              {genders.map((guardian) => (
+                <MenuItem key={guardian} value={guardian}>
+                  {guardian}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          <>
+            <TextField
+              size="small"
+              sx={{
+                width: { xs: "100%", sm: "48.5%" },
+                "& .MuiInputBase-root": {
+                  height: 40,
+                },
+                mr: 1,
+              }}
+              error={Boolean(formik.touched.gname && formik.errors.gname)}
+              // @ts-ignore
+              helperText={formik.touched.gname && formik.errors.gname}
+              label="Name"
+              margin="normal"
+              id="gname"
+              name="gname"
+              type="text"
+              onChange={formik.handleChange}
+              value={formik.values.gname}
+              InputProps={{
+                style: {
+                  paddingLeft: "6px",
+                  fontFamily: "sans-serif",
+                },
+              }}
+            />
+            <TextField
+              size="small"
+              sx={{
+                width: { xs: "100%", sm: "48.5%" },
+                "& .MuiInputBase-root": {
+                  height: 40,
+                },
+                mr: 1,
+              }}
+              error={Boolean(formik.touched.relation && formik.errors.relation)}
+              // @ts-ignore
+              helperText={formik.touched.relation && formik.errors.relation}
+              label="Relation"
+              margin="normal"
+              id="relation"
+              name="relation"
+              type="text"
+              onChange={formik.handleChange}
+              value={formik.values.relation}
+              InputProps={{
+                style: {
+                  paddingLeft: "6px",
+                  fontFamily: "sans-serif",
+                },
+              }}
+            />
 
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: "100%", sm: "24%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.gName && formik.errors.gName)}
-          // @ts-ignore
-          helperText={formik.touched.gName && formik.errors.gName}
-          label="gName"
-          margin="normal"
-          id="gName"
-          name="gName"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.gName}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: "100%", sm: "24%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.relation && formik.errors.relation)}
-          // @ts-ignore
-          helperText={formik.touched.relation && formik.errors.relation}
-          label="relation"
-          margin="normal"
-          id="relation"
-          name="relation"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.relation}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
-
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: "100%", sm: "24%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.gEmail && formik.errors.gEmail)}
-          // @ts-ignore
-          helperText={formik.touched.gEmail && formik.errors.gEmail}
-          label="gEmail"
-          margin="normal"
-          id="gEmail"
-          name="gEmail"
-          type="gEmail"
-          onChange={formik.handleChange}
-          value={formik.values.gEmail}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: "100%", sm: "24%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.gMobile_no && formik.errors.gMobile_no)}
-          // @ts-ignore
-          helperText={formik.touched.gMobile_no && formik.errors.gMobile_no}
-          label="gMobile_no"
-          margin="normal"
-          id="gMobile_no"
-          name="gMobile_no"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.gMobile_no}
-          InputProps={{
-            style: {
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
+            <TextField
+              size="small"
+              sx={{
+                width: { xs: "100%", sm: "32%" },
+                "& .MuiInputBase-root": {
+                  height: 40,
+                },
+                mr: 1,
+              }}
+              error={Boolean(formik.touched.gemail && formik.errors.gemail)}
+              // @ts-ignore
+              helperText={formik.touched.gemail && formik.errors.gemail}
+              label="Email"
+              margin="normal"
+              id="gemail"
+              name="gemail"
+              type="email"
+              onChange={formik.handleChange}
+              value={formik.values.gemail}
+              InputProps={{
+                style: {
+                  paddingLeft: "6px",
+                  fontFamily: "sans-serif",
+                },
+              }}
+            />
+            <TextField
+              size="small"
+              sx={{
+                width: { xs: "100%", sm: "32%" },
+                "& .MuiInputBase-root": {
+                  height: 40,
+                },
+                mr: 1,
+              }}
+              error={Boolean(
+                formik.touched.gphoneNumber && formik.errors.gphoneNumber
+              )}
+              // @ts-ignore
+              helperText={
+                formik.touched.gphoneNumber && formik.errors.gphoneNumber
+              }
+              label="phoneNumber"
+              margin="normal"
+              id="gphoneNumber"
+              name="gphoneNumber"
+              type="text"
+              onChange={formik.handleChange}
+              value={formik.values.gphoneNumber}
+              InputProps={{
+                style: {
+                  paddingLeft: "6px",
+                  fontFamily: "sans-serif",
+                },
+              }}
+            />
+            <TextField
+              size="small"
+              sx={{
+                width: { xs: "100%", sm: "32%" },
+                "& .MuiInputBase-root": {
+                  height: 40,
+                },
+                mr: 1,
+              }}
+              error={Boolean(formik.touched.gcity && formik.errors.gcity)}
+              // @ts-ignore
+              helperText={formik.touched.gcity && formik.errors.gcity}
+              label="City"
+              margin="normal"
+              id="gcity"
+              name="gcity"
+              type="text"
+              onChange={formik.handleChange}
+              value={formik.values.gcity}
+              InputProps={{
+                style: {
+                  paddingLeft: "6px",
+                  fontFamily: "sans-serif",
+                },
+              }}
+            />
+          </>
+        )}
         <Divider sx={{ m: 1 }}></Divider>
         <div style={{ textAlign: "right" }}>
           <LoadingButton
