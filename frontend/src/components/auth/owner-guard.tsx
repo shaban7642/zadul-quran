@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import type { FC, ReactNode } from 'react';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
-import { useAuth } from '../../hooks/use-auth';
+import type { FC, ReactNode } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+import { useAuth } from "../../hooks/use-auth";
 
 interface OwnerGuardProps {
   children: ReactNode;
@@ -21,10 +21,10 @@ export const OwnerGuard: FC<OwnerGuardProps> = (props) => {
         return;
       }
 
-      if (user?.role !== 'owner') {
+      if (user?.roleId !== (1 || 2)) {
         router
           .push({
-            pathname: '/',
+            pathname: "/sessions",
             query: { returnUrl: router.asPath },
           })
           .catch(console.error);

@@ -37,7 +37,7 @@ export interface HeadCell {
   numeric: boolean;
 }
 interface StudentsTableProps {
-  roleId?: number;
+  roleId?: string;
 }
 export const StudentsTable: FC<StudentsTableProps> = (props) => {
   const { roleId } = props;
@@ -88,14 +88,11 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
   const getUsers = useCallback(
     async (rowsPerPage: number, page: number) => {
       try {
-        const data: any = await userApi.getUsers(rowsPerPage, page);
+        const data = await userApi.getUsers(rowsPerPage, page, roleId);
 
         if (isMounted()) {
-          const filtered: any[] = data.rows.filter(
-            (row: { roleId: number }) => row?.roleId === roleId
-          );
-          setUsers(filtered);
-          setUsersCount(filtered.length);
+          setUsers(data.rows);
+          setUsersCount(data.rows.length);
         }
       } catch (err) {
         console.log(err);

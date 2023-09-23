@@ -22,10 +22,15 @@ import { User } from "../../types/user";
 import toast from "react-hot-toast";
 
 export interface Data {
-  id: String;
+  id: number;
   username: String;
-  roleId: String;
-  department: String;
+  firstName: String;
+  lastName: String;
+  city: String;
+  gender: String;
+  birthDate: String;
+  roleId: number;
+  department: number;
   email: String;
   phoneNumber: String;
 }
@@ -38,11 +43,12 @@ export interface HeadCell {
 }
 
 interface UsersTableProps {
-  roleId?: number;
+  roleId?: string;
   depts: any[];
+  roles: any[];
 }
 export const UsersTable: FC<UsersTableProps> = (props) => {
-  const { roleId, depts } = props;
+  const { roleId, depts, roles } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
@@ -50,16 +56,16 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const headCells: readonly any[] = [
     {
-      id: "id",
-      numeric: false,
-      disablePadding: true,
-      label: "Staff Id",
-    },
-    {
       id: "username",
       numeric: false,
       disablePadding: true,
       label: "username",
+    },
+    {
+      id: "role",
+      numeric: false,
+      disablePadding: true,
+      label: "Role",
     },
     {
       id: "department",
@@ -90,21 +96,23 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
   const getUsers = useCallback(
     async (rowsPerPage: number, page: number) => {
       try {
-        const data: any = await userApi.getUsers(rowsPerPage, page);
+        let data: any = {};
 
         if (isMounted()) {
           if (roleId) {
-            const filtered: any[] = data.rows.filter(
-              (row: { roleId: number }) => row?.roleId === roleId
-            );
-            setUsers(filtered);
-            setUsersCount(filtered.length);
+            data = await userApi.getUsers(rowsPerPage, page, roleId);
+            setUsers(data.rows);
+            setUsersCount(data.rows.length);
           } else {
-            const filtered: any[] = data.rows.filter(
-              (row: { roleId: number }) => row?.roleId !== (4 || 5)
+            data = await userApi.getUsers(
+              rowsPerPage,
+              page,
+              "super_admin",
+              "admin",
+              "teacher"
             );
-            setUsers(filtered);
-            setUsersCount(filtered.length);
+            setUsers(data.rows);
+            setUsersCount(data.rows.length);
           }
         }
       } catch (err) {
@@ -224,6 +232,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
                     key={row?.id}
                     row={row}
                     depts={depts}
+                    roles={roles}
                     deleteUser={deleteUser}
                     labelId={labelId}
                     updateUser={updateUser}

@@ -105,38 +105,11 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       title: "Main",
       items: [
         {
-          title: "Employees",
-          path: "/employees",
-          icon: <UsersIcon fontSize="small" />,
-          disabled: false,
-          accessed: true,
-        },
-        {
-          title: "Students",
-          path: "/students",
-          icon: <ShiftsIcon fontSize="small" />,
-          disabled: false,
-          accessed: true,
-        },
-        {
           title: "Live Classes",
           path: "/sessions",
           icon: <BillsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
-        },
-      ],
-      accessed: true,
-    },
-    {
-      title: user && user.role === "owner" ? "managment" : "",
-      items: [
-        {
-          title: "Roles",
-          path: "/roles",
-          icon: <Settings fontSize="small" sx={{ color: "#FFFCF2" }} />,
-          disabled: false,
-          accessed: true, //giveAccess(["owner"])
         },
         {
           title: "Reports",
@@ -151,6 +124,33 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           icon: <ShiftsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
+        },
+      ],
+      accessed: true,
+    },
+    {
+      title: user && user.roleId === (1 || 2) ? "managment" : "",
+      items: [
+        {
+          title: "Employees",
+          path: "/employees",
+          icon: <UsersIcon fontSize="small" />,
+          disabled: false,
+          accessed: user.roleId === (1 || 2) ? true : false,
+        },
+        {
+          title: "Students",
+          path: "/students",
+          icon: <ShiftsIcon fontSize="small" />,
+          disabled: false,
+          accessed: user.roleId === (1 || 2) ? true : false,
+        },
+        {
+          title: "Roles",
+          path: "/roles",
+          icon: <Settings fontSize="small" sx={{ color: "#FFFCF2" }} />,
+          disabled: false,
+          accessed: user.roleId === (1 || 2) ? true : false,
         },
       ],
       accessed: true,

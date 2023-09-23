@@ -122,7 +122,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
           </TableCell>
         ))}
         <TableCell scope="row" sx={{}}>
-          <NextLink href={`/students/${row.id}`} passHref>
+          <NextLink href={`/profile/${row.id}`} passHref>
             <ArrowForwardIosSharp
               sx={{
                 color: "black",

@@ -88,29 +88,27 @@ const Reports: NextPage = () => {
     setValue(newValue);
   };
   return (
-    <DashboardLayout>
-      <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleChange} aria-label="Reports options">
-              <Tab label="List Reports" value="1" />
-              <Tab label="Add Reports" value="2" />
-            </TabList>
-          </Box>
-          <TabPanel value="1">
-            <ReportsTable
-              reports={reports}
-              getReports={getReports}
-              deleteReport={deleteReport}
-              updateReport={updateReport}
-            />
-          </TabPanel>
-          <TabPanel value="2">
-            <CreateReport createReport={createReport} />
-          </TabPanel>
-        </TabContext>
-      </Box>
-    </DashboardLayout>
+    <Box sx={{ width: "100%", typography: "body1" }}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
+          <TabList onChange={handleChange} aria-label="Reports options">
+            <Tab label="List Reports" value="1" />
+            <Tab label="Add Reports" value="2" />
+          </TabList>
+        </Box>
+        <TabPanel value="1">
+          <ReportsTable
+            reports={reports}
+            getReports={getReports}
+            deleteReport={deleteReport}
+            updateReport={updateReport}
+          />
+        </TabPanel>
+        <TabPanel value="2">
+          <CreateReport createReport={createReport} />
+        </TabPanel>
+      </TabContext>
+    </Box>
   );
 };
 

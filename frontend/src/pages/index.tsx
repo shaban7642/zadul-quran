@@ -4,6 +4,7 @@ import { Box, Card, Container, Divider, Link, Typography } from "@mui/material";
 import NextLink from "next/link";
 import { LightBgLogo } from "../components/light-bg-logo";
 import { LoginForm } from "../components/auth/login-form";
+import { GuestGuard } from "../components/auth/guest-guard";
 
 const Home: NextPage = () => {
   return (
@@ -84,5 +85,5 @@ const Home: NextPage = () => {
     </>
   );
 };
-
+Home.getLayout = (page) => <GuestGuard>{page}</GuestGuard>;
 export default Home;

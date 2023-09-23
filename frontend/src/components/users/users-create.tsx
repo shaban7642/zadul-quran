@@ -28,66 +28,43 @@ import { rolesApi } from "../../api/rolesApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { deptApi } from "../../api/deptApi";
 
-const genders = ["male", "female"];
-
 interface CreateTableProps {
   depts: any[];
+  roles: any[];
 }
 
 const CreateUser: FC<CreateTableProps> = (props) => {
-  const { depts } = props;
+  const { depts, roles } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
-  const [roles, setRoles] = useState([]);
+  const genders = ["male", "female"];
   const isMounted = useMounted();
-  const getRoles = useCallback(
-    async () => {
-      try {
-        const data: any = await rolesApi.getRoles();
 
-        if (isMounted()) {
-          setRoles(data.resp);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isMounted]
-  );
-  const createUser = async (values: any): Promise<{ success: boolean }> => {
+  const createUser = async (values: any) => {
+    console.log("fff");
     const load = toast.loading("create");
     try {
-      const resp = await userApi.createUser(values);
-      if (resp.success) {
-        toast.dismiss(load);
-        toast.success("createUserSuccess");
-        return { success: true };
-      } else {
-        toast.dismiss(load);
-        toast.error("createUserFailed");
-        return { success: false };
-      }
-    } catch (err: any) {
+      await userApi.createUser(values);
+
       toast.dismiss(load);
+      toast.success("createUserSuccess");
+    } catch (err: any) {
       toast.error(err.message || "createUsersFailed");
-      return { success: false };
     }
   };
-  useEffect(() => {
-    getRoles();
-  }, []);
+
   const formik = useFormik({
     initialValues: {
-      roleId: "",
+      roleId: 1,
       join_date: "",
+      name: "",
       username: "",
       firstName: "",
       lastName: "",
       city: "",
-      gender: genders[0],
+      gender: "",
       birthDate: "",
-      department: "",
+      department: 1,
       email: "",
       phoneNumber: "",
       password: "",
@@ -95,30 +72,17 @@ const CreateUser: FC<CreateTableProps> = (props) => {
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      roleId: yup.string().required(),
-      join_date: yup.date().required("staff_idIsRequired"),
-      username: yup.string().max(255).required("usernameIsRequired"),
-      firstName: yup.string().max(255).required("firstNameIsRequired"),
-      lastName: yup.string().max(255).required("lastNameIsRequired"),
-      city: yup.string().max(255).required("cityIsRequired"),
+      roleId: yup.number().required(),
+      join_date: yup.date().required("join date Is Required"),
+      username: yup.string().required("usernameIsRequired"),
+      firstName: yup.string().required("firstNameIsRequired"),
+      lastName: yup.string().required("lastNameIsRequired"),
+      city: yup.string().required("cityIsRequired"),
       gender: yup.string().required(),
       birthDate: yup.date().required(),
-      depatment: yup.string().required(),
-      email: yup
-        .string()
-        .email("emailAddress")
-        .max(255)
-        .required("emailIsRequired"),
-      gEmail: yup
-        .string()
-        .email("emailAddress")
-        .max(255)
-        .required("emailIsRequired"),
-      phoneNumber: yup
-        .string()
-        .min(11, "phoneNumberLengthMessage")
-        .required("phoneNumberIsRequired"),
-      password: yup.string().min(7).max(255).required("passwordIsRequired"),
+      email: yup.string().email("emailAddress").required("emailIsRequired"),
+      phoneNumber: yup.string().required("phoneNumberIsRequired"),
+      password: yup.string().min(7).required("passwordIsRequired"),
       confirmPassword: yup
         .string()
         .test("passwords-match", "passwordMustMatch", function (value) {
@@ -126,10 +90,12 @@ const CreateUser: FC<CreateTableProps> = (props) => {
         }),
     }),
     onSubmit: async (values) => {
-      const { success } = await createUser(values);
-      console.log(values);
-      if (success) {
+      try {
+        await createUser(values);
+
         formik.resetForm();
+      } catch (error) {
+        console.log(error);
       }
     },
   });
@@ -151,7 +117,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
   ) => {
     event.preventDefault();
   };
-  const theme = useTheme();
+
   return (
     <Box sx={{ margin: 1, scrollBehavior: "auto" }}>
       <form onSubmit={formik.handleSubmit}>
@@ -185,7 +151,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
             value={formik.values.roleId}
             onChange={formik.handleChange}
           >
-            {roles.map((roleId) => (
+            {roles?.map((roleId) => (
               <MenuItem
                 sx={{
                   color: "black",
@@ -256,7 +222,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
             value={formik.values.department}
             onChange={formik.handleChange}
           >
-            {depts.map((department) => (
+            {depts?.map((department) => (
               <MenuItem
                 sx={{
                   color: "black",
@@ -270,7 +236,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
                   fontFamily: "sans-serif",
                 }}
                 key={department?.id}
-                value={department?.name}
+                value={department?.id}
               >
                 {department?.name}
               </MenuItem>

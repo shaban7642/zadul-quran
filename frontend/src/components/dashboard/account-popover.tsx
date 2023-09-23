@@ -69,15 +69,13 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
       <Divider />
 
       <Box sx={{ my: 1 }}>
-        {user?.role === "owner" && (
-          <MenuItem>
-            <NextLink href="/profile" passHref>
-              <ListItemText
-                primary={<Typography variant="body1">profile</Typography>}
-              />
-            </NextLink>
-          </MenuItem>
-        )}
+        <MenuItem>
+          <NextLink href={`/profile/${user?.id}`} passHref>
+            <ListItemText
+              primary={<Typography variant="body1">profile</Typography>}
+            />
+          </NextLink>
+        </MenuItem>
 
         <Divider />
         <MenuItem onClick={handleLogout}>

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { get } from "lodash";
 import { useAuth } from "../hooks/use-auth";
 

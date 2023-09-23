@@ -18,7 +18,6 @@ export const GuestGuard: FC<GuestGuardProps> = (props) => {
       if (!router.isReady) {
         return;
       }
-
       if (auth.isAuthenticated) {
         router.push("/sessions").catch(console.error);
       } else {

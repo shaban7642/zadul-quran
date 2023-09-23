@@ -5,22 +5,21 @@ import { Box, Tab, Typography } from "@mui/material";
 
 import { RolesTable } from "../../components/roles/roles-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
+import { OwnerGuard } from "../../components/auth/owner-guard";
 
 const Roles: NextPage = () => {
   return (
-    <DashboardLayout>
-      <Box sx={{ width: "100%", typography: "body1" }}>
-        <RolesTable />
-      </Box>
-    </DashboardLayout>
+    <Box sx={{ width: "100%", typography: "body1" }}>
+      <RolesTable />
+    </Box>
   );
 };
 
 Roles.getLayout = (page) => (
   <AuthGuard>
-    {/* <OwnerGuard> */}
-    <DashboardLayout>{page}</DashboardLayout>
-    {/* </OwnerGuard> */}
+    <OwnerGuard>
+      <DashboardLayout>{page}</DashboardLayout>
+    </OwnerGuard>
   </AuthGuard>
 );
 

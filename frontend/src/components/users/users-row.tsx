@@ -27,18 +27,19 @@ interface RowProps {
   row: any;
   labelId: string;
   depts: any[];
+  roles: any[];
   updateUser: (id: any, userData: any) => Promise<{ success: boolean }>;
   deleteUser: (id: any) => Promise<{ success: boolean }>;
 }
 
 export const UsersRow: FC<RowProps> = (props) => {
-  const { row, labelId, depts, updateUser, deleteUser } = props;
+  const { row, labelId, depts, roles, updateUser, deleteUser } = props;
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const rows = [
-    row?.id || "no data",
     row?.username || "no data",
+    row?.role?.displayName || "no data",
     row?.department || "no data",
     row?.email || "no data",
     row?.phoneNumber || "no data",
@@ -63,28 +64,19 @@ export const UsersRow: FC<RowProps> = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      id: row?.id,
       username: row?.username,
+      roleId: row?.roleId,
       department: row?.department,
       email: row?.email,
       phoneNumber: row?.phoneNumber,
-      password: "",
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      id: yup.string().max(255).required("idIsRequired"),
+      roleId: yup.number(),
+      id: yup.string().max(255),
       username: yup.string().max(255),
-      department: yup.string().max(255),
-      email: yup
-        .string()
-        .email("emailAddress")
-        .max(255)
-        .required("emailIsRequired"),
-      phoneNumber: yup
-        .string()
-        .min(11, "phoneNumberLengthMessage")
-        .required("phoneNumberIsRequired"),
-      password: yup.string().min(6).max(255),
+      email: yup.string().email("emailAddress").max(255),
+      phoneNumber: yup.string().min(11, "phoneNumberLengthMessage"),
     }),
     onSubmit: async (values) => {
       const flattened = flattenObject(formik.initialValues);
@@ -108,12 +100,11 @@ export const UsersRow: FC<RowProps> = (props) => {
   useEffect(() => {
     if (row) {
       formik.setValues({
-        id: row?.id,
         username: row?.username,
+        roleId: row?.roleId,
         department: row?.department,
         email: row?.email,
         phoneNumber: row?.phoneNumber,
-        password: "",
       });
     }
   }, [row]);
@@ -134,7 +125,7 @@ export const UsersRow: FC<RowProps> = (props) => {
           </TableCell>
         ))}
         <TableCell scope="row" sx={{}}>
-          <NextLink href={`/employees/${row.id}`} passHref>
+          <NextLink href={`/profile/${row.id}`} passHref>
             <ArrowForwardIosSharp
               sx={{
                 color: "black",
@@ -216,42 +207,22 @@ export const UsersRow: FC<RowProps> = (props) => {
                 >
                   {" "}
                   <InputLabel
-                    id="outlined-adornment-department"
                     sx={{
                       top: -6,
-                      ...(true && {
-                        bgcolor: (theme) =>
-                          alpha(
-                            theme.palette.info.contrastText,
-                            theme.palette.action.activatedOpacity
-                          ),
-                      }),
                     }}
+                    id="outlined-adornment-roleId"
                   >
-                    Department
+                    Role
                   </InputLabel>
                   <Select
-                    name="department"
-                    id="outlined-adornment-department"
-                    labelId="outlined-adornment-department"
-                    value={formik.values.department}
+                    name="roleId"
+                    id="outlined-adornment-roleId"
+                    labelId="outlined-adornment-roleId"
+                    value={formik.values.roleId}
                     onChange={formik.handleChange}
-                    sx={{
-                      color: "black",
-                      ...(true && {
-                        bgcolor: (theme) =>
-                          alpha(
-                            theme.palette.info.contrastText,
-                            theme.palette.action.activatedOpacity
-                          ),
-                      }),
-                      fontFamily: "sans-serif",
-                    }}
                   >
-                    {depts?.map((department) => (
+                    {roles?.map((roleId) => (
                       <MenuItem
-                        key={department}
-                        value={department}
                         sx={{
                           color: "black",
                           ...(true && {
@@ -263,8 +234,58 @@ export const UsersRow: FC<RowProps> = (props) => {
                           }),
                           fontFamily: "sans-serif",
                         }}
+                        key={roleId?.id}
+                        value={roleId?.id}
                       >
-                        {department.name}
+                        {roleId?.displayName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl
+                  sx={{
+                    width: { xs: "18%" },
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                    mr: 1,
+                    marginTop: 2,
+                  }}
+                  variant="outlined"
+                >
+                  {" "}
+                  <InputLabel
+                    sx={{
+                      top: -6,
+                    }}
+                    id="outlined-adornment-department"
+                  >
+                    Department
+                  </InputLabel>
+                  <Select
+                    name="department"
+                    id="outlined-adornment-department"
+                    labelId="outlined-adornment-department"
+                    value={formik.values.department}
+                    onChange={formik.handleChange}
+                  >
+                    {depts?.map((department) => (
+                      <MenuItem
+                        sx={{
+                          color: "black",
+                          ...(true && {
+                            bgcolor: (theme) =>
+                              alpha(
+                                theme.palette.info.contrastText,
+                                theme.palette.action.activatedOpacity
+                              ),
+                          }),
+                          fontFamily: "sans-serif",
+                        }}
+                        key={department?.id}
+                        value={department?.id}
+                      >
+                        {department?.name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -319,34 +340,6 @@ export const UsersRow: FC<RowProps> = (props) => {
                   type="text"
                   onChange={formik.handleChange}
                   value={formik.values.phoneNumber}
-                  InputProps={{
-                    style: {
-                      color: "black",
-                      fontFamily: "sans-serif",
-                    },
-                  }}
-                />
-                <TextField
-                  size="small"
-                  sx={{
-                    width: { xs: "18%" },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  error={Boolean(
-                    formik.touched.password && formik.errors.password
-                  )}
-                  // @ts-ignore
-                  helperText={formik.touched.password && formik.errors.password}
-                  label="password"
-                  margin="normal"
-                  id="password"
-                  name="password"
-                  type="password"
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
                   InputProps={{
                     style: {
                       color: "black",

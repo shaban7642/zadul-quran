@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { Box } from "@mui/material";
 import { DocumentTable } from "../../components/documents/doc-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
+import { OwnerGuard } from "../../components/auth/owner-guard";
 
 const Documents: NextPage = () => {
   return (
@@ -17,9 +18,7 @@ const Documents: NextPage = () => {
 
 Documents.getLayout = (page) => (
   <AuthGuard>
-    {/* <OwnerGuard> */}
     <DashboardLayout>{page}</DashboardLayout>
-    {/* </OwnerGuard> */}
   </AuthGuard>
 );
 

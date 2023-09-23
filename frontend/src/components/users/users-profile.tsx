@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -24,24 +24,70 @@ import { get } from "lodash";
 import { useRouter } from "next/router";
 import { Data } from "./users-table";
 import { userApi } from "../../api/userApi";
-/* eslint-disable */
-const departments = ["Admin", "Teacher", "Accountant"];
+import { rolesApi } from "../../api/rolesApi";
+import { useMounted } from "../../hooks/use-mounted";
+import { deptApi } from "../../api/deptApi";
+import moment from "moment";
 
+interface RoleId {
+  displayName: string;
+  id: number;
+  name: string;
+}
 interface profileProps {
-  id: string;
+  id: number;
 }
 export const Profile: FC<profileProps> = (props) => {
   const { id } = props;
+  const [roles, setRoles] = useState<RoleId[]>([]);
+  const [depts, setDepts] = useState([]);
+  const genders = ["male", "female"];
+  const isMounted = useMounted();
   const [userData, setUserData] = useState<Data>({
-    id: "",
+    id: 1,
+    roleId: 1,
     username: "",
-    roleId: "",
-
-    department: "",
+    firstName: "",
+    lastName: "",
+    city: "",
+    gender: "",
+    birthDate: "",
+    department: 1,
     email: "",
     phoneNumber: "",
   });
+  const getDepts = useCallback(async () => {
+    try {
+      const data: any = await deptApi.getDepts();
+      if (isMounted()) {
+        setDepts(data.rows);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "failed");
+    }
+  }, [isMounted]);
+  const getRoles = useCallback(
+    async () => {
+      try {
+        const data: any = await rolesApi.getRoles();
 
+        if (isMounted()) {
+          setRoles(data.resp);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isMounted]
+  );
+
+  useEffect(() => {
+    getDepts();
+  }, []);
+  useEffect(() => {
+    getRoles();
+  }, []);
   const getProfile = async (id: number) => {
     try {
       const resp = await userApi.getUserById(id);
@@ -53,33 +99,37 @@ export const Profile: FC<profileProps> = (props) => {
   };
   const formik = useFormik({
     initialValues: {
-      id: userData?.id,
+      roleId: userData?.roleId,
       username: userData?.username,
-
+      firstName: userData?.firstName,
+      lastName: userData?.lastName,
+      city: userData?.city,
+      gender: userData?.gender,
+      birthDate: userData?.birthDate,
       department: userData?.department,
       email: userData?.email,
       phoneNumber: userData?.phoneNumber,
-      password: "",
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      id: yup.string().max(255).required("idIsRequired"),
-      username: yup.string().max(255),
-
-      department: yup.string().max(255),
-      email: yup
-        .string()
-        .email("emailAddress")
-        .max(255)
-        .required("emailIsRequired"),
-      phoneNumber: yup
-        .string()
-        .min(11, "phoneNumberLengthMessage")
-        .required("phoneNumberIsRequired"),
-      password: yup.string().min(6).max(255),
+      roleId: yup.number(),
+      username: yup.string(),
+      firstName: yup.string(),
+      lastName: yup.string(),
+      city: yup.string(),
+      gender: yup.string(),
+      birthDate: yup.date(),
+      email: yup.string().email("emailAddress"),
+      phoneNumber: yup.string(),
     }),
-    onSubmit: (values) => {
-      updateProfile(values);
+    onSubmit: async (values) => {
+      try {
+        await updateProfile(values);
+
+        formik.resetForm();
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
@@ -117,7 +167,8 @@ export const Profile: FC<profileProps> = (props) => {
               display: "flex",
               flexDirection: "column",
               padding: "40px 60px",
-              height: "400px",
+              minHeight: "280px",
+
               m: 1,
               ...(true && {
                 bgcolor: (theme) =>
@@ -131,12 +182,77 @@ export const Profile: FC<profileProps> = (props) => {
             <Typography color="inherit" variant="h6">
               prsonal info
             </Typography>
-            <List>
-              <ListItem>username: {userData.username}</ListItem>
-              <ListItem>email: {userData.email}</ListItem>
-              <ListItem>phone_number: {userData.phoneNumber}</ListItem>
-              <ListItem>role: {userData.roleId}</ListItem>
-            </List>
+
+            <Grid container component={List}>
+              <Grid item xs={6}>
+                {" "}
+                <ListItem>
+                  Username:{" "}
+                  <Typography color={"black"}>
+                    {userData?.username || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  Email:{" "}
+                  <Typography color={"black"}>
+                    {userData?.email || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  First name:{" "}
+                  <Typography color={"black"}>
+                    {userData?.firstName || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  Last name:{" "}
+                  <Typography color={"black"}>
+                    {userData?.lastName || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  City:{" "}
+                  <Typography color={"black"}>
+                    {userData?.city || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+              </Grid>
+              <Grid item xs={6}>
+                <ListItem>
+                  Role:{" "}
+                  <Typography color={"black"}>
+                    {userData?.roleId || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  Department:{" "}
+                  <Typography color={"black"}>
+                    {userData?.department || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  Gender:{" "}
+                  <Typography color={"black"}>
+                    {userData?.gender || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  Date of birth:
+                  <Typography color={"black"}>
+                    {" "}
+                    {moment(userData?.birthDate.toString() || "No data").format(
+                      "MMM-D-YYYY"
+                    )}
+                  </Typography>{" "}
+                </ListItem>
+                <ListItem>
+                  Phone number:{" "}
+                  <Typography color={"black"}>
+                    {userData?.phoneNumber || "No data"}
+                  </Typography>{" "}
+                </ListItem>
+              </Grid>
+            </Grid>
           </Paper>
         </Grid>
         <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -145,6 +261,7 @@ export const Profile: FC<profileProps> = (props) => {
             sx={{
               m: 1,
               p: 2,
+              minHeight: "280px",
               ...(true && {
                 bgcolor: (theme) =>
                   alpha(
@@ -158,38 +275,12 @@ export const Profile: FC<profileProps> = (props) => {
               <TextField
                 size="small"
                 sx={{
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%" },
                   "& .MuiInputBase-root": {
                     height: 40,
                   },
                   mr: 1,
-                  mb: 0,
-                  mt: 2,
-                }}
-                error={Boolean(formik.touched.id && formik.errors.id)}
-                // @ts-ignore
-                helperText={formik.touched.id && formik.errors.id}
-                label="id"
-                margin="normal"
-                id="id"
-                name="id"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.id}
-                InputProps={{
-                  style: {
-                    fontFamily: "sans-serif",
-                  },
-                }}
-              />
-              <TextField
-                size="small"
-                sx={{
-                  "& .MuiInputBase-root": {
-                    height: 40,
-                  },
-                  mr: 1,
-                  mb: 0,
-                  mt: 2,
                 }}
                 error={Boolean(
                   formik.touched.username && formik.errors.username
@@ -206,51 +297,19 @@ export const Profile: FC<profileProps> = (props) => {
                 InputProps={{
                   style: {
                     fontFamily: "sans-serif",
+                    color: "black",
                   },
                 }}
               />
-
-              <FormControl
-                sx={{
-                  width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                  "& .MuiInputBase-root": {
-                    height: 40,
-                  },
-
-                  mr: 1,
-                  mb: 0,
-                  mt: 2,
-                }}
-                variant="outlined"
-              >
-                {" "}
-                <InputLabel id="outlined-adornment-department">
-                  Department
-                </InputLabel>
-                <Select
-                  name="department"
-                  id="outlined-adornment-department"
-                  labelId="outlined-adornment-department"
-                  value={formik.values.department}
-                  onChange={formik.handleChange}
-                >
-                  {departments.map((department) => (
-                    <MenuItem key={department} value={department}>
-                      {department}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
               <TextField
                 size="small"
                 sx={{
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%" },
                   "& .MuiInputBase-root": {
                     height: 40,
                   },
                   mr: 1,
-                  mb: 0,
-                  mt: 2,
                 }}
                 error={Boolean(formik.touched.email && formik.errors.email)}
                 // @ts-ignore
@@ -265,13 +324,272 @@ export const Profile: FC<profileProps> = (props) => {
                 InputProps={{
                   style: {
                     fontFamily: "sans-serif",
+                    color: "black",
                   },
                 }}
               />
               <TextField
                 size="small"
                 sx={{
-                  width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%", md: "31.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                }}
+                error={Boolean(
+                  formik.touched.firstName && formik.errors.firstName
+                )}
+                // @ts-ignore
+                helperText={formik.touched.firstName && formik.errors.firstName}
+                label="First Name"
+                margin="normal"
+                id="firstName"
+                name="firstName"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.firstName}
+                InputProps={{
+                  style: {
+                    fontFamily: "sans-serif",
+                    color: "black",
+                  },
+                }}
+              />
+              {/* lastname */}
+              <TextField
+                size="small"
+                sx={{
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%", md: "31.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                }}
+                error={Boolean(
+                  formik.touched.lastName && formik.errors.lastName
+                )}
+                // @ts-ignore
+                helperText={formik.touched.lastName && formik.errors.lastName}
+                label="Last Name"
+                margin="normal"
+                id="lastName"
+                name="lastName"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.lastName}
+                InputProps={{
+                  style: {
+                    fontFamily: "sans-serif",
+                    color: "black",
+                  },
+                }}
+              />
+              <TextField
+                size="small"
+                sx={{
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%", md: "31.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                }}
+                error={Boolean(formik.touched.city && formik.errors.city)}
+                // @ts-ignore
+                helperText={formik.touched.city && formik.errors.city}
+                label="city"
+                margin="normal"
+                id="city"
+                name="city"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.city}
+                InputProps={{
+                  style: {
+                    fontFamily: "sans-serif",
+                    color: "black",
+                  },
+                }}
+              />
+              <FormControl
+                sx={{
+                  width: { xs: "100%", sm: "47.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                  marginTop: 3,
+                }}
+                variant="outlined"
+              >
+                {" "}
+                <InputLabel
+                  sx={{
+                    top: -6,
+                  }}
+                  id="outlined-adornment-roleId"
+                >
+                  Role
+                </InputLabel>
+                <Select
+                  name="roleId"
+                  id="outlined-adornment-roleId"
+                  labelId="outlined-adornment-roleId"
+                  value={formik.values.roleId}
+                  onChange={formik.handleChange}
+                >
+                  {roles?.map((roleId) => (
+                    <MenuItem
+                      sx={{
+                        color: "black",
+                        ...(true && {
+                          bgcolor: (theme) =>
+                            alpha(
+                              theme.palette.info.contrastText,
+                              theme.palette.action.activatedOpacity
+                            ),
+                        }),
+                        fontFamily: "sans-serif",
+                      }}
+                      key={roleId?.id}
+                      value={roleId?.id}
+                    >
+                      {roleId?.displayName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl
+                sx={{
+                  width: { xs: "100%", sm: "47.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                  marginTop: 3,
+                }}
+                variant="outlined"
+              >
+                {" "}
+                <InputLabel
+                  sx={{
+                    top: -6,
+                  }}
+                  id="outlined-adornment-department"
+                >
+                  Department
+                </InputLabel>
+                <Select
+                  name="department"
+                  id="outlined-adornment-department"
+                  labelId="outlined-adornment-department"
+                  value={formik.values.department}
+                  onChange={formik.handleChange}
+                >
+                  {depts?.map((department) => (
+                    <MenuItem
+                      sx={{
+                        color: "black",
+                        ...(true && {
+                          bgcolor: (theme) =>
+                            alpha(
+                              theme.palette.info.contrastText,
+                              theme.palette.action.activatedOpacity
+                            ),
+                        }),
+                        fontFamily: "sans-serif",
+                      }}
+                      key={department?.id}
+                      value={department?.id}
+                    >
+                      {department?.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl
+                sx={{
+                  width: { xs: "100%", sm: "47.5%", md: "31.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                  marginTop: 3,
+                }}
+                variant="outlined"
+              >
+                {" "}
+                <InputLabel
+                  sx={{
+                    top: -6,
+                  }}
+                  id="outlined-gender"
+                >
+                  Gender
+                </InputLabel>
+                <Select
+                  name="gender"
+                  id="outlined-gender"
+                  labelId="outlined-gender"
+                  value={formik.values.gender}
+                  onChange={formik.handleChange}
+                >
+                  {genders.map((gender) => (
+                    <MenuItem
+                      sx={{
+                        color: "black",
+                        ...(true && {
+                          bgcolor: (theme) =>
+                            alpha(
+                              theme.palette.info.contrastText,
+                              theme.palette.action.activatedOpacity
+                            ),
+                        }),
+                        fontFamily: "sans-serif",
+                      }}
+                      key={gender}
+                      value={gender}
+                    >
+                      {gender}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                size="small"
+                sx={{
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%", md: "31.5%" },
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                  mr: 1,
+                }}
+                error={Boolean(
+                  formik.touched.birthDate && formik.errors.birthDate
+                )}
+                // @ts-ignore
+                helperText={formik.touched.birthDate && formik.errors.birthDate}
+                label="Date Of Birth"
+                margin="normal"
+                id="birthDate"
+                name="birthDate"
+                type="date"
+                onChange={formik.handleChange}
+                value={formik.values.birthDate}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+
+              <TextField
+                size="small"
+                sx={{
+                  mt: 3,
+                  width: { xs: "100%", sm: "47.5%", md: "31.5%" },
                   "& .MuiInputBase-root": {
                     height: 40,
                   },
@@ -294,44 +612,25 @@ export const Profile: FC<profileProps> = (props) => {
                 InputProps={{
                   style: {
                     fontFamily: "sans-serif",
+                    color: "black",
                   },
                 }}
               />
-              <TextField
-                size="small"
-                sx={{
-                  "& .MuiInputBase-root": {
-                    height: 40,
-                  },
-                  mr: 1,
-                  mb: 0,
-                  mt: 2,
-                }}
-                error={Boolean(
-                  formik.touched.password && formik.errors.password
-                )}
-                // @ts-ignore
-                helperText={formik.touched.password && formik.errors.password}
-                label="password"
-                margin="normal"
-                id="password"
-                name="password"
-                type="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                InputProps={{
-                  style: {
-                    fontFamily: "sans-serif",
-                  },
-                }}
-              />
-              <LoadingButton
-                type="submit"
-                sx={{ m: 1, mt: 2 }}
-                variant="contained"
-              >
-                submit
-              </LoadingButton>
+              <div style={{ textAlign: "right" }}>
+                <LoadingButton
+                  type="submit"
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                    m: 0.5,
+                    p: 1,
+                  }}
+                  variant="contained"
+                >
+                  Save
+                </LoadingButton>
+              </div>
             </form>
           </Paper>
         </Grid>
