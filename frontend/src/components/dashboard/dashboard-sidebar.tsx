@@ -10,6 +10,8 @@ import PropTypes from "prop-types";
 import { DashboardSidebarSection } from "./dashboard-sidebar-section";
 import { ChartIcon } from "../../icons/chart";
 import { UsersIcon } from "../../icons/users";
+import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import { FoodMenuIcon } from "../../icons/food-menu";
 import { ShiftsIcon } from "../../icons/shifts";
 import { BillsIcon } from "../../icons/bills";
@@ -107,7 +109,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
         {
           title: "Live Classes",
           path: "/sessions",
-          icon: <BillsIcon fontSize="small" />,
+          icon: <ShiftsIcon fontSize="small" />,
           disabled: false,
           accessed: true,
         },
@@ -121,7 +123,10 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
         {
           title: "Documents",
           path: "/documents",
-          icon: <ShiftsIcon fontSize="small" />,
+
+          icon: (
+            <SummarizeOutlinedIcon fontSize="small" sx={{ color: "#FFFCF2" }} />
+          ),
           disabled: false,
           accessed: true,
         },
@@ -141,7 +146,9 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
         {
           title: "Students",
           path: "/students",
-          icon: <ShiftsIcon fontSize="small" />,
+          icon: (
+            <SchoolOutlinedIcon fontSize="small" sx={{ color: "#FFFCF2" }} />
+          ),
           disabled: false,
           accessed: user.roleId === (1 || 2) ? true : false,
         },
