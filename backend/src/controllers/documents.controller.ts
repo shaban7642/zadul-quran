@@ -61,7 +61,7 @@ class DocumentsController {
 
       const resp = await this.documentsService.createOne({
         documentTypeId: documentType.id,
-        userId,
+        userId: +userId,
         fileName: file.filename,
         fileType: file.mimetype,
         fileStoragePath: file.path,

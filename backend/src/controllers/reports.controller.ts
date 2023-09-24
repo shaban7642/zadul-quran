@@ -14,6 +14,7 @@ import { getPagination, getOrderOptions } from '../utils/sequelize';
 import Documents from '../db/models/documents.model';
 import Sessions from '../db/models/sessions.model';
 import Departments from '../db/models/departments.model';
+import Patches from '../db/models/patches.model';
 
 @injectable()
 class ReportsController {
@@ -41,7 +42,9 @@ class ReportsController {
         include: [
           { model: Documents },
           { model: UserModel },
-          { model: Sessions, include: [{ model: Departments }] },
+          {
+            model: Sessions,
+          },
         ],
         ...getPagination(limit, offset),
         ...getOrderOptions([

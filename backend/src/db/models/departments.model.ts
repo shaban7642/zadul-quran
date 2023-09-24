@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
-import Sessions from './sessions.model';
+import Patches from './patches.model';
 
 class Departments extends Model {
   public id!: number;
@@ -36,7 +36,7 @@ class Departments extends Model {
   }
 
   public static initAssociation(): void {
-    this.hasMany(Sessions);
+    this.hasMany(Patches);
   }
 }
 

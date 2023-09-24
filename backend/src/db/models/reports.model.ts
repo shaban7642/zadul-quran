@@ -72,7 +72,7 @@ class Reports extends Model {
   public static initAssociation(): void {
     this.belongsTo(User);
     this.belongsTo(Sessions);
-    this.hasOne(Documents);
+    this.belongsTo(Documents);
   }
 }
 

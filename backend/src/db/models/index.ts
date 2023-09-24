@@ -29,7 +29,7 @@ const sqlInitialize = () => {
     {
       host: process.env.POSTGRES_HOST,
       dialect: 'postgres',
-      logging: false,
+      logging: true,
       pool: {
         min: 0,
         max: 50,

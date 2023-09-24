@@ -1,6 +1,7 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import DocumentTypes from './documentTypes.model';
 import User from './users.model';
+import Reports from './reports.model';
 
 class Documents extends Model {
   public id!: number;
