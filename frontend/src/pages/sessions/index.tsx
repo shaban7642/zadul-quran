@@ -6,6 +6,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CreateSession from "../../components/sessions/sessions-create";
 import { SessionsTable } from "../../components/sessions/sessions-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
+import { OwnerGuard } from "../../components/auth/owner-guard";
 
 const Session: NextPage = () => {
   const [value, setValue] = useState("1");
@@ -18,17 +19,21 @@ const Session: NextPage = () => {
         <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
           <TabList onChange={handleChange} aria-label="Session options">
             <Tab label="List Session" value="1" />
-            <Tab label="Add Session" value="2" />
-            <Tab label="Session" value="3" />
+            <OwnerGuard>
+              {" "}
+              <Tab label="Add Session" value="2" />{" "}
+            </OwnerGuard>
           </TabList>
         </Box>
         <TabPanel value="1">
           <SessionsTable roleId={4} />
         </TabPanel>
         <TabPanel value="2">
-          <CreateSession />
+          <OwnerGuard>
+            {" "}
+            <CreateSession />{" "}
+          </OwnerGuard>
         </TabPanel>
-        <TabPanel value="3"></TabPanel>
       </TabContext>
     </Box>
   );
