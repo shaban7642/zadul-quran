@@ -16,6 +16,7 @@ import HttpException from '../exceptions/HttpException';
 import Role from '../db/models/roles.model';
 import StudentParents from '../db/models/studentParents.model';
 import Parents from '../db/models/parents.model';
+import Departments from '../db/models/departments.model';
 
 @injectable()
 class UserController {
@@ -88,6 +89,7 @@ class UserController {
         include: [
           { model: Role, ...(roleQuery && { ...roleQuery }) },
           { model: StudentParents, include: [{ model: Parents }] },
+          { model: Departments },
         ],
         ...getPagination(limit, offset),
         ...getOrderOptions([

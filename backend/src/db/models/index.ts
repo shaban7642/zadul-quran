@@ -13,6 +13,7 @@ import DocumentTypes from './documentTypes.model';
 import Patches from './patches.model';
 import Sessions from './sessions.model';
 import Reports from './reports.model';
+import ZoomSessionMeetings from './zoomSessionMettings.model';
 
 console.info('Initializing sequelize...');
 
@@ -29,7 +30,7 @@ const sqlInitialize = () => {
     {
       host: process.env.POSTGRES_HOST,
       dialect: 'postgres',
-      logging: true,
+      logging: false,
       pool: {
         min: 0,
         max: 50,
@@ -49,9 +50,9 @@ export const initModels = async (sequelizeInst: Sequelize) => {
     await Role.initModel(sequelizeInst);
     await Permissions.initModel(sequelizeInst);
     await RolePermissions.initModel(sequelizeInst);
+    await Departments.initModel(sequelizeInst);
     await User.initModel(sequelizeInst);
     await UserAgents.initModel(sequelizeInst);
-    await Departments.initModel(sequelizeInst);
     await Parents.initModel(sequelizeInst);
     await StudentParents.initModel(sequelizeInst);
     await DocumentTypes.initModel(sequelizeInst);
@@ -59,6 +60,7 @@ export const initModels = async (sequelizeInst: Sequelize) => {
     await Patches.initModel(sequelizeInst);
     await Sessions.initModel(sequelizeInst);
     await Reports.initModel(sequelizeInst);
+    await ZoomSessionMeetings.initModel(sequelizeInst);
   } catch (error) {
     console.log(error);
   }
@@ -71,8 +73,8 @@ export const initAssociation = async () => {
     await Permissions.initAssociation();
     await RolePermissions.initAssociation();
     await User.initAssociation();
-    await UserAgents.initAssociation();
     await Departments.initAssociation();
+    await UserAgents.initAssociation();
     await Parents.initAssociation();
     await StudentParents.initAssociation();
     await DocumentTypes.initAssociation();
@@ -80,6 +82,7 @@ export const initAssociation = async () => {
     await Patches.initAssociation();
     await Sessions.initAssociation();
     await Reports.initAssociation();
+    await ZoomSessionMeetings.initAssociation();
   } catch (error) {
     console.log(error);
   }

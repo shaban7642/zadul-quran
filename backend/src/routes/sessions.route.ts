@@ -50,6 +50,13 @@ class SessionRoute implements Route {
       accessControlMiddleware([Permissions.sessions.DELETE]),
       this.sessionsController.deleteSession
     );
+
+    this.router.get(
+      `${this.path}/oauth/callback`,
+      authMiddleware,
+      accessControlMiddleware([Permissions.sessions.CREATE]),
+      this.sessionsController.generateMeeting
+    );
   }
 }
 

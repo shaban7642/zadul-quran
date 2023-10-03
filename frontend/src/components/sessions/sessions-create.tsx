@@ -209,7 +209,7 @@ const CreateSession = () => {
         // setWeekendsVisible(!weekendsVisible);
     };
 
-    const handleDateSelect = (selectInfo) => {
+    const handleDateSelect = (selectInfo: any) => {
         // let title = prompt('Please enter a new title for your event');
         // let calendarApi = selectInfo.view.calendar;
         // calendarApi.unselect(); // clear date selection
@@ -224,7 +224,7 @@ const CreateSession = () => {
         // }
     };
 
-    const handleEventClick = (clickInfo) => {
+    const handleEventClick = (clickInfo: any) => {
         // if (
         //     confirm(
         //         `Are you sure you want to delete the event '${clickInfo.event.title}'`
@@ -234,33 +234,10 @@ const CreateSession = () => {
         // }
     };
 
-    const handleEvents = (events) => {
+    const handleEvents = (events: any) => {
         setCurrentEvents(events);
     };
 
-    function renderEventContent(eventInfo) {
-        return (
-            <>
-                <b>{eventInfo.timeText}</b>
-                <i>{eventInfo.event.title}</i>
-            </>
-        );
-    }
-
-    function renderSidebarEvent(event) {
-        return (
-            <li key={event.id}>
-                <b>
-                    {formatDate(event.start, {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                    })}
-                </b>
-                <i>{event.title}</i>
-            </li>
-        );
-    }
     return (
         <Box sx={{ margin: 1 }}>
             <Box sx={{ width: '90%', m: 'auto' }}>

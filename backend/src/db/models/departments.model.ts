@@ -1,5 +1,6 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import Patches from './patches.model';
+import User from './users.model';
 
 class Departments extends Model {
   public id!: number;
@@ -37,6 +38,7 @@ class Departments extends Model {
 
   public static initAssociation(): void {
     this.hasMany(Patches);
+    this.hasOne(User);
   }
 }
 

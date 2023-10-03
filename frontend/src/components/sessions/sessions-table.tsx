@@ -14,13 +14,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import { TableHeads } from '../users/users-heads';
-import { IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
+import axios from 'axios';
+import {
+    Button,
+    IconButton,
+    Toolbar,
+    Tooltip,
+    Typography,
+} from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
 import { SessionsRow } from './sessions-row';
 import { userApi } from '../../api/userApi';
 import { useMounted } from '../../hooks/use-mounted';
 import toast from 'react-hot-toast';
 import { sessionApi } from '../../api/sessionsApi';
+import { useRouter } from 'next/router';
 
 export interface Data {
     name: string;
@@ -42,6 +50,7 @@ interface SessionsTableProps {
 export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const { roleId } = props;
     const isMounted = useMounted();
+    const router = useRouter();
     const [sessions, setSessions] = useState<any[]>([]);
     const [page, setPage] = useState(0);
     const [sessionsCount, setSessionsCount] = useState(2);
@@ -182,6 +191,16 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         [page, rowsPerPage]
     );
 
+    useEffect(
+        () => {
+            if (router?.query?.code) {
+                startMeeting(router.query.code, router.query.sessionId);
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [router.query]
+    );
+
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
         // getSessions(rowsPerPage, newPage);
@@ -205,6 +224,18 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
 
     const handleClose = (): void => {
         setOpen(false);
+    };
+
+    const startMeeting = async (
+        code: string | string[],
+        sessionId: string | string[] | undefined
+    ) => {
+        const data = await sessionApi.startMeeting(code, sessionId);
+        if (data.success) {
+            window.history.replaceState(null, '', '/sessions');
+            window.open(data.meetingUrl, '_blank');
+            getSessions(rowsPerPage, page);
+        }
     };
     return (
         <Box sx={{ width: '100%', scrollBehavior: 'auto' }}>

@@ -5,6 +5,7 @@ import enums from '../../../shared/enums';
 import Role from './roles.model';
 import UserAgents from './userAgents.model';
 import StudentParents from './studentParents.model';
+import Departments from './departments.model';
 
 const { gender } = enums.User;
 
@@ -37,6 +38,8 @@ class User extends Model {
 
   public deActivateReason: string;
 
+  public departmentId: string;
+
   public readonly createdAt!: Date;
 
   public readonly updatedAt!: Date;
@@ -53,6 +56,13 @@ class User extends Model {
           type: DataTypes.INTEGER,
           references: {
             model: Role,
+            key: 'id',
+          },
+        },
+        departmentId: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: Departments,
             key: 'id',
           },
         },
@@ -119,6 +129,7 @@ class User extends Model {
 
   public static initAssociation(): void {
     this.belongsTo(Role);
+    this.belongsTo(Departments);
     this.hasMany(UserAgents);
     this.hasMany(StudentParents);
   }

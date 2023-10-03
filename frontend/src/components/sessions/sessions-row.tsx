@@ -24,6 +24,7 @@ import Delete from '@mui/icons-material/Delete';
 import { deptApi } from '../../api/deptApi';
 import { useMounted } from '../../hooks/use-mounted';
 import { sessionMethods } from './sessions-create';
+import { useAuth } from '../../hooks/use-auth';
 interface RowProps {
     row: any;
     labelId: string;
@@ -33,6 +34,7 @@ interface RowProps {
 export const SessionsRow: FC<RowProps> = (props) => {
     const { row, labelId, updateSession, deleteSession } = props;
     const isMounted = useMounted();
+    const { user } = useAuth();
 
     const [subjects, setSubjects] = useState<any[]>([]);
     const [open, setOpen] = useState(false);
@@ -123,6 +125,27 @@ export const SessionsRow: FC<RowProps> = (props) => {
         getSubjects();
     }, []);
 
+    // useEffect(
+    //     () => {
+    //         if (router?.query?.code) {
+    //             startMeeting(router.query.code, router.query.sessionId);
+    //         }
+    //     },
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    //     [router.query]
+    // );
+
+    // const startMeeting = async (
+    //     code: string | string[],
+    //     sessionId: string | string[] | undefined
+    // ) => {
+    //     const data = await sessionApi.startMeeting(code, sessionId);
+    //     if (data.success) {
+    //         window.history.replaceState(null, '', '/sessions');
+    //         window.open(data.meetingUrl, '_blank');
+    //     }
+    // };
+
     useEffect(() => {
         if (row) {
             formik.setValues({
@@ -154,48 +177,85 @@ export const SessionsRow: FC<RowProps> = (props) => {
 
                 <TableCell scope='row' sx={{}}>
                     <Box sx={{ display: 'flex' }}>
-                        {row?.status === 'waiting' ? (
-                            <Button
-                                variant='contained'
-                                onClick={() =>
-                                    updateSession(row.id, { status: 'running' })
-                                }
-                                sx={{ fontSize: 12 }}
-                                size='small'
-                            >
-                                Start
-                            </Button>
-                        ) : row?.status === 'running' ? (
-                            <Button
-                                variant='contained'
-                                color='success'
-                                onClick={() =>
-                                    updateSession(row.id, { status: 'done' })
-                                }
-                                sx={{ fontSize: 12 }}
-                                size='small'
-                            >
-                                End
-                            </Button>
+                        {row?.status === 'waiting' &&
+                            row?.zoomSessionMeetings?.length < 1 &&
+                            (user?.role !== 'student' ||
+                                user?.role !== 'parent') && (
+                                <Button
+                                    variant='contained'
+                                    onClick={() => {
+                                        window.open(
+                                            `https://zoom.us/oauth/authorize?response_type=code&client_id=birMtXX3QOesB5uuhrF3hw&redirect_uri=http://localhost:3000/sessions/?sessionId=${row?.id}`,
+                                            '_self'
+                                        );
+                                    }}
+                                    sx={{ fontSize: 12, mr: 1 }}
+                                    size='small'
+                                >
+                                    Start
+                                </Button>
+                            )}
+                        {row?.status === 'running' ? (
+                            <>
+                                {row?.zoomSessionMeetings?.length > 0 && (
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={() =>
+                                            window.open(
+                                                row?.zoomSessionMeetings[0]
+                                                    ?.meetingLink
+                                            )
+                                        }
+                                        sx={{ fontSize: 12, mr: 1 }}
+                                        size='small'
+                                    >
+                                        Join
+                                    </Button>
+                                )}
+                                {(user?.role !== 'student' ||
+                                    user?.role !== 'parent') && (
+                                    <Button
+                                        variant='contained'
+                                        color='success'
+                                        onClick={() =>
+                                            updateSession(row.id, {
+                                                status: 'done',
+                                            })
+                                        }
+                                        sx={{
+                                            fontSize: 12,
+                                            mr: 1,
+                                            backgroundColor: 'green',
+                                        }}
+                                        size='small'
+                                    >
+                                        End
+                                    </Button>
+                                )}
+                            </>
                         ) : (
                             <></>
                         )}
 
-                        {row?.status !== 'done' && (
-                            <Button
-                                variant='contained'
-                                color='error'
-                                onClick={() =>
-                                    updateSession(row.id, {
-                                        status: 'cancelled',
-                                    })
-                                }
-                                sx={{ fontSize: 12, ml: 1 }}
-                                size='small'
-                            >
-                                Cancel
-                            </Button>
-                        )}
+                        {row?.status !== 'done' &&
+                            row?.status !== 'cancelled' &&
+                            (user?.role !== 'student' ||
+                                user?.role !== 'parent') && (
+                                <Button
+                                    variant='contained'
+                                    color='error'
+                                    onClick={() =>
+                                        updateSession(row.id, {
+                                            status: 'cancelled',
+                                        })
+                                    }
+                                    sx={{ fontSize: 12 }}
+                                    size='small'
+                                >
+                                    Cancel
+                                </Button>
+                            )}
                     </Box>
                 </TableCell>
                 <TableCell scope='row' sx={{}}>
@@ -248,7 +308,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                         )}
                                         helperText={
                                             formik.touched.sessionMethod &&
-                                            formik.errors.sessionMethod
+                                            formik.errors.sessionMethod?.toString()
                                         }
                                         InputLabelProps={{
                                             shrink: formik.values.sessionMethod
@@ -287,7 +347,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                     )}
                                     helperText={
                                         formik.touched.title &&
-                                        formik.errors.title
+                                        formik.errors.title?.toString()
                                     }
                                     size='small'
                                     sx={{
@@ -330,7 +390,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                         )}
                                         helperText={
                                             formik.touched.departmentId &&
-                                            formik.errors.departmentId
+                                            formik.errors.departmentId?.toString()
                                         }
                                         InputLabelProps={{
                                             shrink: formik.values.departmentId
@@ -384,7 +444,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                     )}
                                     helperText={
                                         formik.touched.date &&
-                                        formik.errors.date
+                                        formik.errors.date?.toString()
                                     }
                                     InputLabelProps={{
                                         shrink: true,
@@ -417,7 +477,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                     )}
                                     helperText={
                                         formik.touched.startTime &&
-                                        formik.errors.startTime
+                                        formik.errors.startTime?.toString()
                                     }
                                     InputLabelProps={{
                                         shrink: true,
@@ -450,7 +510,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                     )}
                                     helperText={
                                         formik.touched.endTime &&
-                                        formik.errors.endTime
+                                        formik.errors.endTime?.toString()
                                     }
                                     InputLabelProps={{
                                         shrink: true,
