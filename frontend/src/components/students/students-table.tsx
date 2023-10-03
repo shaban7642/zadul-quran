@@ -88,7 +88,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
   const getUsers = useCallback(
     async (rowsPerPage: number, page: number) => {
       try {
-        const data = await userApi.getUsers(rowsPerPage, page, roleId);
+        const data: any = await userApi.getUsers(rowsPerPage, page, roleId);
 
         if (isMounted()) {
           setUsers(data.rows);
@@ -157,7 +157,6 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-    // getUsers(rowsPerPage, newPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {

@@ -186,6 +186,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
                         row={row}
                         labelId={labelId}
                         updateDept={updateDept}
+                        deleteDept={deleteDept}
                       />
                     );
                   })}

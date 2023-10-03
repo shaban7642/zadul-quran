@@ -7,21 +7,23 @@ import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
-import { TextField } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Delete } from "@mui/icons-material";
 
 interface RowProps {
   row: any;
-  updateDocument: (id: number, values: any) => void;
+  updateDocument: (id: number, values: any) => Promise<{ success: boolean }>;
+  deleteDocument: (id: number) => Promise<{ success: boolean }>;
   labelId: string;
 }
 export const DocumentRow: FC<RowProps> = (props) => {
-  const { row, updateDocument, labelId } = props;
+  const { row, updateDocument, deleteDocument, labelId } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const formik = useFormik({
     initialValues: {
-      name: row?.name,
+      fileName: row?.fileName,
     },
     onSubmit: (values) => {
       updateDocument(row.id, values);
@@ -31,7 +33,7 @@ export const DocumentRow: FC<RowProps> = (props) => {
   useEffect(() => {
     if (row) {
       formik.setValues({
-        name: row?.name,
+        fileName: row?.fileName,
       });
     }
   }, [row]);
@@ -46,7 +48,15 @@ export const DocumentRow: FC<RowProps> = (props) => {
             color: "black",
           }}
         >
-          {row.name}
+          {row.fileName}
+        </TableCell>
+        <TableCell>
+          <IconButton
+            onClick={() => deleteDocument(row.id)}
+            sx={{ p: 0, ml: 1, mb: 1.5 }}
+          >
+            <Delete color="error" />
+          </IconButton>
         </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>
@@ -67,15 +77,25 @@ export const DocumentRow: FC<RowProps> = (props) => {
               <form onSubmit={formik.handleSubmit}>
                 <TextField
                   size="small"
-                  error={Boolean(formik.touched.name && formik.errors.name)}
-                  label="name"
+                  sx={{
+                    width: { xs: "50%" },
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                    mr: 1,
+                  }}
+                  error={Boolean(
+                    formik.touched.fileName && formik.errors.fileName
+                  )}
+                  // @ts-ignore
+                  helperText={formik.touched.fileName && formik.errors.fileName}
+                  label="file name"
                   margin="normal"
-                  id="name"
-                  name="name"
+                  id="fileName"
+                  name="fileName"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.name}
-                  sx={{ mr: 1 }}
+                  value={formik.values.fileName}
                 />
                 <LoadingButton
                   type="submit"

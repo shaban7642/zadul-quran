@@ -116,7 +116,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
           }
         }
       } catch (err) {
-        console.log(err);
+        toast.error(err.message || "Need Permission");
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
