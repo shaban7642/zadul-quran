@@ -116,6 +116,11 @@ class UserController {
         attributes: {
           exclude: ['password'],
         },
+        include: [
+          { model: Role },
+          { model: StudentParents, include: [{ model: Parents }] },
+          { model: Departments },
+        ],
       });
       res.status(200).json(resp);
     } catch (error) {
