@@ -1,10 +1,13 @@
 import { apiService } from "../services/api.service";
 
 class ReportApi {
-  async getReports() {
+  async getReports(limit: number, page: number) {
     return new Promise((resolve, reject) => {
       try {
-        const reports = apiService.get("/reports");
+        const reports = apiService.get("/reports", {
+          limit,
+          page: ++page,
+        });
         resolve(reports);
       } catch (err) {
         reject(new Error("Internal server error"));

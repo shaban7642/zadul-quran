@@ -1,10 +1,8 @@
-import { Delete } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   alpha,
   Box,
   Grid,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -13,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, MouseEvent, FormEvent, useState, FC } from "react";
+import { FormEvent, useState, FC } from "react";
 
 interface CreateDeptProps {
   createDept: (values: any) => Promise<{ success: boolean }>;

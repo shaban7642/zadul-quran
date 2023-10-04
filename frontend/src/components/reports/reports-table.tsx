@@ -17,6 +17,10 @@ import { Grid, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { ReportRow } from "./reports-row";
 import { ReportHeads } from "./reports-heads";
 import { Delete } from "@mui/icons-material";
+import toast from "react-hot-toast";
+import { reportApi } from "../../api/reportApi";
+import { useMounted } from "../../hooks/use-mounted";
+import { useAuth } from "../../hooks/use-auth";
 
 export interface Report {
   id: number;
@@ -29,19 +33,69 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
 }
-interface ReportsTableProps {
-  reports: Report[];
-  getReports: () => void;
-  deleteReport: (id: number) => Promise<{ success: boolean }>;
-  updateReport: (id: number, values: any) => Promise<{ success: boolean }>;
-}
-export const ReportsTable: FC<ReportsTableProps> = (props) => {
-  const { reports, deleteReport, updateReport, getReports } = props;
-  const [page, setPage] = useState(0);
 
+export const ReportsTable = () => {
+  const { user } = useAuth();
+  const [page, setPage] = useState(0);
+  const [reports, setReports] = useState<Report[]>([]);
   const [reportCount, setReportsCount] = useState(reports?.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const isMounted = useMounted();
+  const getReports = useCallback(
+    async (rowsPerPage: number, page: number) => {
+      try {
+        const data: any = await reportApi.getReports(rowsPerPage, page);
+        if (isMounted()) {
+          setReports(data.data);
+        }
+      } catch (err: any) {
+        toast.error(err.message || "failed");
+      }
+    },
+    [isMounted]
+  );
+
+  const deleteReport = async (id: number): Promise<{ success: boolean }> => {
+    const load = toast.loading("deleteReports");
+    try {
+      const resp = await reportApi.deleteReport(id);
+      toast.dismiss(load);
+      toast.success("deleteReports ");
+      getReports(rowsPerPage, page);
+      return { success: true };
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.message || "deleteReportsFailed");
+      return { success: false };
+    }
+  };
+  const updateReport = async (
+    id: number,
+    values: any
+  ): Promise<{ success: boolean }> => {
+    const load = toast.loading("updateReports");
+    try {
+      const resp = await reportApi.updateReport(id, values);
+
+      if (resp.success) {
+        toast.dismiss(load);
+        toast.success("updateReports ");
+
+        getReports(rowsPerPage, page);
+
+        return { success: true };
+      } else {
+        toast.dismiss(load);
+        toast.error("updateReportsFailed");
+        return { success: false };
+      }
+    } catch (err: any) {
+      toast.dismiss(load);
+      toast.error(err.message || "updateReportsFailed");
+      return { success: false };
+    }
+  };
   const headCells: readonly HeadCell[] = [
     {
       id: "name",
@@ -52,7 +106,7 @@ export const ReportsTable: FC<ReportsTableProps> = (props) => {
   ];
   useEffect(
     () => {
-      getReports();
+      getReports(rowsPerPage, page);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

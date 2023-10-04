@@ -1,4 +1,4 @@
-import { List, ListProps, ListSubheader } from "@mui/material";
+import { List, ListProps } from "@mui/material";
 import type { FC, ReactNode } from "react";
 import { DashboardSidebarItem } from "./dashboard-sidebar-item";
 import PropTypes from "prop-types";

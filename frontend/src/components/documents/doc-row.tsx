@@ -10,6 +10,8 @@ import { useFormik } from "formik";
 import { IconButton, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Delete } from "@mui/icons-material";
+import useDownloader from "react-use-downloader";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 interface RowProps {
   row: any;
@@ -19,6 +21,8 @@ interface RowProps {
 }
 export const DocumentRow: FC<RowProps> = (props) => {
   const { row, updateDocument, deleteDocument, labelId } = props;
+  const { size, elapsed, percentage, download, cancel, error, isInProgress } =
+    useDownloader();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const formik = useFormik({
@@ -57,6 +61,21 @@ export const DocumentRow: FC<RowProps> = (props) => {
           >
             <Delete color="error" />
           </IconButton>
+          <IconButton
+            onClick={() =>
+              download(
+                `http://localhost:4000/${row.fileStoragePath}`,
+                row.fileName
+              )
+            }
+            sx={{ p: 0, ml: 1, mb: 1.5 }}
+          >
+            <FileDownloadOutlinedIcon />
+          </IconButton>
+          {/* <p>Size:{size}</p>
+          <label htmlFor="file">progress:</label>
+          <progress id="file" value={percentage} max="100" /> */}
+          {error && <p>possible error {JSON.stringify(error)}</p>}
         </TableCell>
       </TableRow>
       <TableRow sx={{ border: 0 }}>

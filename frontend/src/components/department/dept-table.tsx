@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -13,15 +6,12 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
-import { Grid, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import { Collapse } from "@mui/material";
+import { Grid, Toolbar, Typography } from "@mui/material";
 import { DeptRow } from "./dept-row";
 import { DeptHeads } from "./dept-heads";
-import { Delete } from "@mui/icons-material";
 import CreateDept from "./dept-create";
 import toast from "react-hot-toast";
 import { deptApi } from "../../api/deptApi";
-import { useMounted } from "../../hooks/use-mounted";
 
 export interface Dept {
   id: number;
@@ -43,7 +33,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
   const [page, setPage] = useState(0);
   const [deptCount, setDeptsCount] = useState(depts?.length);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const isMounted = useMounted();
+
   useEffect(
     () => {
       getDepts();
@@ -53,29 +43,32 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
   );
 
   const deleteDept = async (id: number) => {
-    const load = toast.loading("deleteDepts");
+    const load = toast.loading("Deleting departments");
     try {
       const resp = await deptApi.deleteDepts(id);
+      toast.dismiss(load);
 
       getDepts();
     } catch (err: any) {
+      toast.dismiss(load);
+      toast.error(err.message || "Deleting departments failed");
       console.log(err);
     }
   };
   const createDept = async (values: any): Promise<{ success: boolean }> => {
-    const load = toast.loading("createDepts");
+    const load = toast.loading("Create department");
     try {
       await deptApi.createDept(values);
 
       toast.dismiss(load);
-      toast.success("createDeptsSuccess");
+      toast.success("Department created");
 
       getDepts();
 
       return { success: true };
     } catch (err: any) {
       toast.dismiss(load);
-      toast.error(err.message || "createDeptsFailed");
+      toast.error(err.message || "Create department failed");
       return { success: false };
     }
   };
@@ -83,25 +76,25 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
     id: number,
     values: any
   ): Promise<{ success: boolean }> => {
-    const load = toast.loading("updateDepts");
+    const load = toast.loading("Update department");
     try {
       const resp = await deptApi.updateDept(id, values);
 
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("updateDeptsSuccess");
+        toast.success("Department updated");
 
         getDepts();
 
         return { success: true };
       } else {
         toast.dismiss(load);
-        toast.error("updateDeptsFailed");
+        toast.error("update department failed");
         return { success: false };
       }
     } catch (err: any) {
       toast.dismiss(load);
-      toast.error(err.message || "updateDeptsFailed");
+      toast.error(err.message || "update department failed");
       return { success: false };
     }
   };

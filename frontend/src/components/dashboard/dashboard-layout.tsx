@@ -2,12 +2,9 @@ import { useState } from "react";
 import type { FC, ReactNode } from "react";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar, drawerWidth } from "./dashboard-sidebar";
-import type { Theme } from "@mui/material";
-import toast from "react-hot-toast";
-import { Calculate } from "@mui/icons-material";
 
 interface DashboardLayoutProps {
   children?: ReactNode;
@@ -23,9 +20,6 @@ const DashboardLayoutRoot = styled("div")(() => ({
 export const DashboardLayout: FC<DashboardLayoutProps> = (props) => {
   const { children } = props;
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  // const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"), {
-  //   noSsr: true,
-  // });
 
   return (
     <Box>

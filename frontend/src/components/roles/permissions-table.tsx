@@ -5,7 +5,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
-import { Toolbar, Typography } from "@mui/material";
+import { Chip, Divider, Toolbar, Typography } from "@mui/material";
 import { PermissionsRow } from "./permissions-row";
 import { RolesHeads } from "./roles-heads";
 import toast from "react-hot-toast";
@@ -15,6 +15,7 @@ import { LoadingButton } from "@mui/lab";
 
 interface Permissions {
   id: number;
+  name: string;
   permission: string;
   action: string;
   matched: boolean;
@@ -73,7 +74,17 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
     try {
       const data: any = await rolesApi.getAllPermissions();
       if (isMounted()) {
-        setPermissions(data.resp);
+        setPermissions(
+          data.resp?.sort(function (a: any, b: any) {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          })
+        );
       }
     } catch (err: any) {
       toast.error(err.message || "failed");
@@ -118,7 +129,7 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
 
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("removePremissionsSuccess");
+        toast.success("removePremissions ");
         return { success: true };
       } else {
         toast.dismiss(load);
@@ -213,26 +224,34 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
           </Typography>
         </Toolbar>
         <TableContainer>
-          <Table
-            sx={{
-              minWidth: 100 * 2,
-            }}
-            aria-labelledby="tableTitle"
-            size="small"
-          >
+          <Table aria-labelledby="tableTitle" size="small">
             <RolesHeads headCells={headCells} />
             <TableBody>
               {result?.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <PermissionsRow
-                    key={row?.id}
-                    row={row}
-                    labelId={labelId}
-                    checked={row?.matched}
-                    sentPermissions={sentPermissions}
-                  />
+                  <>
+                    {index % 4 === 0 ? (
+                      <Divider textAlign="center" sx={{ width: "138%" }}>
+                        <Chip
+                          label={`${row.name
+                            .replace(/:.*/, "")
+                            .toLocaleUpperCase()} Permissions`}
+                          sx={{ fontWeight: "600" }}
+                        />
+                      </Divider>
+                    ) : (
+                      <Divider sx={{ width: "138%" }}></Divider>
+                    )}
+                    <PermissionsRow
+                      key={row?.id}
+                      row={row}
+                      labelId={labelId}
+                      checked={row?.matched}
+                      sentPermissions={sentPermissions}
+                    />
+                  </>
                 );
               })}
             </TableBody>

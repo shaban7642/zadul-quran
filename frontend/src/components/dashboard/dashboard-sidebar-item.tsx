@@ -1,11 +1,8 @@
-import { useState } from "react";
 import type { FC, ReactNode } from "react";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
-import { Box, Button, Collapse, ListItem, Tooltip } from "@mui/material";
+import { Box, Button, ListItem, Tooltip } from "@mui/material";
 import type { ListItemProps } from "@mui/material";
-import { ChevronDown as ChevronDownIcon } from "../../icons/chevron-down";
-import { ChevronRight as ChevronRightIcon } from "../../icons/chevron-right";
 
 interface DashboardSidebarItemProps extends ListItemProps {
   active?: boolean;
@@ -47,11 +44,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
       }}
     >
       {disabled && (
-        <Tooltip
-          title="sidebar.dashboard.disabledMessage"
-          placement="right"
-          arrow
-        >
+        <Tooltip title="Need permission" placement="right" arrow>
           <Button
             component="a"
             startIcon={icon}

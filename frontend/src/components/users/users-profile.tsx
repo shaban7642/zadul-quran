@@ -97,6 +97,22 @@ export const Profile: FC<profileProps> = (props) => {
       console.log(err);
     }
   };
+  const getUserRole = () => {
+    switch (userData?.roleId) {
+      case 1:
+        return "Super Admin";
+      case 2:
+        return "Admin";
+      case 3:
+        return "Teacher";
+      case 4:
+        return "Student";
+      case 5:
+        return "Parent";
+      default:
+        return "";
+    }
+  };
   const formik = useFormik({
     initialValues: {
       roleId: userData?.roleId,
@@ -140,7 +156,7 @@ export const Profile: FC<profileProps> = (props) => {
       if (resp.success) {
         setUserData(resp.data);
         toast.dismiss(load);
-        toast.success("updateSuccess");
+        toast.success("update ");
         return { success: true };
       } else {
         toast.dismiss(load);
@@ -221,7 +237,7 @@ export const Profile: FC<profileProps> = (props) => {
                 <ListItem>
                   Role:{" "}
                   <Typography color={"black"}>
-                    {userData?.roleId || "No data"}
+                    {getUserRole() || "No data"}
                   </Typography>{" "}
                 </ListItem>
                 <ListItem>

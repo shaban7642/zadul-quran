@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
 import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";

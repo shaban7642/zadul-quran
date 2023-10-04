@@ -37,7 +37,7 @@ const CreateStudent = () => {
       const resp = await userApi.createUser(values);
       if (resp) {
         toast.dismiss(load);
-        toast.success("createStudentSuccess");
+        toast.success("createStudent ");
         return { success: true };
       } else {
         toast.dismiss(load);

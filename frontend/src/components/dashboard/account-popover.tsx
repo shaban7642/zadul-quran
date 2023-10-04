@@ -72,7 +72,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
         <MenuItem>
           <NextLink href={`/profile/${user?.id}`} passHref>
             <ListItemText
-              primary={<Typography variant="body1">profile</Typography>}
+              primary={<Typography variant="body1">Profile</Typography>}
             />
           </NextLink>
         </MenuItem>
@@ -84,7 +84,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
           </ListItemIcon>
 
           <ListItemText
-            primary={<Typography variant="body1">logout</Typography>}
+            primary={<Typography variant="body1">Logout</Typography>}
           />
         </MenuItem>
       </Box>

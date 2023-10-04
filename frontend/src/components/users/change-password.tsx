@@ -53,7 +53,7 @@ export const ChangePasswordForm: FC = (props) => {
 
         if (response.success) {
           toast.dismiss(load);
-          toast.success("changeSuccess");
+          toast.success("change ");
           formik.resetForm();
         } else {
           toast.dismiss(load);

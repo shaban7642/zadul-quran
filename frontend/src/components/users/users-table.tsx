@@ -129,7 +129,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       const resp = await userApi.deleteUser(id);
       if (resp) {
         toast.dismiss(load);
-        toast.success("deleteUserSuccess");
+        toast.success("deleteUser ");
         getUsers(rowsPerPage, page);
         return { success: true };
       } else {
@@ -153,7 +153,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       const resp = await userApi.updateUser(id, values);
       if (resp) {
         toast.dismiss(load);
-        toast.success("updateUserSuccess");
+        toast.success("updateUser ");
         getUsers(rowsPerPage, page);
         return { success: true };
       } else {

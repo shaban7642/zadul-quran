@@ -12,78 +12,8 @@ import { AuthGuard } from "../../components/auth/auth-guard";
 import { useAuth } from "../../hooks/use-auth";
 
 const Reports: NextPage = () => {
-  const { user } = useAuth();
   const [value, setValue] = useState("1");
-  const [reports, setReports] = useState<Report[]>([]);
-  const isMounted = useMounted();
-  const getReports = useCallback(async () => {
-    try {
-      const data: any = await reportApi.getReports();
-      if (isMounted()) {
-        setReports(data.data);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "failed");
-    }
-  }, [isMounted]);
 
-  const deleteReport = async (id: number): Promise<{ success: boolean }> => {
-    const load = toast.loading("deleteReports");
-    try {
-      const resp = await reportApi.deleteReport(id);
-      toast.dismiss(load);
-      toast.success("deleteReportsSuccess");
-      getReports();
-      return { success: true };
-    } catch (err: any) {
-      console.log(err);
-      toast.error(err.message || "deleteReportsFailed");
-      return { success: false };
-    }
-  };
-  const createReport = async (values: any): Promise<{ success: boolean }> => {
-    const load = toast.loading("createReports");
-    try {
-      await reportApi.createReport(user?.id, values);
-
-      toast.dismiss(load);
-      toast.success("createReportsSuccess");
-
-      getReports();
-
-      return { success: true };
-    } catch (err: any) {
-      toast.dismiss(load);
-      toast.error(err.message || "createReportsFailed");
-      return { success: false };
-    }
-  };
-  const updateReport = async (
-    id: number,
-    values: any
-  ): Promise<{ success: boolean }> => {
-    const load = toast.loading("updateReports");
-    try {
-      const resp = await reportApi.updateReport(id, values);
-
-      if (resp.success) {
-        toast.dismiss(load);
-        toast.success("updateReportsSuccess");
-
-        getReports();
-
-        return { success: true };
-      } else {
-        toast.dismiss(load);
-        toast.error("updateReportsFailed");
-        return { success: false };
-      }
-    } catch (err: any) {
-      toast.dismiss(load);
-      toast.error(err.message || "updateReportsFailed");
-      return { success: false };
-    }
-  };
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -97,15 +27,10 @@ const Reports: NextPage = () => {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <ReportsTable
-            reports={reports}
-            getReports={getReports}
-            deleteReport={deleteReport}
-            updateReport={updateReport}
-          />
+          <ReportsTable />
         </TabPanel>
         <TabPanel value="2">
-          <CreateReport createReport={createReport} />
+          <CreateReport />
         </TabPanel>
       </TabContext>
     </Box>

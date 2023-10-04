@@ -63,25 +63,25 @@ export const DocumentTable = () => {
   );
 
   const deleteDocument = async (id: number): Promise<{ success: boolean }> => {
-    const load = toast.loading("updateDocuments");
+    const load = toast.loading("Delete Documents");
     try {
       const resp = await documentApi.deleteDocument(id);
 
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("updateDocumentsSuccess");
+        toast.success("Delete Documents ");
 
         getDocuments(rowsPerPage, page);
 
         return { success: true };
       } else {
         toast.dismiss(load);
-        toast.error("updateDocumentsFailed");
+        toast.error("Delete DocumentsFailed");
         return { success: false };
       }
     } catch (err: any) {
       toast.dismiss(load);
-      toast.error(err.message || "updateDocumentsFailed");
+      toast.error(err.message || "Delete DocumentsFailed");
       return { success: false };
     }
   };
@@ -96,7 +96,7 @@ export const DocumentTable = () => {
       await documentApi.createDocument(values, userId);
 
       toast.dismiss(load);
-      toast.success("createDocumentsSuccess");
+      toast.success("createDocuments ");
 
       getDocuments(rowsPerPage, page);
 
@@ -117,7 +117,7 @@ export const DocumentTable = () => {
 
       if (resp.success) {
         toast.dismiss(load);
-        toast.success("updateDocumentsSuccess");
+        toast.success("updateDocuments ");
 
         getDocuments(rowsPerPage, page);
 
