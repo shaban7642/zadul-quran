@@ -1,6 +1,7 @@
 import { Sequelize, Model, DataTypes } from 'sequelize';
 import Patches from './patches.model';
 import ZoomSessionMeetings from './zoomSessionMettings.model';
+import Reports from './reports.model';
 
 class Sessions extends Model {
   public id!: number;
@@ -73,6 +74,7 @@ class Sessions extends Model {
   public static initAssociation(): void {
     this.belongsTo(Patches);
     this.hasMany(ZoomSessionMeetings);
+    this.hasMany(Reports);
   }
 }
 

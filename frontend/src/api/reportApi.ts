@@ -15,10 +15,17 @@ class ReportApi {
     });
   }
 
-  async createReport(userId: number, reportData: any): Promise<any> {
+  async createReport(
+    sessionId: number,
+    userId: number,
+    reportData: any,
+    documentId?: number
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
         const resp = apiService.post(`/reports/create`, {
+          documentId,
+          sessionId,
           userId,
           reportContent: reportData,
         });

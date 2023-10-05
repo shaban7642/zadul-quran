@@ -40,7 +40,7 @@ export const UsersRow: FC<RowProps> = (props) => {
   const rows = [
     row?.username || "no data",
     row?.role?.displayName || "no data",
-    row?.department || "no data",
+    row?.department?.name || "no data",
     row?.email || "no data",
     row?.phoneNumber || "no data",
   ];
@@ -66,7 +66,7 @@ export const UsersRow: FC<RowProps> = (props) => {
     initialValues: {
       username: row?.username,
       roleId: row?.roleId,
-      department: row?.department,
+      departmentId: row?.departmentId,
       email: row?.email,
       phoneNumber: row?.phoneNumber,
     },
@@ -102,7 +102,7 @@ export const UsersRow: FC<RowProps> = (props) => {
       formik.setValues({
         username: row?.username,
         roleId: row?.roleId,
-        department: row?.department,
+        departmentId: row?.departmentId,
         email: row?.email,
         phoneNumber: row?.phoneNumber,
       });
@@ -263,10 +263,10 @@ export const UsersRow: FC<RowProps> = (props) => {
                     Department
                   </InputLabel>
                   <Select
-                    name="department"
+                    name="departmentId"
                     id="outlined-adornment-department"
                     labelId="outlined-adornment-department"
-                    value={formik.values.department}
+                    value={formik.values.departmentId}
                     onChange={formik.handleChange}
                   >
                     {depts?.map((department) => (

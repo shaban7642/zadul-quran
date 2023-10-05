@@ -1,5 +1,13 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { alpha, Box, Chip, Divider, Paper, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Chip,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { FormEvent, useState, FC } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import toast from "react-hot-toast";
@@ -7,7 +15,12 @@ import { reportApi } from "../../api/reportApi";
 import { documentApi } from "../../api/documentApi";
 import { MuiFileInput } from "mui-file-input";
 
-const CreateReport = () => {
+interface CreateReportProps {
+  sessionId: number;
+}
+
+const CreateReport: FC<CreateReportProps> = (props) => {
+  const { sessionId } = props;
   const [formValues, setFormValues] = useState("");
   const [document, setDocument] = useState(0);
   const { user } = useAuth();
@@ -17,7 +30,11 @@ const CreateReport = () => {
   const createReport = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createReports");
     try {
-      await reportApi.createReport(user?.id, values);
+      if (document !== 0) {
+        await reportApi.createReport(sessionId, user?.id, values);
+      } else {
+        await reportApi.createReport(sessionId, user?.id, values, document);
+      }
 
       toast.dismiss(load);
       toast.success("createReports ");
@@ -74,14 +91,14 @@ const CreateReport = () => {
     }
   };
   return (
-    <>
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Paper
         elevation={9}
         sx={{
           display: "flex",
           flexDirection: "column",
           p: "10px 10px",
-          width: "100%",
+          width: "%",
 
           ...(true && {
             bgcolor: (theme) =>
@@ -92,122 +109,132 @@ const CreateReport = () => {
           }),
         }}
       >
-        <Box
-          sx={{
-            alignItems: "center",
-            backgroundColor: "primary.light",
-            color: "primary.contrastText",
-            display: "flex",
-            justifyContent: "space-between",
-            px: 3,
-            py: 2,
-          }}
-        >
-          <Typography color="inherit" variant="h6">
-            Add Document
-          </Typography>
-        </Box>
-        <Box sx={{ margin: 1 }}>
-          <Divider textAlign="left" sx={{ mb: 1 }}>
-            <Chip label="File Details" sx={{ fontWeight: "600" }} />
-          </Divider>
-
-          <MuiFileInput
-            size="small"
-            name="file"
-            variant="outlined"
-            value={file}
-            onChange={(e: any) => {
-              setFile(e);
-            }}
-            helperText={!file ? "upload your file" : "uploaded"}
-            sx={{ ml: 0, cursor: "pointer" }}
-          />
-          <Divider sx={{ m: 1 }}></Divider>
-          <LoadingButton
-            type="button"
-            onClick={uploadFile}
-            sx={{
-              width: "100%",
-              "& .MuiInputBase-root": {
-                height: 40,
-              },
-            }}
-            variant="contained"
-          >
-            submit
-          </LoadingButton>
-        </Box>
-      </Paper>
-      <Paper
-        elevation={9}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          p: "10px 10px",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            p: 1,
-            alignItems: "center",
-            ...(true && {
-              bgcolor: (theme) =>
-                alpha(
-                  theme.palette.info.contrastText,
-                  theme.palette.action.activatedOpacity
-                ),
-            }),
-            color: "primary.dark",
-            display: "block",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography color="inherit" variant="h6">
-            Add Report
-          </Typography>
-          <textarea
-            value={formValues}
-            onChange={(event) => setFormValues(event.target?.value)}
-            style={{
-              width: "100%",
-              height: "40vh",
-              borderStyle: "solid",
-              borderColor: "#ffcccb",
-              borderWidth: "1px",
-              borderRadius: "5px",
-              margin: 1,
-              marginLeft: 0,
-              outlineColor: "#ffcccb",
-              overflowX: "hidden",
-              fontFamily: "cursive",
-              fontWeight: "bold",
-              textAlign: "justify",
-              textJustify: "inter-word",
-              wordWrap: "break-word",
-              whiteSpace: "pre-wrap",
-            }}
-          />
-          <div style={{ textAlign: "right" }}>
-            <LoadingButton
-              type="button"
-              onClick={handleSubmit}
+        {" "}
+        <Grid container>
+          <Grid item lg={3.8} md={3.8} sm={3.8} xs={12}>
+            <Box
               sx={{
-                "& .MuiInputBase-root": {
-                  height: 40,
-                },
-                m: 0.5,
-                p: 1,
+                alignItems: "center",
+                color: "primary.dark",
+                display: "flex",
+                justifyContent: "space-between",
+                px: 3,
+                py: 2,
               }}
-              variant="contained"
             >
-              Save
-            </LoadingButton>
-          </div>
-        </Box>
+              <Typography color="inherit" variant="h6">
+                Add Document
+              </Typography>
+            </Box>
+            <Box sx={{ margin: 1 }}>
+              <Divider textAlign="left" sx={{ mb: 1 }}>
+                <Chip label="Upload your report" sx={{ fontWeight: "600" }} />
+              </Divider>
+              <MuiFileInput
+                size="small"
+                name="file"
+                variant="outlined"
+                value={file}
+                onChange={(e: any) => {
+                  setFile(e);
+                }}
+                helperText={!file ? "upload your file" : "uploaded"}
+                sx={{ ml: 0, cursor: "pointer" }}
+              />
+              <LoadingButton
+                type="button"
+                onClick={uploadFile}
+                sx={{
+                  width: "100%",
+                  "& .MuiInputBase-root": {
+                    height: 40,
+                  },
+                }}
+                variant="contained"
+              >
+                Upload
+              </LoadingButton>
+            </Box>
+          </Grid>
+          <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
+            <Box></Box>
+          </Grid>
+          <Grid item lg={7.8} md={7.8} sm={7.8} xs={12}>
+            <Box
+              sx={{
+                alignItems: "center",
+                color: "primary.dark",
+                display: "flex",
+                justifyContent: "space-between",
+                px: 3,
+                py: 2,
+              }}
+            >
+              <Typography color="inherit" variant="h6">
+                Add details
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                p: 1,
+                alignItems: "center",
+                ...(true && {
+                  bgcolor: (theme) =>
+                    alpha(
+                      theme.palette.info.contrastText,
+                      theme.palette.action.activatedOpacity
+                    ),
+                }),
+                color: "primary.dark",
+                display: "block",
+                justifyContent: "space-between",
+              }}
+            >
+              <textarea
+                placeholder="Type all details here"
+                value={formValues}
+                onChange={(event) => setFormValues(event.target?.value)}
+                style={{
+                  width: "100%",
+                  height: "40vh",
+                  borderStyle: "solid",
+                  borderColor: "#ffcccb",
+                  borderWidth: "1px",
+                  borderRadius: "5px",
+                  margin: 1,
+                  marginLeft: 0,
+                  padding: "10px",
+                  outlineColor: "#ffcccb",
+                  overflowX: "hidden",
+                  fontFamily: "cursive",
+                  fontWeight: "bold",
+                  textAlign: "justify",
+                  textJustify: "inter-word",
+                  wordWrap: "break-word",
+                  whiteSpace: "pre-wrap",
+                }}
+              />
+              <div style={{ textAlign: "right" }}>
+                <LoadingButton
+                  type="button"
+                  onClick={handleSubmit}
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                    m: 0.5,
+                    p: 1,
+                  }}
+                  variant="contained"
+                >
+                  Submit report
+                </LoadingButton>
+              </div>
+            </Box>
+          </Grid>
+        </Grid>
       </Paper>
-    </>
+    </Box>
   );
 };
 

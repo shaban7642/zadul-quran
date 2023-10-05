@@ -30,7 +30,7 @@ export interface Data {
   gender: String;
   birthDate: String;
   roleId: number;
-  department: number;
+  departmentId: number;
   email: String;
   phoneNumber: String;
 }
@@ -101,8 +101,6 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         if (isMounted()) {
           if (roleId) {
             data = await userApi.getUsers(rowsPerPage, page, roleId);
-            setUsers(data.rows);
-            setUsersCount(data.rows.length);
           } else {
             data = await userApi.getUsers(
               rowsPerPage,
@@ -111,9 +109,9 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
               "admin",
               "teacher"
             );
-            setUsers(data.rows);
-            setUsersCount(data.rows.length);
           }
+          setUsers(data.rows);
+          setUsersCount(data.count);
         }
       } catch (err) {
         toast.error(err.message || "Need Permission");
@@ -178,28 +176,18 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-    getUsers(rowsPerPage, newPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    getUsers(rowsPerPage, page);
+    // getUsers(rowsPerPage, page);
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
   //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const [open, setOpen] = useState<boolean>(false);
-
-  const handleOpen = (): void => {
-    setOpen(true);
-  };
-
-  const handleClose = (): void => {
-    setOpen(false);
-  };
   return (
     <Box sx={{ width: "100%", scrollBehavior: "auto" }}>
       <Paper

@@ -52,7 +52,7 @@ export const Profile: FC<profileProps> = (props) => {
     city: "",
     gender: "",
     birthDate: "",
-    department: 1,
+    departmentId: 1,
     email: "",
     phoneNumber: "",
   });
@@ -122,7 +122,7 @@ export const Profile: FC<profileProps> = (props) => {
       city: userData?.city,
       gender: userData?.gender,
       birthDate: userData?.birthDate,
-      department: userData?.department,
+      departmentId: userData?.departmentId,
       email: userData?.email,
       phoneNumber: userData?.phoneNumber,
     },
@@ -240,12 +240,16 @@ export const Profile: FC<profileProps> = (props) => {
                     {getUserRole() || "No data"}
                   </Typography>{" "}
                 </ListItem>
-                <ListItem>
-                  Department:{" "}
-                  <Typography color={"black"}>
-                    {userData?.department || "No data"}
-                  </Typography>{" "}
-                </ListItem>
+                {userData.roleId !== 4 ? (
+                  <ListItem>
+                    Department:{" "}
+                    <Typography color={"black"}>
+                      {userData?.department?.name || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                ) : (
+                  <></>
+                )}
                 <ListItem>
                   Gender:{" "}
                   <Typography color={"black"}>
@@ -478,54 +482,58 @@ export const Profile: FC<profileProps> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl
-                sx={{
-                  width: { xs: "100%", sm: "47.5%" },
-                  "& .MuiInputBase-root": {
-                    height: 40,
-                  },
-                  mr: 1,
-                  marginTop: 3,
-                }}
-                variant="outlined"
-              >
-                {" "}
-                <InputLabel
+              {userData.roleId !== 4 ? (
+                <FormControl
                   sx={{
-                    top: -6,
+                    width: { xs: "100%", sm: "47.5%" },
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                    mr: 1,
+                    marginTop: 3,
                   }}
-                  id="outlined-adornment-department"
+                  variant="outlined"
                 >
-                  Department
-                </InputLabel>
-                <Select
-                  name="department"
-                  id="outlined-adornment-department"
-                  labelId="outlined-adornment-department"
-                  value={formik.values.department}
-                  onChange={formik.handleChange}
-                >
-                  {depts?.map((department) => (
-                    <MenuItem
-                      sx={{
-                        color: "black",
-                        ...(true && {
-                          bgcolor: (theme) =>
-                            alpha(
-                              theme.palette.info.contrastText,
-                              theme.palette.action.activatedOpacity
-                            ),
-                        }),
-                        fontFamily: "sans-serif",
-                      }}
-                      key={department?.id}
-                      value={department?.id}
-                    >
-                      {department?.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  {" "}
+                  <InputLabel
+                    sx={{
+                      top: -6,
+                    }}
+                    id="outlined-adornment-department"
+                  >
+                    Department
+                  </InputLabel>
+                  <Select
+                    name="departmentId"
+                    id="outlined-adornment-department"
+                    labelId="outlined-adornment-department"
+                    value={formik.values.departmentId}
+                    onChange={formik.handleChange}
+                  >
+                    {depts?.map((department) => (
+                      <MenuItem
+                        sx={{
+                          color: "black",
+                          ...(true && {
+                            bgcolor: (theme) =>
+                              alpha(
+                                theme.palette.info.contrastText,
+                                theme.palette.action.activatedOpacity
+                              ),
+                          }),
+                          fontFamily: "sans-serif",
+                        }}
+                        key={department?.id}
+                        value={department?.id}
+                      >
+                        {department?.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <></>
+              )}
               <FormControl
                 sx={{
                   width: { xs: "100%", sm: "47.5%", md: "31.5%" },

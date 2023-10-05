@@ -12,13 +12,13 @@ class UserApi {
       let path = `/user/`;
 
       try {
-        if (name1 && name2) {
+        if (name1 && name) {
           path = `/user/?roleId=${name}&roleId=${name1}&roleId=${name2}&limit=${limit}&page=${++page}`;
           const users = apiService.get(path);
           resolve(users);
         } else {
           const users = apiService.get(path, {
-            // roleId: name,
+            roleId: name,
             limit,
             page: ++page,
           });

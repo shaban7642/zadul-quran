@@ -64,7 +64,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
       city: "",
       gender: "",
       birthDate: "",
-      department: 1,
+      departmentId: 1,
       email: "",
       phoneNumber: "",
       password: "",
@@ -216,10 +216,10 @@ const CreateUser: FC<CreateTableProps> = (props) => {
             Department
           </InputLabel>
           <Select
-            name="department"
+            name="departmentId"
             id="outlined-adornment-department"
             labelId="outlined-adornment-department"
-            value={formik.values.department}
+            value={formik.values.departmentId}
             onChange={formik.handleChange}
           >
             {depts?.map((department) => (
