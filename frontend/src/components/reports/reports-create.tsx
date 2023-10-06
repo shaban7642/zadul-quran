@@ -17,10 +17,11 @@ import { MuiFileInput } from "mui-file-input";
 
 interface CreateReportProps {
   sessionId: number;
+  handleCloseReport: () => void;
 }
 
 const CreateReport: FC<CreateReportProps> = (props) => {
-  const { sessionId } = props;
+  const { sessionId, handleCloseReport } = props;
   const [formValues, setFormValues] = useState("");
   const [document, setDocument] = useState(0);
   const { user } = useAuth();
@@ -30,7 +31,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
   const createReport = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createReports");
     try {
-      if (document !== 0) {
+      if (document === 0) {
         await reportApi.createReport(sessionId, user?.id, values);
       } else {
         await reportApi.createReport(sessionId, user?.id, values, document);
@@ -88,6 +89,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
     const { success } = await createReport(formValues);
     if (success) {
       setFormValues("");
+      handleCloseReport();
     }
   };
   return (

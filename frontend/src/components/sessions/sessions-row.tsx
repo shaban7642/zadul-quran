@@ -161,6 +161,9 @@ export const SessionsRow: FC<RowProps> = (props) => {
   const handleOpenReport = () => {
     setOpenReport(true);
   };
+  const handleCloseReport = () => {
+    setOpenReport(false);
+  };
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
@@ -510,7 +513,10 @@ export const SessionsRow: FC<RowProps> = (props) => {
         </TableCell>
       </TableRow>
       <Dialog maxWidth="md" open={openReport}>
-        <CreateReport sessionId={row.id} />
+        <CreateReport
+          sessionId={row.id}
+          handleCloseReport={handleCloseReport}
+        />
       </Dialog>
     </Fragment>
   );
