@@ -260,7 +260,7 @@ export const Profile: FC<profileProps> = (props) => {
                   Date of birth:
                   <Typography color={"black"}>
                     {" "}
-                    {moment(userData?.birthDate.toString() || "No data").format(
+                    {moment(userData?.birthDate?.toString() || "No data").format(
                       "MMM-D-YYYY"
                     )}
                   </Typography>{" "}

@@ -59,6 +59,19 @@ class SessionsApi {
             }
         });
     }
+    async startMeeting(code: string, sessionId: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                const resp = apiService.get(`/sessions/oauth/callback`, {
+                    code,
+                    sessionId,
+                });
+                resolve(resp);
+            } catch (err) {
+                reject(new Error('Internal server error'));
+            }
+        });
+    }
 }
 
 export const sessionApi = new SessionsApi();
