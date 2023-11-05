@@ -2,6 +2,8 @@ export interface Session {
   id?: number;
   patchId?: number;
   userId?: number;
+  sessionTypeId?: number;
+  sessionType?: any;
   sessionMethod?: string;
   meetingId?: string;
   date?: Date;
@@ -10,4 +12,6 @@ export interface Session {
   status?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  startedAt?: Date;
+  endedAt?: Date;
 }

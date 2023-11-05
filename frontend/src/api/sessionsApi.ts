@@ -1,13 +1,48 @@
 import { apiService } from '../services/api.service';
+import { convertToNormalDate } from '../utils/convert-to-normal-date';
+import { generateQuery } from '../utils/generate-query';
 
 class SessionsApi {
-    async getSessions(limit: number, page: number) {
+    async getSessions(filterObject: {
+        limit: number;
+        offset: number;
+        status?: string;
+        teacherId?: number;
+        studentId?: number;
+        departmentId?: number;
+        date?: any;
+    }) {
         return new Promise((resolve, reject) => {
             try {
-                const sessions = apiService.get('/sessions/', {
+                const {
                     limit,
-                    page: ++page,
-                });
+                    offset,
+                    status,
+                    teacherId,
+                    studentId,
+                    departmentId,
+                    date,
+                } = filterObject;
+                const queries = {
+                    limit,
+                    offset,
+                    status,
+                    teacherId,
+                    studentId,
+                    departmentId,
+                    date:
+                        date &&
+                        date.from !== null &&
+                        date.to !== null &&
+                        `${convertToNormalDate(
+                            date.from,
+                            'from'
+                        )}to${convertToNormalDate(date.to)}&`,
+                };
+                console.log({ object2: departmentId });
+                const sessions = apiService.get(
+                    `/sessions?${generateQuery(queries)}`
+                );
 
                 resolve(sessions);
             } catch (err) {
@@ -21,6 +56,17 @@ class SessionsApi {
             try {
                 const session = apiService.get(`/sessions/${id}`);
                 resolve(session);
+            } catch (err) {
+                reject(new Error('Internal server error'));
+            }
+        });
+    }
+
+    async getSessionTypes(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                const types = apiService.get(`/sessions/types`);
+                resolve(types);
             } catch (err) {
                 reject(new Error('Internal server error'));
             }
@@ -59,7 +105,10 @@ class SessionsApi {
             }
         });
     }
-    async startMeeting(code: string, sessionId: string): Promise<any> {
+    async startMeeting(
+        code: string | string[],
+        sessionId: string | string[] | undefined
+    ): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
                 const resp = apiService.get(`/sessions/oauth/callback`, {

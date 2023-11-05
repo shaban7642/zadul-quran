@@ -30,6 +30,13 @@ class SessionRoute implements Route {
       this.sessionsController.getAllSessions
     );
 
+    this.router.get(
+      `${this.path}/types`,
+      authMiddleware,
+      accessControlMiddleware([Permissions.sessions.READ]),
+      this.sessionsController.getSessionTypes
+    );
+
     this.router.post(
       `${this.path}/create`,
       authMiddleware,

@@ -4,6 +4,7 @@ import {
     MouseEvent,
     useCallback,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 import { alpha } from '@mui/material/styles';
@@ -14,13 +15,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import { TableHeads } from '../users/users-heads';
-import axios from 'axios';
+import { styled, Theme } from '@mui/material/styles';
 import {
     Button,
-    IconButton,
-    Toolbar,
-    Tooltip,
-    Typography,
+    Card,
+    Chip,
+    Divider,
+    Tab,
+    Tabs,
+    useMediaQuery,
 } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
 import { SessionsRow } from './sessions-row';
@@ -29,6 +32,10 @@ import { useMounted } from '../../hooks/use-mounted';
 import toast from 'react-hot-toast';
 import { sessionApi } from '../../api/sessionsApi';
 import { useRouter } from 'next/router';
+import { deptApi } from '../../api/deptApi';
+import { SessionListFilters } from './sessions-list-filters';
+import { Filter as FilterIcon } from '../../icons/filter';
+import { useAuth } from '../../hooks/use-auth';
 
 export interface Data {
     name: string;
@@ -47,26 +54,83 @@ export interface HeadCell {
 interface SessionsTableProps {
     roleId?: number;
 }
+
+export const SessionListInner = styled('div', {
+    shouldForwardProp: (prop) => prop !== 'open',
+})<{ open?: boolean }>(({ theme, open }) => ({
+    flexGrow: 1,
+    overflow: 'hidden',
+    zIndex: 1,
+    [theme.breakpoints.up('lg')]: {
+        marginLeft: -380,
+    },
+    transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    ...(open && {
+        [theme.breakpoints.up('lg')]: {
+            marginLeft: 0,
+        },
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
 export const SessionsTable: FC<SessionsTableProps> = (props) => {
-    const { roleId } = props;
     const isMounted = useMounted();
     const router = useRouter();
+    const { user } = useAuth();
+
+    const initialFilters: any = {
+        date: {
+            from: null,
+            to: null,
+        },
+        teacherId: null,
+        departmentId: null,
+        studentId: null,
+    };
+    const [filters, setFilters] = useState<any>({});
     const [sessions, setSessions] = useState<any[]>([]);
     const [page, setPage] = useState(0);
-    const [sessionsCount, setSessionsCount] = useState(2);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [sessionsCount, setSessionsCount] = useState(0);
+    const [statusCount, setStatusCount] = useState<
+        { status: string; count: number }[]
+    >([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    // const [subjects, setSubjects] = useState<any[]>([]);
+    const [currentTab, setCurrentTab] = useState<any>('');
+    const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), {
+        noSsr: false,
+    });
+    const [loading, setLoading] = useState<boolean>(true);
+    const rootRef = useRef<HTMLDivElement | null>(null);
+    const [openFilters, setOpenFilters] = useState<boolean>(false);
+
+    const statuses: readonly string[] = [
+        'waiting',
+        'expired',
+        'running',
+        'done',
+        'cancelled',
+        'absent',
+        'rescheduled',
+    ];
     const headCells: readonly any[] = [
         {
-            id: 'classMethod',
+            id: 'teacher',
             numeric: false,
             disablePadding: true,
-            label: 'Class Method',
+            label: 'Teacher',
         },
         {
-            id: 'title',
+            id: 'student',
             numeric: false,
             disablePadding: true,
-            label: 'Title',
+            label: 'Student',
         },
         {
             id: 'status',
@@ -75,10 +139,16 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
             label: 'Status',
         },
         {
-            id: 'meetingId',
+            id: 'startedAt',
             numeric: false,
             disablePadding: true,
-            label: 'Meeting ID',
+            label: 'Started At',
+        },
+        {
+            id: 'endedAt',
+            numeric: false,
+            disablePadding: true,
+            label: 'Ended At',
         },
         {
             id: 'subject',
@@ -118,24 +188,74 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         },
     ];
 
+    const tabs: any[] = [
+        {
+            label: 'all',
+            value: '',
+            count: totalCount,
+        },
+        {
+            label: 'waiting',
+            value: 'waiting',
+            count: statusCount.find((item) => item.status.match('waiting'))
+                ?.count,
+        },
+        {
+            label: 'running',
+            value: 'running',
+            count: statusCount.find((item) => item.status.match('running'))
+                ?.count,
+        },
+        {
+            label: 'done',
+            value: 'done',
+            count: statusCount.find((item) => item.status.match('done'))?.count,
+        },
+        {
+            label: 'cancelled',
+            value: 'cancelled',
+            count: statusCount.find((item) => item.status.match('cancelled'))
+                ?.count,
+        },
+        {
+            label: 'expired',
+            value: 'expired',
+            count: statusCount.find((item) => item.status.match('expired'))
+                ?.count,
+        },
+        {
+            label: 'absent',
+            value: 'absent',
+            count: statusCount.find((item) => item.status.match('absent'))
+                ?.count,
+        },
+    ];
+
+    const handleTabsChange = (event: ChangeEvent<{}>, value: any): void => {
+        setCurrentTab(value);
+        getSessions({ limit: rowsPerPage, offset: 0, status: value });
+        // setViewParams({ ...viewParams, status: value, pageCount: 1, page: 0 });
+    };
+
     const getSessions = useCallback(
-        async (rowsPerPage: number, page: number) => {
+        async (filterObject: any) => {
             try {
-                const data: any = await sessionApi.getSessions(
-                    rowsPerPage,
-                    page
-                );
-                console.log({ data });
+                const data: any = await sessionApi.getSessions({
+                    ...filterObject,
+                    ...filters,
+                });
                 if (isMounted()) {
                     setSessions(data.rows);
                     setSessionsCount(data.count);
+                    setStatusCount(data.statusCount);
+                    setTotalCount(data.totalCount);
                 }
             } catch (err) {
                 console.log(err);
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isMounted]
+        [isMounted, filters]
     );
 
     const deleteSession = async (id: number): Promise<{ success: boolean }> => {
@@ -145,7 +265,11 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
             if (resp) {
                 toast.dismiss(load);
                 toast.success('deleteSessionSuccess');
-                getSessions(rowsPerPage, page);
+                getSessions({
+                    limit: rowsPerPage,
+                    offset: page,
+                    status: currentTab,
+                });
                 return { success: true };
             } else {
                 toast.dismiss(load);
@@ -169,7 +293,11 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
             if (resp) {
                 toast.dismiss(load);
                 toast.success('updateSessionSuccess');
-                getSessions(rowsPerPage, page);
+                getSessions({
+                    limit: rowsPerPage,
+                    offset: page,
+                    status: currentTab,
+                });
                 return { success: true };
             } else {
                 toast.dismiss(load);
@@ -183,12 +311,35 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         }
     };
 
+    // const getSubjects = useCallback(
+    //     async () => {
+    //         try {
+    //             const data: any = await deptApi.getDepts();
+    //             if (isMounted()) {
+    //                 setSubjects(data.rows);
+    //             }
+    //         } catch (err) {
+    //             console.log(err);
+    //         }
+    //     },
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    //     [isMounted]
+    // );
+
+    // useEffect(() => {
+    //     getSubjects();
+    // }, []);
+
     useEffect(
         () => {
-            getSessions(rowsPerPage, page);
+            getSessions({
+                limit: rowsPerPage,
+                offset: page,
+                status: currentTab,
+            });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [page, rowsPerPage]
+        []
     );
 
     useEffect(
@@ -203,13 +354,21 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
-        // getSessions(rowsPerPage, newPage);
+        getSessions({
+            limit: rowsPerPage,
+            offset: newPage * rowsPerPage,
+            status: currentTab,
+        });
     };
 
     const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-        getSessions(rowsPerPage, page);
+        getSessions({
+            limit: parseInt(event.target.value, 10),
+            offset: 0,
+            status: currentTab,
+        });
     };
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -226,19 +385,71 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         setOpen(false);
     };
 
-    const startMeeting = async (
-        code: string | string[],
-        sessionId: string | string[] | undefined
-    ) => {
-        const data = await sessionApi.startMeeting(code, sessionId);
-        if (data.success) {
-            window.history.replaceState(null, '', '/sessions');
-            window.open(data.meetingUrl, '_blank');
-            getSessions(rowsPerPage, page);
-        }
+    const startMeeting = useCallback(
+        async (
+            code: string | string[],
+            sessionId: string | string[] | undefined
+        ) => {
+            try {
+                const data = await sessionApi.startMeeting(code, sessionId);
+                if (data.success) {
+                    window.history.replaceState(null, '', '/sessions');
+                    window.open(data.meetingUrl, '_blank');
+                    getSessions({
+                        limit: rowsPerPage,
+                        offset: page,
+                        status: currentTab,
+                    });
+                }
+            } catch (error: any) {
+                window.history.replaceState(null, '', '/sessions');
+                toast.error(error?.message || 'failed to start session');
+            }
+        },
+        [isMounted]
+    );
+
+    const applyFilters = (filters: any): any => {
+        console.log({ filters });
+        setFilters(filters);
+        getSessions({
+            status: currentTab,
+            limit: rowsPerPage,
+            offset: 0,
+            ...filters,
+        });
     };
+
+    const clearFilters = () => {
+        setLoading(true);
+        applyFilters(initialFilters);
+    };
+
+    const handleToggleFilters = (): void => {
+        setOpenFilters((prevState) => !prevState);
+    };
+
+    const handleCloseFilters = (): void => {
+        setOpenFilters(false);
+    };
+
+    useEffect(() => {
+        // This code will execute whenever `value` changes
+        // `value` will be the previous state value
+        console.log('Previous value:', filters);
+    }, [filters]);
     return (
         <Box sx={{ width: '100%', scrollBehavior: 'auto' }}>
+            {['super_admin', 'admin'].includes(user?.role?.name) && (
+                <Button
+                    endIcon={<FilterIcon fontSize='small' />}
+                    onClick={handleToggleFilters}
+                    sx={{ mr: 2 }}
+                    variant='outlined'
+                >
+                    Filters
+                </Button>
+            )}
             <Paper
                 sx={{
                     m: 1,
@@ -251,36 +462,104 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                     }),
                 }}
             >
-                <TableContainer>
-                    <Table aria-labelledby='tableTitle' size='small'>
-                        <TableHeads headCells={headCells} />
-                        <TableBody>
-                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.slice().sort(getComparator(order, orderBy)) */}
-                            {sessions.map((row, index) => {
-                                const labelId = `enhanced-table-checkbox-${index}`;
-                                return (
-                                    <SessionsRow
-                                        key={row?.id}
-                                        row={row}
-                                        labelId={labelId}
-                                        deleteSession={deleteSession}
-                                        updateSession={updateSession}
-                                    />
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    component='div'
-                    count={sessionsCount}
-                    rowsPerPageOptions={[5, 10, 25]}
-                    page={page}
-                    rowsPerPage={rowsPerPage}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+                <Card sx={{ backgroundColor: 'white' }}>
+                    <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        flexDirection='row'
+                    >
+                        <Tabs
+                            indicatorColor='primary'
+                            onChange={handleTabsChange}
+                            scrollButtons='auto'
+                            sx={{
+                                px: 2,
+                            }}
+                            textColor='primary'
+                            value={currentTab}
+                            variant='scrollable'
+                        >
+                            {tabs.map((tab) => (
+                                <Tab
+                                    sx={{
+                                        minHeight: '60px',
+                                        mt: 'auto',
+                                        mb: 'auto',
+                                    }}
+                                    icon={
+                                        <Chip
+                                            label={tab.count || 0}
+                                            size='small'
+                                            sx={{
+                                                fontSize: '12px !important',
+                                                color: 'neutral.600',
+                                                // borderRadius: '5px',
+                                            }}
+                                        />
+                                    }
+                                    iconPosition='end'
+                                    key={tab.value}
+                                    label={tab.label}
+                                    value={tab.value}
+                                />
+                            ))}
+                        </Tabs>
+                    </Box>
+                    <Divider />
+                    <Box sx={{ display: 'flex' }}>
+                        <SessionListFilters
+                            containerRef={rootRef}
+                            onClose={handleCloseFilters}
+                            open={openFilters}
+                            applyFilters={(filters: any): Promise<void> =>
+                                applyFilters(filters)
+                            }
+                            clearFilters={clearFilters}
+                        />
+                        <SessionListInner open={openFilters} />
+                        <Box sx={{ width: '100%' }}>
+                            <TableContainer>
+                                <Table
+                                    aria-labelledby='tableTitle'
+                                    size='small'
+                                >
+                                    <TableHeads headCells={headCells} />
+                                    <TableBody>
+                                        {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                            rows.slice().sort(getComparator(order, orderBy)) */}
+                                        {sessions.map((row, index) => {
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+                                            return (
+                                                <SessionsRow
+                                                    key={row?.id}
+                                                    row={row}
+                                                    labelId={labelId}
+                                                    deleteSession={
+                                                        deleteSession
+                                                    }
+                                                    updateSession={
+                                                        updateSession
+                                                    }
+                                                    statuses={statuses}
+                                                />
+                                            );
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                    </Box>
+                    <TablePagination
+                        component='div'
+                        count={sessionsCount}
+                        rowsPerPageOptions={[10, 25, 50, 100]}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Card>
             </Paper>
         </Box>
     );

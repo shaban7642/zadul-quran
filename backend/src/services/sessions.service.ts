@@ -28,17 +28,19 @@ class SessionsService {
     endTime,
     title,
     sessionMethod,
+    sessionTypeId,
   }: {
     studentId: number;
     teacherId: number;
     departmentId: number;
     fromDate: Date;
     toDate: Date;
-    dayOfWeek: number;
+    dayOfWeek: number[];
     startTime: string;
     endTime: string;
     title: string;
     sessionMethod: string;
+    sessionTypeId: number;
   }): Promise<any> {
     try {
       const patch = await this.patchesModel.create({
@@ -50,29 +52,27 @@ class SessionsService {
       });
       const start = new Date(fromDate);
       const end = new Date(toDate);
-      const targetIndex = dayOfWeek;
-      const daysToAdd = (targetIndex - start.getDay() + 7) % 7;
-
-      console.log({ start, end, targetIndex, daysToAdd });
       const result = [];
-      const currentDate = new Date(start);
-      currentDate.setDate(start.getDate() + daysToAdd);
 
-      while (currentDate <= end) {
-        if (currentDate >= start) {
-          result.push(new Date(currentDate).toString());
+      for (const targetIndex of dayOfWeek) {
+        // const targetIndex = dayOfWeek;
+        const daysToAdd = (targetIndex - start.getDay() + 7) % 7;
+
+        console.log({ start, end, targetIndex, daysToAdd });
+        const currentDate = new Date(start);
+        currentDate.setDate(start.getDate() + daysToAdd);
+
+        while (currentDate <= end) {
+          console.log('while');
+          if (currentDate >= start) {
+            console.log('if');
+            result.push(new Date(currentDate).toString());
+          }
+          currentDate.setDate(currentDate.getDate() + 7);
         }
-        currentDate.setDate(currentDate.getDate() + 7);
       }
 
-      console.log({
-        patchId: patch.id,
-        meetingId: `${Math.random()}`.substring(2, 8),
-        // date: res,
-        startTime,
-        endTime,
-        title,
-      });
+      console.log({ result });
 
       let sessions;
       for (const res of result) {
@@ -85,6 +85,7 @@ class SessionsService {
             date: res,
             startTime,
             endTime,
+            sessionTypeId,
           },
           {
             returning: false,
@@ -108,7 +109,8 @@ class SessionsService {
 
   public async update(query: UpdateOptions, data: Session) {
     try {
-      await this.sessionsModel.update(data, query);
+      const resp = await this.sessionsModel.update(data, query);
+      return resp;
     } catch (err) {
       logger.log({
         level: 'error',

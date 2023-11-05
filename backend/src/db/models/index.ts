@@ -14,6 +14,7 @@ import Patches from './patches.model';
 import Sessions from './sessions.model';
 import Reports from './reports.model';
 import ZoomSessionMeetings from './zoomSessionMettings.model';
+import SessionTypes from './sessionTypes.model';
 
 console.info('Initializing sequelize...');
 
@@ -58,6 +59,7 @@ export const initModels = async (sequelizeInst: Sequelize) => {
     await DocumentTypes.initModel(sequelizeInst);
     await Documents.initModel(sequelizeInst);
     await Patches.initModel(sequelizeInst);
+    await SessionTypes.initModel(sequelizeInst);
     await Sessions.initModel(sequelizeInst);
     await Reports.initModel(sequelizeInst);
     await ZoomSessionMeetings.initModel(sequelizeInst);
@@ -80,6 +82,7 @@ export const initAssociation = async () => {
     await DocumentTypes.initAssociation();
     await Documents.initAssociation();
     await Patches.initAssociation();
+    await SessionTypes.initAssociation();
     await Sessions.initAssociation();
     await Reports.initAssociation();
     await ZoomSessionMeetings.initAssociation();

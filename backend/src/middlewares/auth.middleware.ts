@@ -54,6 +54,7 @@ async function authMiddleware(
 
       req.userId = userId;
       req.rolePermissions = role.permissions;
+      req.role = role;
 
       next();
     } catch (err) {

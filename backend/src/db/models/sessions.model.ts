@@ -2,11 +2,14 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 import Patches from './patches.model';
 import ZoomSessionMeetings from './zoomSessionMettings.model';
 import Reports from './reports.model';
+import SessionTypes from './sessionTypes.model';
 
 class Sessions extends Model {
   public id!: number;
 
   public patchId?: number;
+
+  public sessionTypeId?: number;
 
   public sessionMethod?: string;
 
@@ -39,6 +42,13 @@ class Sessions extends Model {
             key: 'id',
           },
         },
+        sessionTypeId: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: SessionTypes,
+            key: 'id',
+          },
+        },
         title: {
           type: DataTypes.STRING,
         },
@@ -59,8 +69,22 @@ class Sessions extends Model {
         },
         status: {
           type: DataTypes.ENUM,
-          values: ['waiting', 'expired', 'running', 'done', 'cancelled'],
+          values: [
+            'waiting',
+            'expired',
+            'running',
+            'done',
+            'cancelled',
+            'absent',
+            'rescheduled',
+          ],
           defaultValue: 'waiting',
+        },
+        startedAt: {
+          type: DataTypes.DATE,
+        },
+        endedAt: {
+          type: DataTypes.DATE,
         },
       },
       {
@@ -73,6 +97,7 @@ class Sessions extends Model {
 
   public static initAssociation(): void {
     this.belongsTo(Patches);
+    this.belongsTo(SessionTypes);
     this.hasMany(ZoomSessionMeetings);
     this.hasMany(Reports);
   }

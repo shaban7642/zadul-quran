@@ -2,20 +2,24 @@
 /* eslint-disable consistent-return */
 import { injectable } from 'inversify';
 import { NextFunction, Response } from 'express';
-import { FindOptions } from 'sequelize';
+import { FindOptions, Op, Sequelize, WhereOptions } from 'sequelize';
 import axios from 'axios';
+import moment from 'moment';
 import jwt from 'jsonwebtoken';
 
 import { SERVICE_IDENTIFIER } from '../constants';
 import iocContainer from '../configs/ioc.config';
 import UserModel from '../db/models/users.model';
+import SessionsModel from '../db/models/sessions.model';
 
-import { SessionsService } from '../services';
+import { DepartmentsService, SessionsService } from '../services';
 import { RequestWithIdentity } from '../types/auth.type';
 import { getPagination, getOrderOptions } from '../utils/sequelize';
 import Patches from '../db/models/patches.model';
 import Departments from '../db/models/departments.model';
+import SessionTypesModel from '../db/models/sessionTypes.model';
 import ZoomSessionMeetings from '../db/models/zoomSessionMettings.model';
+import { Session } from '../types/sessions.type';
 
 const attributes = [
   'id',
@@ -23,10 +27,13 @@ const attributes = [
   'patchId',
   'sessionMethod',
   'meetingId',
+  'sessionTypeId',
   'date',
   'startTime',
   'endTime',
   'status',
+  'startedAt',
+  'endedAt',
   'createdAt',
   'updatedAt',
 ];
@@ -35,6 +42,10 @@ const attributes = [
 class SessionsController {
   public userModel = UserModel;
 
+  public sessionTypesModel = SessionTypesModel;
+
+  public sessionsModel = SessionsModel;
+
   public zoomSessionMeetings = ZoomSessionMeetings;
 
   public sessionsService: SessionsService;
@@ -42,6 +53,9 @@ class SessionsController {
   constructor(
     sessionsService = iocContainer.get<SessionsService>(
       SERVICE_IDENTIFIER.SESSIONS_SERVICE
+    ),
+    public departmentsService = iocContainer.get<DepartmentsService>(
+      SERVICE_IDENTIFIER.DEPARTMENTS_SERVICE
     )
   ) {
     this.sessionsService = sessionsService;
@@ -53,28 +67,179 @@ class SessionsController {
     next: NextFunction
   ) => {
     try {
-      const { offset, limit, sortDir, sortBy } = req.query;
+      const { role, userId } = req;
+      const {
+        offset,
+        limit,
+        sortDir,
+        sortBy,
+        teacherId,
+        studentId,
+        departmentId,
+        ...searchValues
+      } = req.query;
+      const roleName = role.name || null;
+
+      const searchParams: WhereOptions = {};
+
+      for (const [searchByKey, searchByValue] of Object.entries(searchValues)) {
+        switch (searchByKey) {
+          case 'status':
+            searchParams.status = {
+              [Op.in]: String(searchByValue).split(','),
+            };
+            break;
+          case 'date':
+            // eslint-disable-next-line no-case-declarations
+            const uploadFrom = moment(
+              String(searchValues.date).split('to')[0]
+            ).toDate();
+
+            // eslint-disable-next-line no-case-declarations
+            const uploadTo = moment(String(searchValues.date).split('to')[1])
+              .add(1, 'day')
+              .toDate();
+
+            searchParams.date = {
+              [Op.between]: [uploadFrom, uploadTo],
+            };
+
+            break;
+          default:
+        }
+      }
 
       const query: FindOptions = {
         attributes,
+        where: { ...searchParams },
         include: [
           {
             model: Patches,
             include: [
-              { model: UserModel, as: 'student' },
-              { model: UserModel, as: 'teacher' },
-              { model: Departments },
+              {
+                model: UserModel,
+                as: 'student',
+                ...(studentId && { where: { id: studentId }, required: true }),
+                ...(roleName === 'student' && {
+                  where: { id: userId },
+                  required: true,
+                }),
+              },
+              {
+                model: UserModel,
+                as: 'teacher',
+                ...(teacherId && { where: { id: teacherId }, required: true }),
+                ...(roleName === 'teacher' && {
+                  where: { id: userId },
+                  required: true,
+                }),
+              },
+              {
+                model: Departments,
+                ...(departmentId && {
+                  where: { id: departmentId },
+                  required: true,
+                }),
+              },
             ],
+            required: true,
           },
           { model: ZoomSessionMeetings },
+          { model: SessionTypesModel },
         ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
-          { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'asc' },
+          { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'desc' },
         ]),
       };
 
-      const resp = await this.sessionsService.findAndCountAll(query);
+      const { count, rows } = await this.sessionsService.findAndCountAll(query);
+
+      const promises = rows.map(async (session: Session) => {
+        if (
+          session?.sessionType &&
+          session.date >
+            moment()
+              .add(session?.sessionType?.duration / 2, 'minutes')
+              .toDate() &&
+          session.status === 'waiting'
+        ) {
+          await this.sessionsService.update(
+            { where: { id: session.id } },
+            { status: 'absent' }
+          );
+          return { ...session, status: 'absent' };
+        }
+
+        return session;
+      });
+
+      const processed = await Promise.all(promises);
+
+      // count by status
+      const countAttributes: any = [
+        'sessions.status',
+        [Sequelize.fn('COUNT', Sequelize.col('sessions.status')), 'count'],
+      ];
+
+      const group = ['sessions.status'];
+
+      delete searchParams.status;
+
+      const statusCount = await this.sessionsModel.count({
+        where: { ...searchParams },
+        include: [
+          {
+            model: Patches,
+            include: [
+              {
+                model: UserModel,
+                as: 'student',
+                ...(studentId && { where: { id: studentId }, required: true }),
+                ...(roleName === 'student' && {
+                  where: { id: userId },
+                  required: true,
+                }),
+              },
+              {
+                model: UserModel,
+                as: 'teacher',
+                ...(teacherId && { where: { id: teacherId }, required: true }),
+                ...(roleName === 'teacher' && {
+                  where: { id: userId },
+                  required: true,
+                }),
+              },
+              {
+                model: Departments,
+                ...(departmentId && {
+                  where: { id: departmentId },
+                  required: true,
+                }),
+              },
+            ],
+            required: true,
+          },
+        ],
+        attributes: countAttributes,
+        group,
+      });
+
+      let totalCount = 0;
+      const resp = {
+        count,
+        rows: processed,
+        statusCount: statusCount.reduce((results: any, row: any): any => {
+          results.push({
+            status: row.status,
+            count: row.count,
+          });
+
+          totalCount += row.count;
+          return results;
+        }, []),
+        totalCount,
+      };
       return res.status(200).json(resp);
     } catch (error) {
       next(error);
@@ -98,6 +263,7 @@ class SessionsController {
         endTime,
         title,
         sessionMethod,
+        sessionTypeId,
       } = req.body;
 
       const resp = await this.sessionsService.createMany({
@@ -111,6 +277,7 @@ class SessionsController {
         endTime,
         title,
         sessionMethod,
+        sessionTypeId,
       });
       return res.status(200).json(resp);
     } catch (error) {
@@ -161,6 +328,17 @@ class SessionsController {
       const { userId } = req;
       const { code, sessionId } = req.query;
 
+      const alreadyOneIsRunning = await this.sessionsService.findOne({
+        where: { status: 'running' },
+        include: [
+          { model: Patches, where: { teacherId: userId }, required: true },
+        ],
+      });
+
+      if (alreadyOneIsRunning) {
+        throw new Error('there is already one session running!');
+      }
+
       // Exchange the code for an access token
       const response = await axios.post('https://zoom.us/oauth/token', null, {
         params: {
@@ -209,6 +387,7 @@ class SessionsController {
           { where: { id: sessionId } },
           {
             status: 'running',
+            startedAt: new Date(Date.now()),
           }
         );
       }
@@ -223,6 +402,19 @@ class SessionsController {
         .json({ success: true, meetingUrl: meetingResp.data.join_url });
     } catch (error) {
       console.log(error?.response?.data);
+      next(error);
+    }
+  };
+
+  public getSessionTypes = async (
+    req: RequestWithIdentity,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const resp = await this.sessionTypesModel.findAll();
+      res.status(200).json({ success: true, resp });
+    } catch (error) {
       next(error);
     }
   };
