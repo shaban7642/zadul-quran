@@ -15,6 +15,7 @@ import Documents from '../db/models/documents.model';
 import Sessions from '../db/models/sessions.model';
 import Departments from '../db/models/departments.model';
 import Patches from '../db/models/patches.model';
+import SessionTypes from '../db/models/sessionTypes.model';
 
 @injectable()
 class ReportsController {
@@ -44,6 +45,7 @@ class ReportsController {
           { model: UserModel },
           {
             model: Sessions,
+            include: [{ model: SessionTypes }],
           },
         ],
         ...getPagination(limit, offset),
