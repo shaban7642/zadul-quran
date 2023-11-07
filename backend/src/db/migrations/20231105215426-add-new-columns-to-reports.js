@@ -45,13 +45,13 @@ module.exports = {
     await queryInterface.addColumn('reports', 'reading', {
       type: Sequelize.TEXT,
     });
-    await queryInterface.addColumn('reports', 'memorizationLevel ', {
+    await queryInterface.addColumn('reports', 'memorizationLevel', {
       type: Sequelize.STRING,
     });
-    await queryInterface.addColumn('reports', 'revisionLevel ', {
+    await queryInterface.addColumn('reports', 'revisionLevel', {
       type: Sequelize.STRING,
     });
-    await queryInterface.addColumn('reports', 'readingLevel ', {
+    await queryInterface.addColumn('reports', 'readingLevel', {
       type: Sequelize.STRING,
     });
   },

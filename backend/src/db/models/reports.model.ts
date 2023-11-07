@@ -60,6 +60,57 @@ class Reports extends Model {
         reportContent: {
           type: DataTypes.TEXT,
         },
+        book: {
+          type: DataTypes.STRING,
+        },
+        unit: {
+          type: DataTypes.STRING,
+        },
+        topic: {
+          type: DataTypes.STRING,
+        },
+        level: {
+          type: DataTypes.STRING,
+        },
+        notes: {
+          type: DataTypes.TEXT,
+        },
+        homework: {
+          type: DataTypes.TEXT,
+        },
+        newWords: {
+          type: DataTypes.TEXT,
+        },
+        expressions: {
+          type: DataTypes.TEXT,
+        },
+        rules: {
+          type: DataTypes.TEXT,
+        },
+        memorization: {
+          type: DataTypes.TEXT,
+        },
+        revision: {
+          type: DataTypes.TEXT,
+        },
+        tajweed: {
+          type: DataTypes.TEXT,
+        },
+        recitation: {
+          type: DataTypes.TEXT,
+        },
+        reading: {
+          type: DataTypes.TEXT,
+        },
+        memorizationLevel: {
+          type: DataTypes.STRING,
+        },
+        revisionLevel: {
+          type: DataTypes.STRING,
+        },
+        readingLevel: {
+          type: DataTypes.STRING,
+        },
       },
       {
         sequelize,
