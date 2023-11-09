@@ -34,10 +34,15 @@ class DocumentsController {
     next: NextFunction
   ) => {
     try {
-      const { offset, limit, sortDir, sortBy } = req.query;
+      const { offset, limit, sortDir, sortBy, documentType } = req.query;
 
       const query: FindOptions = {
-        include: [{ model: DocumentTypes }],
+        include: [
+          {
+            model: DocumentTypes,
+            ...(documentType && { where: { name: documentType } }),
+          },
+        ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
           { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'asc' },

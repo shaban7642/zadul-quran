@@ -4,6 +4,7 @@ import { injectable } from 'inversify';
 import { NextFunction, Response } from 'express';
 import { FindOptions, Op, Sequelize, WhereOptions } from 'sequelize';
 import axios from 'axios';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
 import jwt from 'jsonwebtoken';
 

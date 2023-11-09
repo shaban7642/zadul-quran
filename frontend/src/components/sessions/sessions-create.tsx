@@ -318,6 +318,7 @@ const CreateSession = () => {
                             applyFilters(filters)
                         }
                         clearFilters={clearFilters}
+                        isCreatePage={true}
                     />
                     {/* <SessionListInner open={openFilters} /> */}
                 </Box>

@@ -8,6 +8,8 @@ class Reports extends Model {
 
   public documentId?: number;
 
+  public bookId?: number;
+
   public userId?: number;
 
   public sessionId?: number;
@@ -60,8 +62,12 @@ class Reports extends Model {
         reportContent: {
           type: DataTypes.TEXT,
         },
-        book: {
-          type: DataTypes.STRING,
+        bookId: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: Documents,
+            key: 'id',
+          },
         },
         unit: {
           type: DataTypes.STRING,
@@ -123,7 +129,8 @@ class Reports extends Model {
   public static initAssociation(): void {
     this.belongsTo(User);
     this.belongsTo(Sessions);
-    this.belongsTo(Documents);
+    this.belongsTo(Documents, { as: 'documentId' });
+    this.belongsTo(Documents, { as: 'bookId' });
   }
 }
 

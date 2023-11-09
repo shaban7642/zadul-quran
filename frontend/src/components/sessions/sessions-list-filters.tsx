@@ -49,6 +49,7 @@ interface SessionListFiltersProps {
     applyFilters: (filters: Filters) => void;
     clearFilters?: () => void;
     loading?: boolean;
+    isCreatePage?: boolean;
 }
 
 const FiltersDrawerDesktop = styled(Drawer)({
@@ -96,6 +97,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
         applyFilters,
         clearFilters,
         loading,
+        isCreatePage,
         ...other
     } = props;
 
@@ -484,7 +486,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
         </Box>
     );
 
-    if (true) {
+    if (isCreatePage) {
         return open ? <Box>{content}</Box> : <Box sx={{ width: '0px' }}></Box>;
     }
 
