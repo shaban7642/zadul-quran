@@ -25,6 +25,7 @@ import { documentApi } from "../../api/documentApi";
 export interface Document {
   id: number;
   name: string;
+  fileName: string;
 }
 
 export interface HeadCell {
@@ -50,10 +51,14 @@ export const DocumentTable = () => {
   const getDocuments = useCallback(
     async (rowsPerPage: number, page: number) => {
       try {
-        const data: any = await documentApi.getDocuments(rowsPerPage, page);
+        const data: any = await documentApi.getDocuments(
+          rowsPerPage,
+          page,
+          "books"
+        );
         if (isMounted()) {
           setDocuments(data.rows);
-          setDocumentsCount(data.rows.length);
+          setDocumentsCount(data.count);
         }
       } catch (err: any) {
         toast.error(err.message || "failed");
@@ -93,7 +98,11 @@ export const DocumentTable = () => {
     const load = toast.loading("createDocuments");
     try {
       console.log({ values });
-      await documentApi.createDocument(values, userId);
+      await documentApi.createDocument(
+        { name: "books", id: 1 },
+        values,
+        userId
+      );
 
       toast.dismiss(load);
       toast.success("createDocuments ");

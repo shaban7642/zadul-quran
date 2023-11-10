@@ -1,8 +1,11 @@
 import LoadingButton from "@mui/lab/LoadingButton";
 import { alpha, Box, Paper, Typography, Divider, Chip } from "@mui/material";
-import { MuiFileInput } from "mui-file-input";
 import { useState, FC } from "react";
 import { useAuth } from "../../hooks/use-auth";
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 interface CreateDocumentProps {
   createDocument: (
@@ -14,26 +17,34 @@ const CreateDocument: FC<CreateDocumentProps> = (props) => {
   const { createDocument } = props;
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState<File>();
 
-  const uploadFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const uploadFile = async (e: any) => {
     e.preventDefault();
-    if (!file) return;
+
     try {
+      console.log("file", e.target.files[0]);
       setLoading(true);
       let formData = new FormData();
       formData.append("userId", user.id);
-      formData.append("file", file);
+      formData.append("file", e.target.files[0]);
 
       const uploadResp = await createDocument(formData, user.id);
-
-      setFile(undefined);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
-
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
   return (
     <Paper
       elevation={9}
@@ -68,35 +79,19 @@ const CreateDocument: FC<CreateDocumentProps> = (props) => {
         </Typography>
       </Box>
       <Box sx={{ margin: 1 }}>
-        <Divider textAlign="left" sx={{ mb: 1 }}>
-          <Chip label="File Details" sx={{ fontWeight: "600" }} />
-        </Divider>
-
-        <MuiFileInput
-          size="small"
-          name="file"
-          variant="outlined"
-          value={file}
-          onChange={(e: any) => {
-            setFile(e);
-          }}
-          helperText={!file ? "upload your file" : "uploaded"}
-          sx={{ ml: 0, cursor: "pointer" }}
-        />
-        <Divider sx={{ m: 1 }}></Divider>
-        <LoadingButton
-          type="button"
-          onClick={uploadFile}
-          sx={{
-            width: "100%",
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-          }}
+        <Button
+          component="label"
           variant="contained"
+          startIcon={<CloudUploadIcon />}
         >
-          submit
-        </LoadingButton>
+          Upload file
+          <VisuallyHiddenInput
+            type="file"
+            onChange={(e: any) => {
+              uploadFile(e);
+            }}
+          />
+        </Button>
       </Box>
     </Paper>
   );

@@ -4,38 +4,105 @@ import {
   Box,
   Chip,
   Divider,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
-  Typography,
+  Select,
 } from "@mui/material";
-import { FormEvent, useState, FC } from "react";
+import { useState, FC, useEffect, useCallback } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import toast from "react-hot-toast";
 import { reportApi } from "../../api/reportApi";
 import { documentApi } from "../../api/documentApi";
-import { MuiFileInput } from "mui-file-input";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useFormik } from "formik";
+import TextField from "@mui/material/TextField";
+import { Document } from "../documents/doc-table";
+import { useMounted } from "../../hooks/use-mounted";
 
 interface CreateReportProps {
+  sessionDeptName: string;
   sessionId: number;
   handleCloseReport: () => void;
 }
 
 const CreateReport: FC<CreateReportProps> = (props) => {
-  const { sessionId, handleCloseReport } = props;
+  const { sessionDeptName, sessionId, handleCloseReport } = props;
   const [formValues, setFormValues] = useState("");
   const [document, setDocument] = useState(0);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState<File>();
+  const levels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const isMounted = useMounted();
 
+  const getDocuments = useCallback(
+    async (rowsPerPage: number, page: number) => {
+      try {
+        const data: any = await documentApi.getDocuments(
+          rowsPerPage,
+          page,
+          "books"
+        );
+        if (isMounted()) {
+          setDocuments(data.rows);
+        }
+      } catch (err: any) {
+        toast.error(err.message || "failed");
+      }
+    },
+    [isMounted]
+  );
+
+  const formik = useFormik({
+    initialValues: {
+      date: new Date(),
+      documentId: document,
+      sessionId: sessionId,
+      // Islamic studies
+      notes: "",
+      homework: "",
+      bookId: documents[0]?.id,
+      unit: "",
+      topic: "",
+      level: "",
+      // Arabic
+      newWords: "",
+      expressions: "",
+      rules: "",
+      // Quran
+      memorization: "",
+      revision: "",
+      tajweed: "",
+      recitation: "",
+      reading: "",
+      memorizationLevel: "",
+      revisionLevel: "",
+      readingLevel: "",
+    },
+
+    onSubmit: async (values: any) => {
+      try {
+        console.log(values);
+        const { success } = await createReport(values);
+        if (success) {
+          formik.resetForm();
+          handleCloseReport();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
   const createReport = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createReports");
+    console.log(document);
     try {
-      if (document === 0) {
-        await reportApi.createReport(sessionId, user?.id, values);
-      } else {
-        await reportApi.createReport(sessionId, user?.id, values, document);
-      }
+      await reportApi.createReport(values);
 
       toast.dismiss(load);
       toast.success("createReports ");
@@ -51,32 +118,30 @@ const CreateReport: FC<CreateReportProps> = (props) => {
     values: any,
     userId: number
   ): Promise<{ success: boolean }> => {
-    const load = toast.loading("createDocuments");
     try {
-      const doc = await documentApi.createDocument(values, userId);
+      const doc = await documentApi.createDocument(
+        { name: "reports", id: 2 },
+        values,
+        userId
+      );
       setDocument(doc.id);
-      toast.dismiss(load);
-      toast.success("createDocuments ");
 
       return { success: true };
     } catch (err: any) {
-      toast.dismiss(load);
-      toast.error(err.message || "createDocumentsFailed");
       return { success: false };
     }
   };
-  const uploadFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const uploadFile = async (e: any) => {
     e.preventDefault();
-    if (!file) return;
+
     try {
+      console.log("file", e.target.files[0]);
       setLoading(true);
       let formData = new FormData();
       formData.append("userId", user.id);
-      formData.append("file", file);
+      formData.append("file", e.target.files[0]);
 
       const uploadResp = await createDocument(formData, user.id);
-
-      setFile(undefined);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -92,6 +157,25 @@ const CreateReport: FC<CreateReportProps> = (props) => {
       handleCloseReport();
     }
   };
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
+  useEffect(
+    () => {
+      getDocuments(1000, 1000);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Paper
@@ -100,7 +184,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
           display: "flex",
           flexDirection: "column",
           p: "10px 10px",
-          width: "%",
+          width: "100%",
 
           ...(true && {
             bgcolor: (theme) =>
@@ -113,113 +197,665 @@ const CreateReport: FC<CreateReportProps> = (props) => {
       >
         {" "}
         <Grid container>
-          <Grid item lg={3.8} md={3.8} sm={3.8} xs={12}>
-            <Box
-              sx={{
-                alignItems: "center",
-                color: "primary.dark",
-                display: "flex",
-                justifyContent: "space-between",
-                px: 3,
-                py: 2,
-              }}
-            >
-              <Typography color="inherit" variant="h6">
-                Add Document
-              </Typography>
-            </Box>
-            <Box sx={{ margin: 1 }}>
+          <Grid item xs={12}>
+            <form onSubmit={formik.handleSubmit}>
               <Divider textAlign="left" sx={{ mb: 1 }}>
-                <Chip label="Upload your report" sx={{ fontWeight: "600" }} />
+                <Chip label="Feedback Report" sx={{ fontWeight: "600" }} />
               </Divider>
-              <MuiFileInput
-                size="small"
-                name="file"
-                variant="outlined"
-                value={file}
-                onChange={(e: any) => {
-                  setFile(e);
-                }}
-                helperText={!file ? "upload your file" : "uploaded"}
-                sx={{ ml: 0, cursor: "pointer" }}
-              />
-              <LoadingButton
-                type="button"
-                onClick={uploadFile}
+
+              {sessionDeptName != "Quran" && (
+                <>
+                  {/* Book */}
+                  <FormControl
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                      marginTop: 2,
+                      mb: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    <InputLabel
+                      sx={{
+                        top: -6,
+                      }}
+                      id="outlined-adornment-bookId"
+                    >
+                      Book
+                    </InputLabel>
+                    <Select
+                      name="bookId"
+                      id="outlined-adornment-bookId"
+                      labelId="outlined-adornment-bookId"
+                      value={formik.values.bookId}
+                      onChange={(event) => {
+                        formik.setFieldValue("bookId", event.target.value);
+                      }}
+                    >
+                      {documents?.map((book) => (
+                        <MenuItem
+                          sx={{
+                            color: "black",
+                            ...(true && {
+                              bgcolor: (theme) =>
+                                alpha(
+                                  theme.palette.info.contrastText,
+                                  theme.palette.action.activatedOpacity
+                                ),
+                            }),
+                            fontFamily: "sans-serif",
+                          }}
+                          key={book?.id}
+                          value={book?.id}
+                        >
+                          {book?.fileName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {/* unit */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(formik.touched.unit && formik.errors.unit)}
+                    // @ts-ignore
+                    helperText={formik.touched.unit && formik.errors.unit}
+                    label="Unit"
+                    margin="normal"
+                    id="unit"
+                    name="unit"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.unit}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* topic */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(formik.touched.topic && formik.errors.topic)}
+                    // @ts-ignore
+                    helperText={formik.touched.topic && formik.errors.topic}
+                    label="Topic"
+                    margin="normal"
+                    id="topic"
+                    name="topic"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.topic}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* level */}
+                  <FormControl
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                      marginTop: 2,
+                      mb: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    <InputLabel
+                      sx={{
+                        top: -6,
+                      }}
+                      id="outlined-level"
+                    >
+                      Level
+                    </InputLabel>
+                    <Select
+                      name="level"
+                      id="outlined-level"
+                      labelId="outlined-level"
+                      value={formik.values.level}
+                      onChange={(event) => {
+                        formik.setFieldValue("level", event.target.value);
+                      }}
+                    >
+                      {levels.map((level) => (
+                        <MenuItem
+                          sx={{
+                            color: "black",
+                            ...(true && {
+                              bgcolor: (theme) =>
+                                alpha(
+                                  theme.palette.info.contrastText,
+                                  theme.palette.action.activatedOpacity
+                                ),
+                            }),
+                            fontFamily: "sans-serif",
+                          }}
+                          key={level}
+                          value={level}
+                        >
+                          {level}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </>
+              )}
+              {sessionDeptName === "Arabic" && (
+                <>
+                  {" "}
+                  {/* new words */}
+                  <TextField
+                    multiline
+                    minRows={3}
+                    size="medium"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 100,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.newWords && formik.errors.newWords
+                    )}
+                    // @ts-ignore
+                    helperText={
+                      formik.touched.newWords && formik.errors.newWords
+                    }
+                    label="New Words"
+                    margin="normal"
+                    id="newWords"
+                    name="newWords"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.newWords}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* Expressions */}
+                  <TextField
+                    multiline
+                    minRows={3}
+                    size="medium"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 100,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.expressions && formik.errors.expressions
+                    )}
+                    // @ts-ignore
+                    helperText={
+                      formik.touched.expressions && formik.errors.expressions
+                    }
+                    label="Expressions"
+                    margin="normal"
+                    id="expressions"
+                    name="expressions"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.expressions}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* rules */}
+                  <TextField
+                    multiline
+                    minRows={3}
+                    size="medium"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 100,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(formik.touched.rules && formik.errors.rules)}
+                    // @ts-ignore
+                    helperText={formik.touched.rules && formik.errors.rules}
+                    label="Rules"
+                    margin="normal"
+                    id="rules"
+                    name="rules"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.rules}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                </>
+              )}
+
+              {sessionDeptName === "Quran" && (
+                <>
+                  {/* memorization */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.memorization && formik.errors.memorization
+                    )}
+                    // @ts-ignore
+                    helperText={
+                      formik.touched.memorization && formik.errors.memorization
+                    }
+                    label="Memorization"
+                    margin="normal"
+                    id="memorization"
+                    name="memorization"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.memorization}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* revision */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.revision && formik.errors.revision
+                    )}
+                    // @ts-ignore
+                    helperText={
+                      formik.touched.revision && formik.errors.revision
+                    }
+                    label="Revision"
+                    margin="normal"
+                    id="revision"
+                    name="revision"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.revision}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* tajweed */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.tajweed && formik.errors.tajweed
+                    )}
+                    // @ts-ignore
+                    helperText={formik.touched.tajweed && formik.errors.tajweed}
+                    label="Tajweed"
+                    margin="normal"
+                    id="tajweed"
+                    name="tajweed"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.tajweed}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* recitation */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.recitation && formik.errors.recitation
+                    )}
+                    // @ts-ignore
+                    helperText={
+                      formik.touched.recitation && formik.errors.recitation
+                    }
+                    label="Recitation"
+                    margin="normal"
+                    id="recitation"
+                    name="recitation"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.recitation}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* reading */}
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    error={Boolean(
+                      formik.touched.reading && formik.errors.reading
+                    )}
+                    // @ts-ignore
+                    helperText={formik.touched.reading && formik.errors.reading}
+                    label="Reading"
+                    margin="normal"
+                    id="reading"
+                    name="reading"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.reading}
+                    InputProps={{
+                      style: {
+                        fontFamily: "sans-serif",
+                      },
+                    }}
+                  />
+                  {/* memorizationLevel */}
+                  <FormControl
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                      marginTop: 2,
+                      mb: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    <InputLabel
+                      sx={{
+                        top: -6,
+                      }}
+                      id="outlined-memorizationLevel"
+                    >
+                      Memorization Level
+                    </InputLabel>
+                    <Select
+                      name="memorizationLevel"
+                      id="outlined-memorizationLevel"
+                      labelId="outlined-memorizationLevel"
+                      value={formik.values.memorizationLevel}
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "memorizationLevel",
+                          event.target.value
+                        );
+                      }}
+                    >
+                      {levels.map((level) => (
+                        <MenuItem
+                          sx={{
+                            color: "black",
+                            ...(true && {
+                              bgcolor: (theme) =>
+                                alpha(
+                                  theme.palette.info.contrastText,
+                                  theme.palette.action.activatedOpacity
+                                ),
+                            }),
+                            fontFamily: "sans-serif",
+                          }}
+                          key={level}
+                          value={level}
+                        >
+                          {level}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {/* revisionLevel */}
+                  <FormControl
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                      marginTop: 2,
+                      mb: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    <InputLabel
+                      sx={{
+                        top: -6,
+                      }}
+                      id="outlined-revisionLevel"
+                    >
+                      Revision Level
+                    </InputLabel>
+                    <Select
+                      name="revisionLevel"
+                      id="outlined-revisionLevel"
+                      labelId="outlined-revisionLevel"
+                      value={formik.values.revisionLevel}
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "revisionLevel",
+                          event.target.value
+                        );
+                      }}
+                    >
+                      {levels.map((level) => (
+                        <MenuItem
+                          sx={{
+                            color: "black",
+                            ...(true && {
+                              bgcolor: (theme) =>
+                                alpha(
+                                  theme.palette.info.contrastText,
+                                  theme.palette.action.activatedOpacity
+                                ),
+                            }),
+                            fontFamily: "sans-serif",
+                          }}
+                          key={level}
+                          value={level}
+                        >
+                          {level}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {/* readingLevel */}
+                  <FormControl
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                      marginTop: 2,
+                      mb: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    <InputLabel
+                      sx={{
+                        top: -6,
+                      }}
+                      id="outlined-readingLevel"
+                    >
+                      Reading Level
+                    </InputLabel>
+                    <Select
+                      name="readingLevel"
+                      id="outlined-readingLevel"
+                      labelId="outlined-readingLevel"
+                      value={formik.values.readingLevel}
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "readingLevel",
+                          event.target.value
+                        );
+                      }}
+                    >
+                      {levels.map((level) => (
+                        <MenuItem
+                          sx={{
+                            color: "black",
+                            ...(true && {
+                              bgcolor: (theme) =>
+                                alpha(
+                                  theme.palette.info.contrastText,
+                                  theme.palette.action.activatedOpacity
+                                ),
+                            }),
+                            fontFamily: "sans-serif",
+                          }}
+                          key={level}
+                          value={level}
+                        >
+                          {level}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </>
+              )}
+
+              {/* HW */}
+              <TextField
+                multiline
+                minRows={3}
+                size="medium"
                 sx={{
-                  width: "100%",
+                  width: { xs: "100%" },
                   "& .MuiInputBase-root": {
-                    height: 40,
+                    height: 100,
+                  },
+                  mr: 1,
+                }}
+                error={Boolean(
+                  formik.touched.homework && formik.errors.homework
+                )}
+                // @ts-ignore
+                helperText={formik.touched.homework && formik.errors.homework}
+                label="H.W"
+                margin="normal"
+                id="homework"
+                name="homework"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.homework}
+                InputProps={{
+                  style: {
+                    fontFamily: "sans-serif",
                   },
                 }}
-                variant="contained"
-              >
-                Upload
-              </LoadingButton>
-            </Box>
-          </Grid>
-          <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
-            <Box></Box>
-          </Grid>
-          <Grid item lg={7.8} md={7.8} sm={7.8} xs={12}>
-            <Box
-              sx={{
-                alignItems: "center",
-                color: "primary.dark",
-                display: "flex",
-                justifyContent: "space-between",
-                px: 3,
-                py: 2,
-              }}
-            >
-              <Typography color="inherit" variant="h6">
-                Add details
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                p: 1,
-                alignItems: "center",
-                ...(true && {
-                  bgcolor: (theme) =>
-                    alpha(
-                      theme.palette.info.contrastText,
-                      theme.palette.action.activatedOpacity
-                    ),
-                }),
-                color: "primary.dark",
-                display: "block",
-                justifyContent: "space-between",
-              }}
-            >
-              <textarea
-                placeholder="Type all details here"
-                value={formValues}
-                onChange={(event) => setFormValues(event.target?.value)}
-                style={{
-                  width: "100%",
-                  height: "40vh",
-                  borderStyle: "solid",
-                  borderColor: "#ffcccb",
-                  borderWidth: "1px",
-                  borderRadius: "5px",
-                  margin: 1,
-                  marginLeft: 0,
-                  padding: "10px",
-                  outlineColor: "#ffcccb",
-                  overflowX: "hidden",
-                  fontFamily: "cursive",
-                  fontWeight: "bold",
-                  textAlign: "justify",
-                  textJustify: "inter-word",
-                  wordWrap: "break-word",
-                  whiteSpace: "pre-wrap",
+              />
+
+              {/* notes */}
+              <TextField
+                multiline
+                minRows={2}
+                size="medium"
+                sx={{
+                  width: { xs: "100%" },
+                  "& .MuiInputBase-root": {
+                    height: 80,
+                  },
+                  mr: 1,
+                }}
+                error={Boolean(formik.touched.notes && formik.errors.notes)}
+                // @ts-ignore
+                helperText={formik.touched.notes && formik.errors.notes}
+                label="Notes"
+                margin="normal"
+                id="notes"
+                name="notes"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.notes}
+                InputProps={{
+                  style: {
+                    fontFamily: "sans-serif",
+                  },
                 }}
               />
+
+              <div style={{ textAlign: "center" }}>
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload file
+                  <VisuallyHiddenInput
+                    type="file"
+                    onChange={(e: any) => {
+                      uploadFile(e);
+                    }}
+                  />
+                </Button>
+              </div>
+              <Divider sx={{ mb: 1, mt: 2 }} />
               <div style={{ textAlign: "right" }}>
                 <LoadingButton
-                  type="button"
-                  onClick={handleSubmit}
+                  type="submit"
                   sx={{
                     "& .MuiInputBase-root": {
                       height: 40,
@@ -229,12 +865,12 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                   }}
                   variant="contained"
                 >
-                  Submit report
+                  Submit
                 </LoadingButton>
               </div>
-            </Box>
+            </form>
           </Grid>
-        </Grid>
+        </Grid>{" "}
       </Paper>
     </Box>
   );

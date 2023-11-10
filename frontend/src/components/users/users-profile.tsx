@@ -43,7 +43,7 @@ export const Profile: FC<profileProps> = (props) => {
   const [depts, setDepts] = useState([]);
   const genders = ["male", "female"];
   const isMounted = useMounted();
-  const [userData, setUserData] = useState<Data>({
+  const [userData, setUserData] = useState<any>({
     id: 1,
     roleId: 1,
     username: "",
@@ -182,7 +182,7 @@ export const Profile: FC<profileProps> = (props) => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              padding: "40px 60px",
+              padding: "20px 25px",
               minHeight: "280px",
 
               m: 1,
@@ -200,7 +200,7 @@ export const Profile: FC<profileProps> = (props) => {
             </Typography>
 
             <Grid container component={List}>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 {" "}
                 <ListItem>
                   Username:{" "}
@@ -210,7 +210,10 @@ export const Profile: FC<profileProps> = (props) => {
                 </ListItem>
                 <ListItem>
                   Email:{" "}
-                  <Typography color={"black"}>
+                  <Typography
+                    color={"black"}
+                    sx={{ overflowWrap: "break-word", minWidth: "120px" }}
+                  >
                     {userData?.email || "No data"}
                   </Typography>{" "}
                 </ListItem>
@@ -233,14 +236,14 @@ export const Profile: FC<profileProps> = (props) => {
                   </Typography>{" "}
                 </ListItem>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <ListItem>
                   Role:{" "}
                   <Typography color={"black"}>
                     {getUserRole() || "No data"}
                   </Typography>{" "}
                 </ListItem>
-                {userData.roleId !== 4 ? (
+                {userData.roleId === 4 ? (
                   <ListItem>
                     Department:{" "}
                     <Typography color={"black"}>
@@ -260,9 +263,9 @@ export const Profile: FC<profileProps> = (props) => {
                   Date of birth:
                   <Typography color={"black"}>
                     {" "}
-                    {moment(userData?.birthDate?.toString() || "No data").format(
-                      "MMM-D-YYYY"
-                    )}
+                    {moment(
+                      userData?.birthDate?.toString() || "No data"
+                    ).format("MMM-D-YYYY")}
                   </Typography>{" "}
                 </ListItem>
                 <ListItem>
@@ -482,7 +485,7 @@ export const Profile: FC<profileProps> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              {userData.roleId !== 4 ? (
+              {userData.roleId === 4 ? (
                 <FormControl
                   sx={{
                     width: { xs: "100%", sm: "47.5%" },

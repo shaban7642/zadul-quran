@@ -2,12 +2,13 @@ import axios from "axios";
 import { apiService } from "../services/api.service";
 
 class DocumentApi {
-  async getDocuments(limit: number, page: number) {
+  async getDocuments(limit: number, page: number, documentType: string) {
     return new Promise((resolve, reject) => {
       try {
         const documents = apiService.get("/documents/", {
           limit,
           page: ++page,
+          documentType,
         });
         resolve(documents);
       } catch (err) {
@@ -16,12 +17,16 @@ class DocumentApi {
     });
   }
 
-  async createDocument(documentData: any, userId: number): Promise<any> {
+  async createDocument(
+    documentType: any,
+    documentData: any,
+    userId: number
+  ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         console.log({ documentData });
         const resp = await axios.post(
-          `http://localhost:4000/api/documents/upload?data={"documentType": {"name": "books", "id": 1}, "userId": ${userId}}`,
+          `http://localhost:4000/api/documents/upload?data={"documentType": ${documentType}, "userId": ${userId}}`,
           documentData,
           {
             headers: {

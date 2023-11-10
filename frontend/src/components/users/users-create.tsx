@@ -28,13 +28,12 @@ import { rolesApi } from "../../api/rolesApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { deptApi } from "../../api/deptApi";
 
-interface CreateTableProps {
-  depts: any[];
+interface CreateUserProps {
   roles: any[];
 }
 
-const CreateUser: FC<CreateTableProps> = (props) => {
-  const { depts, roles } = props;
+const CreateUser: FC<CreateUserProps> = (props) => {
+  const { roles } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
   const genders = ["male", "female"];
@@ -57,14 +56,13 @@ const CreateUser: FC<CreateTableProps> = (props) => {
     initialValues: {
       roleId: 1,
       join_date: "",
-      name: "",
       username: "",
       firstName: "",
       lastName: "",
       city: "",
       gender: "",
       birthDate: "",
-      departmentId: 1,
+
       email: "",
       phoneNumber: "",
       password: "",
@@ -74,15 +72,15 @@ const CreateUser: FC<CreateTableProps> = (props) => {
     validationSchema: yup.object({
       roleId: yup.number().required(),
       join_date: yup.date().required("join date Is Required"),
-      username: yup.string().required("usernameIsRequired"),
-      firstName: yup.string().required("firstNameIsRequired"),
-      lastName: yup.string().required("lastNameIsRequired"),
-      city: yup.string().required("cityIsRequired"),
+      username: yup.string().required("username Is Required"),
+      firstName: yup.string().required("firstName Is Required"),
+      lastName: yup.string().required("lastName Is Required"),
+      city: yup.string().required("city Is Required"),
       gender: yup.string().required(),
       birthDate: yup.date().required(),
-      email: yup.string().email("emailAddress").required("emailIsRequired"),
-      phoneNumber: yup.string().required("phoneNumberIsRequired"),
-      password: yup.string().min(7).required("passwordIsRequired"),
+      email: yup.string().email("emailAddress").required("email Is Required"),
+      phoneNumber: yup.string().required("phoneNumber Is Required"),
+      password: yup.string().min(7).required("password Is Required"),
       confirmPassword: yup
         .string()
         .test("passwords-match", "passwordMustMatch", function (value) {
@@ -126,7 +124,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
         </Divider>
         <FormControl
           sx={{
-            width: { xs: "100%", sm: "32%" },
+            width: { xs: "100%", sm: "48.5%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -175,7 +173,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
         <TextField
           size="small"
           sx={{
-            width: { xs: "100%", sm: "32%" },
+            width: { xs: "100%", sm: "48.5%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -195,54 +193,7 @@ const CreateUser: FC<CreateTableProps> = (props) => {
             shrink: true,
           }}
         />
-        <FormControl
-          sx={{
-            width: { xs: "100%", sm: "32%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-            marginTop: 2,
-          }}
-          variant="outlined"
-        >
-          {" "}
-          <InputLabel
-            sx={{
-              top: -6,
-            }}
-            id="outlined-adornment-department"
-          >
-            Department
-          </InputLabel>
-          <Select
-            name="departmentId"
-            id="outlined-adornment-department"
-            labelId="outlined-adornment-department"
-            value={formik.values.departmentId}
-            onChange={formik.handleChange}
-          >
-            {depts?.map((department) => (
-              <MenuItem
-                sx={{
-                  color: "black",
-                  ...(true && {
-                    bgcolor: (theme) =>
-                      alpha(
-                        theme.palette.info.contrastText,
-                        theme.palette.action.activatedOpacity
-                      ),
-                  }),
-                  fontFamily: "sans-serif",
-                }}
-                key={department?.id}
-                value={department?.id}
-              >
-                {department?.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+
         <Divider textAlign="left" sx={{ m: 1 }}>
           <Chip label="Employee Details" sx={{ fontWeight: "600" }} />
         </Divider>

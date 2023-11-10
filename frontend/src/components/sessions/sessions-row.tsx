@@ -557,6 +557,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
             </TableRow>
             {/* <Dialog maxWidth='md' open={openReport}>
                 <CreateReport
+                    sessiondeptName={row.patch?.department?.name}
                     sessionId={row.id}
                     handleCloseReport={handleCloseReport}
                 />

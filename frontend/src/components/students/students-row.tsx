@@ -1,13 +1,18 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { TableCell, IconButton } from "@mui/material";
+import {
+  TableCell,
+  IconButton,
+  Select,
+  InputLabel,
+  MenuItem,
+  FormControl,
+} from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import NextLink from "next/link";
 import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
-import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
-import { useTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -15,20 +20,22 @@ import * as yup from "yup";
 import get from "lodash/get";
 import set from "lodash/set";
 import Delete from "@mui/icons-material/Delete";
+import { alpha, useTheme } from "@mui/material/styles";
 interface RowProps {
   row: any;
   labelId: string;
+  depts: any[];
   updateStudent: (id: any, userData: any) => Promise<{ success: boolean }>;
   deleteStudent: (id: any) => Promise<{ success: boolean }>;
 }
 export const StudentsRow: FC<RowProps> = (props) => {
-  const { row, labelId, updateStudent, deleteStudent } = props;
+  const { row, depts, labelId, updateStudent, deleteStudent } = props;
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const rows = [
     row?.firstName || "no data",
     row?.lastName || "no data",
-    row?.department || "no data",
+    row?.department?.name || "no data",
     row?.email || "no data",
     row?.phoneNumber || "no data",
   ];
@@ -54,26 +61,24 @@ export const StudentsRow: FC<RowProps> = (props) => {
     initialValues: {
       firstName: row?.firstName,
       lastName: row?.lastName,
-      department: row?.department,
+      departmentId: row?.departmentId,
       email: row?.email,
       phoneNumber: row?.phoneNumber,
-      password: "",
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      sl: yup.string().max(255).required("slIsRequired"),
-      staff_id: yup.string().max(255).required("staff_idIsRequired"),
-      name: yup.string().max(255).required("nameIsRequired"),
+      sl: yup.string().max(255).required("sl Is Required"),
+      staff_id: yup.string().max(255).required("staff_id Is Required"),
+      name: yup.string().max(255).required("name Is Required"),
       email: yup
         .string()
         .email("emailAddress")
         .max(255)
-        .required("emailIsRequired"),
+        .required("email Is Required"),
       phoneNumber: yup
         .string()
         .min(11, "phoneNumberLengthMessage")
-        .required("phoneNumberIsRequired"),
-      password: yup.string().min(6).max(255),
+        .required("phoneNumber Is Required"),
     }),
     onSubmit: async (values) => {
       const flattened = flattenObject(formik.initialValues);
@@ -98,10 +103,9 @@ export const StudentsRow: FC<RowProps> = (props) => {
       formik.setValues({
         firstName: row?.firstName,
         lastName: row?.lastName,
-        department: row?.department,
+        departmentId: row?.departmentId,
         email: row?.email,
         phoneNumber: row?.phoneNumber,
-        password: "",
       });
     }
   }, [row]);
@@ -161,7 +165,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "17%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -174,10 +178,10 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   helperText={
                     formik.touched.firstName && formik.errors.firstName
                   }
-                  label="name"
+                  label="firstName"
                   margin="normal"
-                  id="name"
-                  name="name"
+                  id="firstName"
+                  name="firstName"
                   type="text"
                   onChange={formik.handleChange}
                   value={formik.values.firstName}
@@ -190,7 +194,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "17%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -201,10 +205,10 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   )}
                   // @ts-ignore
                   helperText={formik.touched.lastName && formik.errors.lastName}
-                  label="name"
+                  label="firstName"
                   margin="normal"
-                  id="name"
-                  name="name"
+                  id="firstName"
+                  name="firstName"
                   type="text"
                   onChange={formik.handleChange}
                   value={formik.values.lastName}
@@ -214,39 +218,58 @@ export const StudentsRow: FC<RowProps> = (props) => {
                     },
                   }}
                 />
-                <TextField
-                  size="small"
+                <FormControl
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "17%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
                     mr: 1,
+                    marginTop: 2,
                   }}
-                  error={Boolean(
-                    formik.touched.department && formik.errors.department
-                  )}
-                  // @ts-ignore
-                  helperText={
-                    formik.touched.department && formik.errors.department
-                  }
-                  label="department"
-                  margin="normal"
-                  id="department"
-                  name="department"
-                  type="department"
-                  onChange={formik.handleChange}
-                  value={formik.values.department}
-                  InputProps={{
-                    style: {
-                      fontFamily: "sans-serif",
-                    },
-                  }}
-                />
+                  variant="outlined"
+                >
+                  {" "}
+                  <InputLabel
+                    sx={{
+                      top: -6,
+                    }}
+                    id="outlined-adornment-department"
+                  >
+                    Department
+                  </InputLabel>
+                  <Select
+                    name="departmentId"
+                    id="outlined-adornment-department"
+                    labelId="outlined-adornment-department"
+                    value={formik.values.departmentId}
+                    onChange={formik.handleChange}
+                  >
+                    {depts?.map((department) => (
+                      <MenuItem
+                        sx={{
+                          color: "black",
+                          ...(true && {
+                            bgcolor: (theme) =>
+                              alpha(
+                                theme.palette.info.contrastText,
+                                theme.palette.action.activatedOpacity
+                              ),
+                          }),
+                          fontFamily: "sans-serif",
+                        }}
+                        key={department?.id}
+                        value={department?.id}
+                      >
+                        {department?.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "17%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -271,7 +294,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
+                    width: { xs: "17%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -297,37 +320,11 @@ export const StudentsRow: FC<RowProps> = (props) => {
                     },
                   }}
                 />
-                <TextField
-                  size="small"
-                  sx={{
-                    width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  error={Boolean(
-                    formik.touched.password && formik.errors.password
-                  )}
-                  // @ts-ignore
-                  helperText={formik.touched.password && formik.errors.password}
-                  label="password"
-                  margin="normal"
-                  id="password"
-                  name="password"
-                  type="password"
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                  InputProps={{
-                    style: {
-                      fontFamily: "sans-serif",
-                    },
-                  }}
-                />
+
                 <LoadingButton
                   type="submit"
                   sx={{
-                    width: { xs: 15, sm: 20, md: 30, lg: 40, xl: 50 },
+                    width: { xs: 15, sm: 21, md: 30, lg: 40, xl: 50 },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },

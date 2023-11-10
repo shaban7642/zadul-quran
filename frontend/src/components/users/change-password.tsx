@@ -33,7 +33,10 @@ export const ChangePasswordForm: FC = (props) => {
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      newPassword: Yup.string().min(7).max(255).required("passwordIsRequired"),
+      newPassword: Yup.string()
+        .min(7)
+        .max(255)
+        .required("password Is Required"),
       confirmPassword: Yup.string().test(
         "passwords-match",
         "passwordMustMatch",

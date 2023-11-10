@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useFormik } from "formik";
 import {
   Box,
@@ -22,8 +22,13 @@ import { VisibilityOff } from "@mui/icons-material";
 import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
 import Select from "@material-ui/core/Select";
+import { alpha, useTheme } from "@mui/material/styles";
+interface CreateStudentProps {
+  depts: any[];
+}
 
-const CreateStudent = () => {
+const CreateStudent: FC<CreateStudentProps> = (props) => {
+  const { depts } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
   const [flag, setFlag] = useState(false);
@@ -59,6 +64,7 @@ const CreateStudent = () => {
       lastName: "abbas",
       city: "giza",
       birthDate: "",
+      departmentId: 1,
       email: "A.ai@gmail.com",
       phoneNumber: "023245345345",
       gender: genders[0],
@@ -73,20 +79,20 @@ const CreateStudent = () => {
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      firstName: yup.string().max(255).required("nameIsRequired"),
-      lastName: yup.string().max(255).required("nameIsRequired"),
-      username: yup.string().max(255).required("usernameIsRequired"),
+      firstName: yup.string().max(255).required("name Is Required"),
+      lastName: yup.string().max(255).required("name Is Required"),
+      username: yup.string().max(255).required("username Is Required"),
       birthDate: yup.date().required(),
       email: yup
         .string()
         .email("emailAddress")
         .max(255)
-        .required("emailIsRequired"),
-      phoneNumber: yup.string().required("phoneNumberIsRequired"),
+        .required("email Is Required"),
+      phoneNumber: yup.string().required("phoneNumber Is Required"),
       city: yup.string().max(200).required("cityRequired"),
       gender: yup.string().required(),
 
-      password: yup.string().min(7).max(255).required("passwordIsRequired"),
+      password: yup.string().min(7).max(255).required("password Is Required"),
       confirmPassword: yup
         .string()
         .test("passwords-match", "passwordMustMatch", function (value) {
@@ -144,7 +150,7 @@ const CreateStudent = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: "100%", sm: "32%" },
+            width: { xs: "100%", sm: "48.5%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -170,7 +176,7 @@ const CreateStudent = () => {
         <TextField
           size="small"
           sx={{
-            width: { xs: "100%", sm: "32%" },
+            width: { xs: "100%", sm: "48.5%" },
             "& .MuiInputBase-root": {
               height: 40,
             },
@@ -192,60 +198,7 @@ const CreateStudent = () => {
               fontFamily: "sans-serif",
             },
           }}
-        />
-
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: "100%", sm: "32%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(formik.touched.birthDate && formik.errors.birthDate)}
-          // @ts-ignore
-          helperText={formik.touched.birthDate && formik.errors.birthDate}
-          label="Date Of Birth"
-          margin="normal"
-          id="birthDate"
-          name="birthDate"
-          type="date"
-          onChange={formik.handleChange}
-          value={formik.values.birthDate}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-
-        <TextField
-          size="small"
-          sx={{
-            width: { xs: "100%", sm: "32%" },
-            "& .MuiInputBase-root": {
-              height: 40,
-            },
-            mr: 1,
-          }}
-          error={Boolean(
-            formik.touched.phoneNumber && formik.errors.phoneNumber
-          )}
-          // @ts-ignore
-          helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-          label="phoneNumber"
-          margin="normal"
-          id="phoneNumber"
-          name="phoneNumber"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.phoneNumber}
-          InputProps={{
-            style: {
-              paddingLeft: "6px",
-              fontFamily: "sans-serif",
-            },
-          }}
-        />
+        />{" "}
         <FormControl
           sx={{
             width: { xs: "100%", sm: "32%" },
@@ -289,6 +242,29 @@ const CreateStudent = () => {
             },
             mr: 1,
           }}
+          error={Boolean(formik.touched.birthDate && formik.errors.birthDate)}
+          // @ts-ignore
+          helperText={formik.touched.birthDate && formik.errors.birthDate}
+          label="Date Of Birth"
+          margin="normal"
+          id="birthDate"
+          name="birthDate"
+          type="date"
+          onChange={formik.handleChange}
+          value={formik.values.birthDate}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: "100%", sm: "32%" },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
           error={Boolean(formik.touched.city && formik.errors.city)}
           // @ts-ignore
           helperText={formik.touched.city && formik.errors.city}
@@ -306,6 +282,82 @@ const CreateStudent = () => {
             },
           }}
         />
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: "100%", sm: "48.5%" },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(
+            formik.touched.phoneNumber && formik.errors.phoneNumber
+          )}
+          // @ts-ignore
+          helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+          label="phoneNumber"
+          margin="normal"
+          id="phoneNumber"
+          name="phoneNumber"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.phoneNumber}
+          InputProps={{
+            style: {
+              paddingLeft: "6px",
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
+        <FormControl
+          sx={{
+            width: { xs: "100%", sm: "48.5%" },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+            marginTop: 2,
+          }}
+          variant="outlined"
+        >
+          {" "}
+          <InputLabel
+            sx={{
+              top: -6,
+            }}
+            id="outlined-adornment-department"
+          >
+            Department
+          </InputLabel>
+          <Select
+            name="departmentId"
+            id="outlined-adornment-department"
+            labelId="outlined-adornment-department"
+            value={formik.values.departmentId}
+            onChange={formik.handleChange}
+          >
+            {depts?.map((department) => (
+              <MenuItem
+                sx={{
+                  color: "black",
+                  ...(true && {
+                    bgcolor: (theme) =>
+                      alpha(
+                        theme.palette.info.contrastText,
+                        theme.palette.action.activatedOpacity
+                      ),
+                  }),
+                  fontFamily: "sans-serif",
+                }}
+                key={department?.id}
+                value={department?.id}
+              >
+                {department?.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Divider textAlign="left" sx={{ m: 1 }}>
           <Chip label="Login Details" sx={{ fontWeight: "600" }} />
         </Divider>
@@ -388,6 +440,7 @@ const CreateStudent = () => {
             value={formik.values.password}
             type={showPassword ? "text" : "password"}
             sx={{
+              paddingLeft: "6px",
               fontFamily: "sans-serif",
             }}
             endAdornment={

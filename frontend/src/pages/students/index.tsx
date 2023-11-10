@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 import { NextPage } from "next";
 import { Box, Tab, Typography } from "@mui/material";
@@ -7,12 +7,30 @@ import CreateStudent from "../../components/students/students-create";
 import { StudentsTable } from "../../components/students/students-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
 import { OwnerGuard } from "../../components/auth/owner-guard";
+import { useMounted } from "../../hooks/use-mounted";
+import { deptApi } from "../../api/deptApi";
+import toast from "react-hot-toast";
 
 const Students: NextPage = () => {
   const [value, setValue] = useState("1");
+  const [depts, setDepts] = useState([]);
+  const isMounted = useMounted();
+  const getDepts = useCallback(async () => {
+    try {
+      const data: any = await deptApi.getDepts();
+      if (isMounted()) {
+        setDepts(data.rows);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "failed");
+    }
+  }, [isMounted]);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+  useEffect(() => {
+    getDepts();
+  }, []);
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={value}>
@@ -23,10 +41,10 @@ const Students: NextPage = () => {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <StudentsTable roleId={"student"} />
+          <StudentsTable depts={depts} roleId={"student"} />
         </TabPanel>
         <TabPanel value="2">
-          <CreateStudent />
+          <CreateStudent depts={depts} />
         </TabPanel>
       </TabContext>
     </Box>

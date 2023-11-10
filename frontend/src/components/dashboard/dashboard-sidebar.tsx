@@ -129,14 +129,14 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       accessed: true,
     },
     {
-      title: user && user.roleId === (1 || 2) ? "managment" : "",
+      title: user && user?.roleId === (1 || 2) ? "managment" : "",
       items: [
         {
           title: "Employees",
           path: "/employees",
           icon: <UsersIcon fontSize="small" />,
           disabled: false,
-          accessed: user.roleId === (1 || 2) ? true : false,
+          accessed: user?.roleId === (1 || 2) ? true : false,
         },
         {
           title: "Students",
@@ -145,14 +145,14 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
             <SchoolOutlinedIcon fontSize="small" sx={{ color: "#FFFCF2" }} />
           ),
           disabled: false,
-          accessed: user.roleId === (1 || 2) ? true : false,
+          accessed: user?.roleId === (1 || 2) ? true : false,
         },
         {
           title: "Roles",
           path: "/roles",
           icon: <Settings fontSize="small" sx={{ color: "#FFFCF2" }} />,
           disabled: false,
-          accessed: user.roleId === (1 || 2) ? true : false,
+          accessed: user?.roleId === (1 || 2) ? true : false,
         },
       ],
       accessed: true,

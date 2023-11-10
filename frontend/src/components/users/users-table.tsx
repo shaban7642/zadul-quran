@@ -44,11 +44,10 @@ export interface HeadCell {
 
 interface UsersTableProps {
   roleId?: string;
-  depts: any[];
   roles: any[];
 }
 export const UsersTable: FC<UsersTableProps> = (props) => {
-  const { roleId, depts, roles } = props;
+  const { roleId, roles } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
@@ -66,12 +65,6 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
       numeric: false,
       disablePadding: true,
       label: "Role",
-    },
-    {
-      id: "department",
-      numeric: false,
-      disablePadding: true,
-      label: "Department",
     },
     {
       id: "email",
@@ -219,7 +212,6 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
                   <UsersRow
                     key={row?.id}
                     row={row}
-                    depts={depts}
                     roles={roles}
                     deleteUser={deleteUser}
                     labelId={labelId}

@@ -15,20 +15,10 @@ class ReportApi {
     });
   }
 
-  async createReport(
-    sessionId: number,
-    userId: number,
-    reportData: any,
-    documentId?: number
-  ): Promise<any> {
+  async createReport(reportData: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.post(`/reports/create`, {
-          documentId,
-          sessionId,
-          userId,
-          reportContent: reportData,
-        });
+        const resp = apiService.post(`/reports/create`, reportData);
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));

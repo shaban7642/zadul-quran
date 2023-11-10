@@ -26,21 +26,20 @@ import Delete from "@mui/icons-material/Delete";
 interface RowProps {
   row: any;
   labelId: string;
-  depts: any[];
   roles: any[];
   updateUser: (id: any, userData: any) => Promise<{ success: boolean }>;
   deleteUser: (id: any) => Promise<{ success: boolean }>;
 }
 
 export const UsersRow: FC<RowProps> = (props) => {
-  const { row, labelId, depts, roles, updateUser, deleteUser } = props;
+  const { row, roles, updateUser, deleteUser } = props;
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const rows = [
     row?.username || "no data",
     row?.role?.displayName || "no data",
-    row?.department?.name || "no data",
+
     row?.email || "no data",
     row?.phoneNumber || "no data",
   ];
@@ -66,7 +65,7 @@ export const UsersRow: FC<RowProps> = (props) => {
     initialValues: {
       username: row?.username,
       roleId: row?.roleId,
-      departmentId: row?.departmentId,
+
       email: row?.email,
       phoneNumber: row?.phoneNumber,
     },
@@ -102,7 +101,7 @@ export const UsersRow: FC<RowProps> = (props) => {
       formik.setValues({
         username: row?.username,
         roleId: row?.roleId,
-        departmentId: row?.departmentId,
+
         email: row?.email,
         phoneNumber: row?.phoneNumber,
       });
@@ -168,7 +167,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: "18%" },
+                    width: { xs: "21%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -196,7 +195,7 @@ export const UsersRow: FC<RowProps> = (props) => {
 
                 <FormControl
                   sx={{
-                    width: { xs: "18%" },
+                    width: { xs: "21%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -242,59 +241,11 @@ export const UsersRow: FC<RowProps> = (props) => {
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl
-                  sx={{
-                    width: { xs: "18%" },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                    marginTop: 2,
-                  }}
-                  variant="outlined"
-                >
-                  {" "}
-                  <InputLabel
-                    sx={{
-                      top: -6,
-                    }}
-                    id="outlined-adornment-department"
-                  >
-                    Department
-                  </InputLabel>
-                  <Select
-                    name="departmentId"
-                    id="outlined-adornment-department"
-                    labelId="outlined-adornment-department"
-                    value={formik.values.departmentId}
-                    onChange={formik.handleChange}
-                  >
-                    {depts?.map((department) => (
-                      <MenuItem
-                        sx={{
-                          color: "black",
-                          ...(true && {
-                            bgcolor: (theme) =>
-                              alpha(
-                                theme.palette.info.contrastText,
-                                theme.palette.action.activatedOpacity
-                              ),
-                          }),
-                          fontFamily: "sans-serif",
-                        }}
-                        key={department?.id}
-                        value={department?.id}
-                      >
-                        {department?.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
 
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: "18%" },
+                    width: { xs: "21%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -320,7 +271,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <TextField
                   size="small"
                   sx={{
-                    width: { xs: "18%" },
+                    width: { xs: "21%" },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },
@@ -350,7 +301,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                 <LoadingButton
                   type="submit"
                   sx={{
-                    width: { xs: 15, sm: 18, md: 30, lg: 40, xl: 50 },
+                    width: { xs: 15, sm: 21, md: 30, lg: 40, xl: 50 },
                     "& .MuiInputBase-root": {
                       height: 40,
                     },

@@ -23,9 +23,10 @@ import { User } from "../../types/user";
 import toast from "react-hot-toast";
 
 export interface Data {
-  name: string;
+  username: string;
   firstName: string;
   lastName: string;
+  departmentId: number;
   email: string;
   phoneNumber: string;
 }
@@ -38,9 +39,10 @@ export interface HeadCell {
 }
 interface StudentsTableProps {
   roleId?: string;
+  depts: any[];
 }
 export const StudentsTable: FC<StudentsTableProps> = (props) => {
-  const { roleId } = props;
+  const { roleId, depts } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
@@ -92,7 +94,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
 
         if (isMounted()) {
           setUsers(data.rows);
-          setUsersCount(data.rows.length);
+          setUsersCount(data.count);
         }
       } catch (err) {
         console.log(err);
@@ -210,6 +212,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
                   <StudentsRow
                     key={row?.id}
                     row={row}
+                    depts={depts}
                     labelId={labelId}
                     deleteStudent={deleteUser}
                     updateStudent={updateUser}

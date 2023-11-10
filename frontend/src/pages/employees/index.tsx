@@ -4,7 +4,6 @@ import { NextPage } from "next";
 import { UsersTable } from "../../components/users/users-table";
 import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { RegisterForm } from "../../components/auth/register-form";
 import CreateUser from "../../components/users/users-create";
 import { DeptTable } from "../../components/department/dept-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
@@ -92,21 +91,21 @@ const Employees: NextPage = () => {
               </TabList>
             </Box>
             <TabPanel value="0">
-              <UsersTable depts={depts} roles={roles} />
+              <UsersTable roles={roles} />
             </TabPanel>
             <TabPanel value="1">
-              <UsersTable depts={depts} roles={roles} roleId={"super_admin"} />
+              <UsersTable roles={roles} roleId={"super_admin"} />
             </TabPanel>
             <TabPanel value="2">
-              <UsersTable depts={depts} roles={roles} roleId={"admin"} />
+              <UsersTable roles={roles} roleId={"admin"} />
             </TabPanel>
             <TabPanel value="3">
-              <UsersTable depts={depts} roles={roles} roleId={"teacher"} />
+              <UsersTable roles={roles} roleId={"teacher"} />
             </TabPanel>
           </TabContext>
         </TabPanel>
         <TabPanel value="2">
-          <CreateUser depts={depts} roles={roles} />
+          <CreateUser roles={roles} />
         </TabPanel>
         <TabPanel value="3">
           <DeptTable getDepts={getDepts} depts={depts}></DeptTable>
