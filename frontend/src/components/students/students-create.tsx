@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
   Box,
@@ -23,8 +23,13 @@ import Visibility from "@mui/icons-material/Visibility";
 import { PasswordValidationForm } from "../auth/password-validation-form";
 import Select from "@material-ui/core/Select";
 import { alpha, useTheme } from "@mui/material/styles";
+import { useMounted } from "../../hooks/use-mounted";
 interface CreateStudentProps {
   depts: any[];
+}
+interface parent {
+  id: number;
+  name: string;
 }
 
 const CreateStudent: FC<CreateStudentProps> = (props) => {
@@ -32,15 +37,29 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
   const [flag, setFlag] = useState(false);
+  const [parents, setParents] = useState<parent[]>([]);
   const genders = ["male", "female"];
+  const isMounted = useMounted();
+
   const handleChange = () => {
     setFlag(!flag);
   };
+  const getParents = useCallback(async () => {
+    try {
+      const data: any = await userApi.getAllParents();
+      if (isMounted()) {
+        setParents(data);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "failed");
+    }
+  }, [isMounted]);
+
   const createStudent = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("create");
     try {
       const resp = await userApi.createUser(values);
-      if (resp) {
+      if (!resp.message) {
         toast.dismiss(load);
         toast.success("createStudent ");
         return { success: true };
@@ -70,6 +89,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
       gender: genders[0],
       password: "Abdo@001",
       confirmPassword: "Abdo@001",
+      parentId: "",
       gname: "",
       relation: "",
       gemail: "",
@@ -141,6 +161,10 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
   ) => {
     event.preventDefault();
   };
+
+  useEffect(() => {
+    getParents();
+  }, [formik.values.email]);
   return (
     <Box sx={{ margin: 1, scrollBehavior: "auto" }}>
       <form onSubmit={formik.handleSubmit}>
@@ -159,7 +183,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
           error={Boolean(formik.touched.firstName && formik.errors.firstName)}
           // @ts-ignore
           helperText={formik.touched.firstName && formik.errors.firstName}
-          label="firstName"
+          label="First Name"
           margin="normal"
           id="firstName"
           name="firstName"
@@ -185,7 +209,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
           error={Boolean(formik.touched.lastName && formik.errors.lastName)}
           // @ts-ignore
           helperText={formik.touched.lastName && formik.errors.lastName}
-          label="lastName"
+          label="Last Name"
           margin="normal"
           id="lastName"
           name="lastName"
@@ -268,7 +292,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
           error={Boolean(formik.touched.city && formik.errors.city)}
           // @ts-ignore
           helperText={formik.touched.city && formik.errors.city}
-          label="city"
+          label="City"
           margin="normal"
           id="city"
           name="city"
@@ -296,7 +320,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
           )}
           // @ts-ignore
           helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-          label="phoneNumber"
+          label="Phone Number"
           margin="normal"
           id="phoneNumber"
           name="phoneNumber"
@@ -374,7 +398,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
           error={Boolean(formik.touched.username && formik.errors.username)}
           // @ts-ignore
           helperText={formik.touched.username && formik.errors.username}
-          label="username"
+          label="Username"
           margin="normal"
           id="username"
           name="username"
@@ -400,7 +424,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
           error={Boolean(formik.touched.email && formik.errors.email)}
           // @ts-ignore
           helperText={formik.touched.email && formik.errors.email}
-          label="email"
+          label="Email"
           margin="normal"
           id="email"
           name="email"
@@ -517,22 +541,26 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
               sx={{
                 top: -6,
               }}
-              id="outlined-adornment-guardian"
+              id="outlined-adornment-parentId"
             >
               Guardian
             </InputLabel>
             <Select
-              name="Guardian"
-              id="outlined-adornment-guardian"
-              labelId="outlined-adornment-guardian"
-              value={formik.values.gender}
+              name="parentId"
+              id="outlined-adornment-parentId"
+              labelId="outlined-adornment-parentId"
+              value={formik.values.parentId}
               onChange={formik.handleChange}
             >
-              {genders.map((guardian) => (
-                <MenuItem key={guardian} value={guardian}>
-                  {guardian}
-                </MenuItem>
-              ))}
+              {parents?.map((parent) => {
+                if (parent.name) {
+                  return (
+                    <MenuItem key={parent.id} value={parent.id}>
+                      {parent.name}
+                    </MenuItem>
+                  );
+                }
+              })}
             </Select>
           </FormControl>
         ) : (
@@ -632,7 +660,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
               helperText={
                 formik.touched.gphoneNumber && formik.errors.gphoneNumber
               }
-              label="phoneNumber"
+              label="Phone Number"
               margin="normal"
               id="gphoneNumber"
               name="gphoneNumber"

@@ -119,7 +119,11 @@ const CreateReport: FC<CreateReportProps> = (props) => {
     userId: number
   ): Promise<{ success: boolean }> => {
     try {
-      const doc = await documentApi.createDocument("reports", values, userId);
+      const doc = await documentApi.createDocument(
+        { name: "reports", id: 2 },
+        values,
+        userId
+      );
       setDocument(doc.id);
 
       return { success: true };
@@ -276,6 +280,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -302,6 +307,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -391,6 +397,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -423,6 +430,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -451,6 +459,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -486,6 +495,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -516,6 +526,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -544,6 +555,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -574,6 +586,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -602,6 +615,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     InputProps={{
                       style: {
                         fontFamily: "sans-serif",
+                        color: "black",
                       },
                     }}
                   />
@@ -800,6 +814,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                 InputProps={{
                   style: {
                     fontFamily: "sans-serif",
+                    color: "black",
                   },
                 }}
               />
@@ -829,6 +844,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                 InputProps={{
                   style: {
                     fontFamily: "sans-serif",
+                    color: "black",
                   },
                 }}
               />

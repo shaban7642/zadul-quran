@@ -30,6 +30,16 @@ class UserApi {
       }
     });
   }
+  async getAllParents() {
+    return new Promise((resolve, reject) => {
+      try {
+        const parents = apiService.get("/user/all/parents");
+        resolve(parents);
+      } catch (err) {
+        reject(new Error("Internal server error"));
+      }
+    });
+  }
 
   async getUserById(id: number): Promise<any> {
     return new Promise((resolve, reject) => {
