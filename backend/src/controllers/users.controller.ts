@@ -171,7 +171,7 @@ class UserController {
       if (!emailExists) {
         const resp = await this.userService.create([req.body]);
         let parentData = null;
-        if (parentId) {
+        if (!parentId) {
           parentData = await this.parentsService.createOneParent(
             req.body.parentData
           );
