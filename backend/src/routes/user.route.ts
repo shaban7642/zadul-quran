@@ -35,6 +35,13 @@ class UserRoute implements Route {
     );
 
     this.router.get(
+      `${this.path}/all/parents`,
+      authMiddleware,
+      accessControlMiddleware([Permissions.users.READ]),
+      this.userController.getAllParents
+    );
+
+    this.router.get(
       `${this.path}/:id`,
       authMiddleware,
       accessControlMiddleware([Permissions.users.READ]),

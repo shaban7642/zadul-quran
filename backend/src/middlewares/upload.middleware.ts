@@ -8,10 +8,14 @@ async function uploadMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const { data } = req.query;
-  req.documentType = JSON.parse(data as string)?.documentType;
-  req.userId = JSON.parse(data as string)?.userId;
-  next();
+  try {
+    const { data } = req.query;
+    req.documentType = JSON.parse(data as string)?.documentType;
+    req.userId = JSON.parse(data as string)?.userId;
+    next();
+  } catch (error) {
+    next(error);
+  }
 }
 
 export default uploadMiddleware;

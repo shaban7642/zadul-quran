@@ -120,6 +120,21 @@ class ParentsService {
       throw new HttpException(500, 30001, err.params);
     }
   }
+
+  public async findAll(query: FindOptions): Promise<Parent> {
+    try {
+      const result: any = await this.parentsModel.findAll(query);
+
+      return result;
+    } catch (err) {
+      logger.log({
+        level: 'error',
+        label: 'Parents Service - findAll',
+        message: err.message,
+      });
+      throw new HttpException(500, 30001, err.params);
+    }
+  }
 }
 
 export default ParentsService;

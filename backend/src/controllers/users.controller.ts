@@ -147,22 +147,39 @@ class UserController {
     }
   };
 
+  public getAllParents = async (
+    req: RequestWithIdentity,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const resp = await this.parentsService.findAll({});
+      res.status(200).json(resp);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public createUser = async (
     req: RequestWithIdentity,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const { email } = req.body;
+      const { email, parentId } = req.body;
       const emailExists = await this.userService.findOne({ where: { email } });
       if (!emailExists) {
         const resp = await this.userService.create([req.body]);
-        const parentData = await this.parentsService.createOneParent(
-          req.body.parentData
-        );
+        let parentData = null;
+        if (parentId) {
+          parentData = await this.parentsService.createOneParent(
+            req.body.parentData
+          );
+        }
+
         await this.parentsService.createOneStudentParent({
           userId: resp[0].id,
-          parentId: parentData.id,
+          parentId: parentData ? parentData.id : parentId,
         });
         return res.status(200).json(resp[0]);
       }
