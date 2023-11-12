@@ -18,13 +18,13 @@ class DocumentApi {
   }
 
   async createDocument(
-    documentType: any,
+    documentType: string,
     documentData: any,
     userId: number
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log({ documentData });
+        console.log(documentType);
         const resp = await axios.post(
           `http://localhost:4000/api/documents/upload?data={"documentType": ${documentType}, "userId": ${userId}}`,
           documentData,

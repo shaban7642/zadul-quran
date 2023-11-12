@@ -119,11 +119,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
     userId: number
   ): Promise<{ success: boolean }> => {
     try {
-      const doc = await documentApi.createDocument(
-        { name: "reports", id: 2 },
-        values,
-        userId
-      );
+      const doc = await documentApi.createDocument("reports", values, userId);
       setDocument(doc.id);
 
       return { success: true };
