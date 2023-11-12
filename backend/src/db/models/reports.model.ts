@@ -129,8 +129,8 @@ class Reports extends Model {
   public static initAssociation(): void {
     this.belongsTo(User);
     this.belongsTo(Sessions);
-    this.belongsTo(Documents, { as: 'documentId' });
-    this.belongsTo(Documents, { as: 'bookId' });
+    this.belongsTo(Documents, { as: 'document' });
+    this.belongsTo(Documents, { as: 'book' });
   }
 }
 
