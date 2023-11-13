@@ -324,7 +324,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         }
     };
 
-    const getSubjects = useCallback(
+    const getSessionTypes = useCallback(
         async () => {
             try {
                 const data: any = await sessionApi.getSessionTypes();
@@ -340,7 +340,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     );
 
     useEffect(() => {
-        getSubjects();
+        getSessionTypes();
     }, []);
 
     useEffect(

@@ -22,6 +22,7 @@ import SessionTypesModel from '../db/models/sessionTypes.model';
 import ZoomSessionMeetings from '../db/models/zoomSessionMettings.model';
 import { Session } from '../types/sessions.type';
 import ReportsModel from '../db/models/reports.model';
+import DocumentsModel from '../db/models/documents.model';
 
 const attributes = [
   'id',
@@ -148,7 +149,13 @@ class SessionsController {
           },
           { model: ZoomSessionMeetings },
           { model: SessionTypesModel },
-          { model: ReportsModel },
+          {
+            model: ReportsModel,
+            include: [
+              { model: DocumentsModel, as: 'document' },
+              { model: DocumentsModel, as: 'book' },
+            ],
+          },
         ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
