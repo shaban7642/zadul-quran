@@ -14,29 +14,10 @@ class ReportsService {
 
   public userModel = UserModel;
 
-  public async createOne({
-    documentId,
-    userId,
-    sessionId,
-    date,
-    submissionDate,
-    reportContent,
-  }: {
-    documentId: number;
-    userId: number;
-    sessionId: number;
-    date: Date;
-    submissionDate: Date;
-    reportContent: string;
-  }): Promise<Report> {
+  public async createOne(dataToCreate: any): Promise<Report> {
     try {
       const report: ReportsModel = await this.reportsModel.create({
-        documentId,
-        userId,
-        sessionId,
-        date,
-        submissionDate,
-        reportContent,
+        ...dataToCreate,
       });
       return report.toJSON() as Report;
     } catch (err) {
