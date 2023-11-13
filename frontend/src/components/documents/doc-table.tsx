@@ -98,7 +98,11 @@ export const DocumentTable = () => {
     const load = toast.loading("createDocuments");
     try {
       console.log({ values });
-      await documentApi.createDocument("books", values, userId);
+      await documentApi.createDocument(
+        { name: "books", id: 1 },
+        values,
+        userId
+      );
 
       toast.dismiss(load);
       toast.success("createDocuments ");
