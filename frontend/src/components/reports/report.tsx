@@ -199,51 +199,57 @@ export const Report: FC<reportProps> = (props) => {
                   {/* <p>Size:{size}</p>
           <label htmlFor="file">progress:</label>
           <progress id="file" value={percentage} max="100" /> */}
-                  {error && <p>possible error {JSON.stringify(error)}</p>}
+                  {error && (
+                    <p style={{ color: "red" }}>
+                      possible error {JSON.stringify(error)}
+                    </p>
+                  )}
                 </ListItem>
               </Grid>
             </Grid>
             {session.patch?.department?.name != "Quran" && (
-              <>
-                <ListItem>
-                  Book:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.book?.fileName || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-
-                <ListItem>
-                  Unit:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.unit || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Topic:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.topic || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-
-                <ListItem>
-                  Level:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.level || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-              </>
+              <Grid container component={List}>
+                <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+                  <ListItem>
+                    Book:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.book?.fileName || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    Unit:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.unit || "No data"}
+                    </Typography>{" "}
+                  </ListItem>{" "}
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+                  <ListItem>
+                    Topic:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.topic || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    Level:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.level || "No data"}
+                    </Typography>{" "}
+                  </ListItem>{" "}
+                </Grid>{" "}
+              </Grid>
             )}
             {session.patch?.department?.name == "Arabic" && (
               <>
