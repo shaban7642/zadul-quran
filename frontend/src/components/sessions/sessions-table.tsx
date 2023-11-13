@@ -99,9 +99,12 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const [statusCount, setStatusCount] = useState<
         { status: string; count: number }[]
     >([]);
+    const [typesCount, setTypesCount] = useState<
+        { sessionTypeId: string; count: number }[]
+    >([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    // const [subjects, setSubjects] = useState<any[]>([]);
+    const [sessionTypes, setSessionTypes] = useState<any[]>([]);
     const [currentTab, setCurrentTab] = useState<any>('');
     const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), {
         noSsr: false,
@@ -231,6 +234,15 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         },
     ];
 
+    console.log({ typesCount });
+
+    const typesTabs: any[] = sessionTypes?.map((type) => ({
+        label: type.name,
+        value: type.duration,
+        count: typesCount.find((item) => item?.sessionTypeId === type.id)
+            ?.count,
+    }));
+
     const handleTabsChange = (event: ChangeEvent<{}>, value: any): void => {
         setCurrentTab(value);
         getSessions({ limit: rowsPerPage, offset: 0, status: value });
@@ -248,6 +260,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                     setSessions(data.rows);
                     setSessionsCount(data.count);
                     setStatusCount(data.statusCount);
+                    setTypesCount(data.typesCount);
                     setTotalCount(data.totalCount);
                 }
             } catch (err) {
@@ -311,24 +324,24 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         }
     };
 
-    // const getSubjects = useCallback(
-    //     async () => {
-    //         try {
-    //             const data: any = await deptApi.getDepts();
-    //             if (isMounted()) {
-    //                 setSubjects(data.rows);
-    //             }
-    //         } catch (err) {
-    //             console.log(err);
-    //         }
-    //     },
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    //     [isMounted]
-    // );
+    const getSubjects = useCallback(
+        async () => {
+            try {
+                const data: any = await sessionApi.getSessionTypes();
+                if (isMounted()) {
+                    setSessionTypes(data.resp);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [isMounted]
+    );
 
-    // useEffect(() => {
-    //     getSubjects();
-    // }, []);
+    useEffect(() => {
+        getSubjects();
+    }, []);
 
     useEffect(
         () => {
@@ -410,7 +423,6 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     );
 
     const applyFilters = (filters: any): any => {
-        console.log({ filters });
         setFilters(filters);
         getSessions({
             status: currentTab,
@@ -504,6 +516,54 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                                     value={tab.value}
                                 />
                             ))}
+                        </Tabs>
+                    </Box>
+                    <Divider />
+                    <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        flexDirection='row'
+                    >
+                        <Tabs
+                            indicatorColor='secondary'
+                            // onChange={handleTabsChange}
+                            scrollButtons='auto'
+                            sx={{
+                                px: 2,
+                            }}
+                            textColor='primary'
+                            value={currentTab}
+                            variant='scrollable'
+                        >
+                            {typesTabs?.map((tab) => {
+                                return (
+                                    <Tab
+                                        sx={{
+                                            minHeight: '60px',
+                                            mt: 'auto',
+                                            mb: 'auto',
+                                            cursor: 'unset',
+                                            color: 'primary.dark',
+                                        }}
+                                        icon={
+                                            <Chip
+                                                label={tab.count || 0}
+                                                size='small'
+                                                sx={{
+                                                    fontSize: '12px !important',
+                                                    color: 'text.primary',
+                                                    // borderRadius: '5px',
+                                                }}
+                                            />
+                                        }
+                                        iconPosition='end'
+                                        key={tab.value}
+                                        label={tab.label}
+                                        value={tab.value}
+                                    />
+                                );
+                            })}
                         </Tabs>
                     </Box>
                     <Divider />
