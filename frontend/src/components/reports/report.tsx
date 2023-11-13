@@ -158,20 +158,51 @@ export const Report: FC<reportProps> = (props) => {
           <Chip label="Feedback " sx={{ fontWeight: "600" }} />
         </Divider>
         <Grid container component={List}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             {" "}
-            <ListItem>
-              Submition Date:
-              <Typography
-                color={"black"}
-                sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-              >
+            <Grid container component={List} sx={{ p: 0 }}>
+              <Grid item xs={12} sm={6} sx={{ p: 0 }}>
                 {" "}
-                {moment(session?.reports[0]?.date || "No data").format(
-                  "MMM-D-YYYY"
-                )}
-              </Typography>{" "}
-            </ListItem>
+                <ListItem>
+                  Submition Date:
+                  <Typography
+                    color={"black"}
+                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                  >
+                    {" "}
+                    {moment(session?.reports[0]?.date || "No data").format(
+                      "MMM-D-YYYY"
+                    )}
+                  </Typography>{" "}
+                </ListItem>
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+                {" "}
+                <ListItem>
+                  File:{" "}
+                  <IconButton
+                    onClick={() =>
+                      download(
+                        `http://localhost:4000/${session?.reports[0]?.document?.fileStoragePath}`,
+                        session?.reports[0]?.document?.fileName
+                      )
+                    }
+                    sx={{
+                      p: 0,
+                      ml: 1,
+                      color: "black",
+                      border: "1px solid black",
+                    }}
+                  >
+                    <FileDownloadOutlinedIcon fontSize="medium" />
+                  </IconButton>
+                  {/* <p>Size:{size}</p>
+          <label htmlFor="file">progress:</label>
+          <progress id="file" value={percentage} max="100" /> */}
+                  {error && <p>possible error {JSON.stringify(error)}</p>}
+                </ListItem>
+              </Grid>
+            </Grid>
             {session.patch?.department?.name != "Quran" && (
               <>
                 <ListItem>
@@ -180,7 +211,7 @@ export const Report: FC<reportProps> = (props) => {
                     color={"black"}
                     sx={{ overflowWrap: "break-word", minWidth: "100px" }}
                   >
-                    {session?.reports[0]?.book || "No data"}
+                    {session?.reports[0]?.book?.fileName || "No data"}
                   </Typography>{" "}
                 </ListItem>
 
@@ -247,81 +278,85 @@ export const Report: FC<reportProps> = (props) => {
               </>
             )}
             {session.patch?.department?.name == "Quran" && (
-              <>
-                {" "}
-                <ListItem>
-                  Memorization:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.memorization || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Revision:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.revision || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Tajweed:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.tajweed || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Recitation:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.recitation || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Reading:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.reading || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  MemorizationLevel:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.memorizationLevel || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  RevisionLevel:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.revisionLevel || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  ReadingLevel:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.readingLevel || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-              </>
+              <Grid container component={List}>
+                <Grid item xs={12} sm={6}>
+                  {" "}
+                  <ListItem>
+                    Memorization:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.memorization || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    Revision:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.revision || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    Recitation:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.recitation || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    Reading:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.reading || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <ListItem>
+                    MemorizationLevel:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.memorizationLevel || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    RevisionLevel:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.revisionLevel || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    Tajweed:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.tajweed || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                  <ListItem>
+                    ReadingLevel:{" "}
+                    <Typography
+                      color={"black"}
+                      sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                    >
+                      {session?.reports[0]?.readingLevel || "No data"}
+                    </Typography>{" "}
+                  </ListItem>
+                </Grid>
+              </Grid>
             )}
           </Grid>
           <ListItem>
@@ -341,24 +376,6 @@ export const Report: FC<reportProps> = (props) => {
             >
               {session?.reports[0]?.notes || "No data"}
             </Typography>{" "}
-          </ListItem>
-          <ListItem>
-            File:{" "}
-            <IconButton
-              onClick={() =>
-                download(
-                  `http://localhost:4000/${session?.reports[0]?.fileStoragePath}`,
-                  session?.reports[0]?.fileName
-                )
-              }
-              sx={{ p: 0, ml: 1, mb: 1.5 }}
-            >
-              <FileDownloadOutlinedIcon />
-            </IconButton>
-            {/* <p>Size:{size}</p>
-          <label htmlFor="file">progress:</label>
-          <progress id="file" value={percentage} max="100" /> */}
-            {error && <p>possible error {JSON.stringify(error)}</p>}
           </ListItem>
         </Grid>
       </Paper>

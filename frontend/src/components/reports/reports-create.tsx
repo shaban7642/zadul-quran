@@ -23,6 +23,7 @@ import { useFormik } from "formik";
 import TextField from "@mui/material/TextField";
 import { Document } from "../documents/doc-table";
 import { useMounted } from "../../hooks/use-mounted";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface CreateReportProps {
   sessionDeptName: string;
@@ -59,7 +60,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
   const formik = useFormik({
     initialValues: {
       date: new Date(),
-      documentId: "",
+      documentId: null,
       sessionId: sessionId,
       // Islamic studies
       notes: "",
@@ -173,8 +174,8 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          p: "10px 10px",
-          width: "100%",
+          p: "20px 20px",
+          width: "95%",
 
           ...(true && {
             bgcolor: (theme) =>
@@ -224,6 +225,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       value={formik.values.bookId}
                       onChange={(event) => {
                         formik.setFieldValue("bookId", event.target.value);
+                        console.log(event.target.value);
                       }}
                     >
                       {documents?.map((book) => (
@@ -853,7 +855,14 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     }}
                   />
                 </Button>
+                {formik.values.documentId && (
+                  <CheckCircleIcon
+                    color="success"
+                    sx={{ position: "relative", top: 10, ml: 1 }}
+                  />
+                )}
               </div>
+
               <Divider sx={{ mb: 1, mt: 2 }} />
               <div style={{ textAlign: "right" }}>
                 <LoadingButton
