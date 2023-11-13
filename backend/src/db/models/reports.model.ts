@@ -20,6 +20,8 @@ class Reports extends Model {
 
   public reportContent?: string;
 
+  public memorizationLevel?: string;
+
   public readonly createdAt!: Date;
 
   public readonly updatedAt!: Date;

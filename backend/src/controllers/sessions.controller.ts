@@ -21,6 +21,7 @@ import Departments from '../db/models/departments.model';
 import SessionTypesModel from '../db/models/sessionTypes.model';
 import ZoomSessionMeetings from '../db/models/zoomSessionMettings.model';
 import { Session } from '../types/sessions.type';
+import ReportsModel from '../db/models/reports.model';
 
 const attributes = [
   'id',
@@ -147,6 +148,7 @@ class SessionsController {
           },
           { model: ZoomSessionMeetings },
           { model: SessionTypesModel },
+          { model: ReportsModel },
         ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
@@ -176,6 +178,56 @@ class SessionsController {
       });
 
       const processed = await Promise.all(promises);
+
+      // count by types
+      const countTypesAttributes: any = [
+        'sessions.sessionTypeId',
+        [
+          Sequelize.fn('COUNT', Sequelize.col('sessions.sessionTypeId')),
+          'count',
+        ],
+      ];
+
+      const groupTypes = ['sessions.sessionTypeId'];
+
+      const typesCount = await this.sessionsModel.count({
+        where: { ...searchParams },
+        include: [
+          {
+            model: Patches,
+            include: [
+              {
+                model: UserModel,
+                as: 'student',
+                ...(studentId && { where: { id: studentId }, required: true }),
+                ...(roleName === 'student' && {
+                  where: { id: userId },
+                  required: true,
+                }),
+              },
+              {
+                model: UserModel,
+                as: 'teacher',
+                ...(teacherId && { where: { id: teacherId }, required: true }),
+                ...(roleName === 'teacher' && {
+                  where: { id: userId },
+                  required: true,
+                }),
+              },
+              {
+                model: Departments,
+                ...(departmentId && {
+                  where: { id: departmentId },
+                  required: true,
+                }),
+              },
+            ],
+            required: true,
+          },
+        ],
+        attributes: countTypesAttributes,
+        group: groupTypes,
+      });
 
       // count by status
       const countAttributes: any = [
@@ -240,6 +292,7 @@ class SessionsController {
           return results;
         }, []),
         totalCount,
+        typesCount,
       };
       return res.status(200).json(resp);
     } catch (error) {
