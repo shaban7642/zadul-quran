@@ -72,7 +72,7 @@ const Employees: NextPage = () => {
           <TabList onChange={handleChange} aria-label="Employees options">
             <Tab label="List Employees" value="1" />
             <Tab label="Add Employees" value="2" />
-            <Tab label="Add Department" value="3" />
+            <Tab label="Add Subject" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">

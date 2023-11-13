@@ -14,6 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import NextLink from "next/link";
 import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
+import { BillsIcon } from "../../icons/bills";
 import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
 import { useTheme } from "@mui/material/styles";
@@ -28,6 +29,7 @@ import { useMounted } from "../../hooks/use-mounted";
 import { sessionMethods } from "./sessions-create";
 import { useAuth } from "../../hooks/use-auth";
 import CreateReport from "../reports/reports-create";
+import { Report } from "../reports/report";
 interface RowProps {
   row: any;
   labelId: string;
@@ -41,6 +43,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
   const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
+  const [openCreateReport, setOpenCreateReport] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const theme = useTheme();
 
@@ -158,6 +161,12 @@ export const SessionsRow: FC<RowProps> = (props) => {
       });
     }
   }, [row]);
+  const handleOpenCreateReport = () => {
+    setOpenCreateReport(true);
+  };
+  const handleCloseCreateReport = () => {
+    setOpenCreateReport(false);
+  };
   const handleOpenReport = () => {
     setOpenReport(true);
   };
@@ -228,7 +237,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                         status: "done",
                         endedAt: new Date(Date.now()),
                       });
-                      handleOpenReport();
+                      handleOpenCreateReport();
                     }}
                     sx={{
                       fontSize: 12,
@@ -264,6 +273,20 @@ export const SessionsRow: FC<RowProps> = (props) => {
                 </Button>
               )}
           </Box>
+        </TableCell>
+
+        <TableCell
+          scope="row"
+          sx={{
+            color: "black",
+          }}
+        >
+          <IconButton
+            onClick={() => handleOpenReport()}
+            sx={{ p: 0, ml: 1, mb: 1.5 }}
+          >
+            <BillsIcon color="primary" />
+          </IconButton>
         </TableCell>
         <TableCell
           scope="row"
@@ -523,12 +546,15 @@ export const SessionsRow: FC<RowProps> = (props) => {
           </Collapse>
         </TableCell>
       </TableRow>
-      <Dialog maxWidth="md" open={openReport}>
+      <Dialog maxWidth="md" open={openCreateReport}>
         <CreateReport
           sessionDeptName={row.patch?.department?.name}
           sessionId={row.id}
-          handleCloseReport={handleCloseReport}
+          handleCloseCreateReport={handleCloseCreateReport}
         />
+      </Dialog>
+      <Dialog maxWidth="md" open={openReport} onClose={handleCloseReport}>
+        <Report session={row} handleCloseReport={handleCloseReport} />
       </Dialog>
     </Fragment>
   );

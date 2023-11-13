@@ -58,7 +58,7 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
         }}
       >
         <Typography color="inherit" variant="h6">
-          Add Departments
+          Add Subjects
         </Typography>
       </Box>
       <Box sx={{ margin: 1 }}>

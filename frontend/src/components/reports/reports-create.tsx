@@ -27,13 +27,11 @@ import { useMounted } from "../../hooks/use-mounted";
 interface CreateReportProps {
   sessionDeptName: string;
   sessionId: number;
-  handleCloseReport: () => void;
+  handleCloseCreateReport: () => void;
 }
 
 const CreateReport: FC<CreateReportProps> = (props) => {
-  const { sessionDeptName, sessionId, handleCloseReport } = props;
-  const [formValues, setFormValues] = useState("");
-  const [document, setDocument] = useState(0);
+  const { sessionDeptName, sessionId, handleCloseCreateReport } = props;
   const [documents, setDocuments] = useState<Document[]>([]);
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -61,7 +59,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
   const formik = useFormik({
     initialValues: {
       date: new Date(),
-      documentId: document,
+      documentId: "",
       sessionId: sessionId,
       // Islamic studies
       notes: "",
@@ -91,7 +89,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         const { success } = await createReport(values);
         if (success) {
           formik.resetForm();
-          handleCloseReport();
+          handleCloseCreateReport();
         }
       } catch (error) {
         console.log(error);
@@ -100,7 +98,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
   });
   const createReport = async (values: any): Promise<{ success: boolean }> => {
     const load = toast.loading("createReports");
-    console.log(document);
+
     try {
       await reportApi.createReport(values);
 
@@ -124,7 +122,8 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         values,
         userId
       );
-      setDocument(doc.id);
+
+      formik.setFieldValue("documentId", doc.data.id);
 
       return { success: true };
     } catch (err: any) {
@@ -148,15 +147,6 @@ const CreateReport: FC<CreateReportProps> = (props) => {
     }
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    console.log(formValues);
-    const { success } = await createReport(formValues);
-    if (success) {
-      setFormValues("");
-      handleCloseReport();
-    }
-  };
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",

@@ -196,7 +196,7 @@ export const Profile: FC<profileProps> = (props) => {
             }}
           >
             <Typography color="inherit" variant="h6">
-              prsonal info
+              prsonal information
             </Typography>
 
             <Grid container component={List}>
@@ -243,15 +243,13 @@ export const Profile: FC<profileProps> = (props) => {
                     {getUserRole() || "No data"}
                   </Typography>{" "}
                 </ListItem>
-                {userData.roleId === 4 ? (
+                {userData.roleId === 4 && (
                   <ListItem>
                     Department:{" "}
                     <Typography color={"black"}>
                       {userData?.department?.name || "No data"}
                     </Typography>{" "}
                   </ListItem>
-                ) : (
-                  <></>
                 )}
                 <ListItem>
                   Gender:{" "}
@@ -485,7 +483,7 @@ export const Profile: FC<profileProps> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              {userData.roleId === 4 ? (
+              {userData.roleId === 4 && (
                 <FormControl
                   sx={{
                     width: { xs: "100%", sm: "47.5%" },
@@ -534,8 +532,6 @@ export const Profile: FC<profileProps> = (props) => {
                     ))}
                   </Select>
                 </FormControl>
-              ) : (
-                <></>
               )}
               <FormControl
                 sx={{

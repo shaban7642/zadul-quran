@@ -390,7 +390,7 @@ const CreateUser: FC<CreateUserProps> = (props) => {
           error={Boolean(formik.touched.username && formik.errors.username)}
           // @ts-ignore
           helperText={formik.touched.username && formik.errors.username}
-          label="username"
+          label="Username"
           margin="normal"
           id="username"
           name="username"
@@ -415,7 +415,7 @@ const CreateUser: FC<CreateUserProps> = (props) => {
           error={Boolean(formik.touched.email && formik.errors.email)}
           // @ts-ignore
           helperText={formik.touched.email && formik.errors.email}
-          label="email"
+          label="Email"
           margin="normal"
           id="email"
           name="email"

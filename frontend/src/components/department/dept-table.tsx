@@ -158,7 +158,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
                 id="tableTitle"
                 component="div"
               >
-                Department List
+                Subjects List
               </Typography>
             </Toolbar>
             <TableContainer>
