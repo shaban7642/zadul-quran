@@ -41,7 +41,8 @@ class ReportsController {
 
       const query: FindOptions = {
         include: [
-          { model: Documents },
+          { model: Documents, as: 'document' },
+          { model: Documents, as: 'book' },
           { model: UserModel },
           {
             model: Sessions,

@@ -4,10 +4,9 @@ module.exports = {
       queryInterface.removeColumn('reports', 'book'),
       queryInterface.addColumn('reports', 'bookId', {
         type: Sequelize.INTEGER,
-        reference: {
+        references: {
           model: 'documents',
           key: 'id',
-          as: 'bookId',
         },
       }),
     ]);

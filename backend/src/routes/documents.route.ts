@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import fs from 'fs';
-import { Router } from 'express';
+import moment from 'moment';
+import { NextFunction, Response, Router } from 'express';
 import multer from 'multer';
 import { Route } from '../types/routes.type';
 import authMiddleware from '../middlewares/auth.middleware';
@@ -9,6 +10,7 @@ import { DocumentsController } from '../controllers';
 
 import enums from '../../shared/enums';
 import uploadMiddleware from '../middlewares/upload.middleware';
+import { RequestWithIdentity } from '../types/auth.type';
 
 const { Permissions } = enums;
 
@@ -22,7 +24,8 @@ const multerStorage = multer.diskStorage({
   },
   filename: (req: any, file: any, cb: any) => {
     const ext = file.mimetype.split('/')[1];
-    cb(null, `${file.fieldname}-${Date.now()}.${ext}`);
+    const filename = file.originalname.split('.')[0];
+    cb(null, `${filename}-${moment().format('YYYYMMDD')}.${ext}`);
   },
 });
 
@@ -53,6 +56,10 @@ class DocumentRoute implements Route {
       `${this.path}/upload`,
       // authMiddleware,
       uploadMiddleware,
+      // (req: RequestWithIdentity, res: Response, next: NextFunction) => {
+      //   upload.single('file');
+      //   next();
+      // },
       upload.single('file'),
       // accessControlMiddleware([Permissions.documents.CREATE]),
       this.documentsController.uploadDocument
