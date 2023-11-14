@@ -157,11 +157,13 @@ export const DocumentTable = () => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getDocuments(rowsPerPage, newPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    getDocuments(rowsPerPage, page);
   };
 
   return (

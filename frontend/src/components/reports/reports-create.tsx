@@ -29,10 +29,18 @@ interface CreateReportProps {
   sessionDeptName: string;
   sessionId: number;
   handleCloseCreateReport: () => void;
+  setReoprtFlag: any;
+  reportFlag: boolean;
 }
 
 const CreateReport: FC<CreateReportProps> = (props) => {
-  const { sessionDeptName, sessionId, handleCloseCreateReport } = props;
+  const {
+    sessionDeptName,
+    sessionId,
+    handleCloseCreateReport,
+    setReoprtFlag,
+    reportFlag,
+  } = props;
   const [documents, setDocuments] = useState<Document[]>([]);
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -91,6 +99,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         if (success) {
           formik.resetForm();
           handleCloseCreateReport();
+          setReoprtFlag(!reportFlag);
         }
       } catch (error) {
         console.log(error);

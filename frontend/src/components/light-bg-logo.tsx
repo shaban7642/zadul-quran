@@ -20,13 +20,9 @@ export const LightBgLogo = styled((props: LogoProps) => {
     <>
       <Image
         alt="logo"
-        src={
-          src || settings.theme === "light"
-            ? "/static/go-manager-light-bg-logo.png"
-            : "/static/logo-dark-theame-light-bg.png"
-        }
-        width={56}
-        height={42}
+        src={src || "/static/zadlogo.svg"}
+        width={250}
+        height={53}
         {...other}
         style={{
           overflow: "visible",

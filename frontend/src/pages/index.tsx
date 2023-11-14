@@ -46,19 +46,21 @@ const Home: NextPage = () => {
                 {/* <a> */}
                 <LightBgLogo
                   sx={{
-                    height: 42,
-                    width: 56,
+                    height: 50,
+                    width: 250,
                   }}
                 />
                 {/* </a> */}
               </NextLink>
-              <Typography variant="h4">Login</Typography>
+              <Typography variant="h5" sx={{ mt: 1 }}>
+                Login
+              </Typography>
             </Box>
 
             <Box
               sx={{
                 flexGrow: 1,
-                mt: 3,
+                mt: 2,
               }}
             >
               <LoginForm />

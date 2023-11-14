@@ -169,12 +169,13 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getUsers(rowsPerPage, newPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    // getUsers(rowsPerPage, page);
+    getUsers(rowsPerPage, page);
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.

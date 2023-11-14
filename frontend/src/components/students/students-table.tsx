@@ -159,6 +159,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getUsers(rowsPerPage, newPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {

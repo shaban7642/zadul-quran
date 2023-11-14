@@ -8,6 +8,8 @@ import { Menu as MenuIcon } from "../../icons/menu";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { useAuth } from "../../hooks/use-auth";
 import { AccountPopover } from "./account-popover";
+import { LightBgLogo } from "../light-bg-logo";
+import { useRouter } from "next/router";
 
 interface DashboardNavbarProps extends MuiAppBarProps {
   toggle?: () => void;
@@ -31,25 +33,29 @@ const AppBar = styled(MuiAppBar, {
   zIndex: 1100,
 }));
 
-// const HomeLogo = () => {
-//   const router = useRouter();
-//   return (
-//     <Box
-//       component={ButtonBase}
-//       sx={{
-//         alignItems: "center",
-//         display: "flex",
-//         mr: 2,
-//       }}
-//     >
-//       <Tooltip title="goHome">
-//         <IconButton sx={{ ml: 1 }} onClick={() => router.push("/sessions")}>
-//           <LightBgLogo sx={{ height: "30px", width: "42px" }} />
-//         </IconButton>
-//       </Tooltip>
-//     </Box>
-//   );
-// };
+const HomeLogo = () => {
+  const router = useRouter();
+  return (
+    <Box
+      component={ButtonBase}
+      sx={{
+        alignItems: "center",
+        display: "flex",
+        mr: 2,
+      }}
+    >
+      <Tooltip title="goHome">
+        <IconButton
+          sx={{ m: "auto" }}
+          edge="end"
+          onClick={() => router.push("/sessions")}
+        >
+          <LightBgLogo sx={{ height: "50px", width: "250px" }} />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
+};
 
 const AccountButton = () => {
   const anchorRef = useRef<HTMLButtonElement | null>(null);
@@ -119,9 +125,9 @@ export const DashboardNavbar: FC<DashboardNavbarProps> = (props) => {
             }}
           />
         </IconButton>
-
         <Box sx={{ flexGrow: 1 }} />
-        {/* <HomeLogo /> */}
+        <HomeLogo />
+        <Box sx={{ flexGrow: 1 }} />
         <AccountButton />
       </Toolbar>
     </AppBar>

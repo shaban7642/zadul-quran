@@ -36,9 +36,19 @@ interface RowProps {
   updateSession: (id: any, userData: any) => Promise<{ success: boolean }>;
   deleteSession: (id: any) => Promise<{ success: boolean }>;
   statuses: readonly string[];
+  setReoprtFlag: any;
+  reportFlag: boolean;
 }
 export const SessionsRow: FC<RowProps> = (props) => {
-  const { row, labelId, updateSession, deleteSession, statuses } = props;
+  const {
+    row,
+    labelId,
+    updateSession,
+    deleteSession,
+    statuses,
+    setReoprtFlag,
+    reportFlag,
+  } = props;
   const isMounted = useMounted();
   const { user } = useAuth();
 
@@ -551,6 +561,8 @@ export const SessionsRow: FC<RowProps> = (props) => {
           sessionDeptName={row.patch?.department?.name}
           sessionId={row.id}
           handleCloseCreateReport={handleCloseCreateReport}
+          setReoprtFlag={setReoprtFlag}
+          reportFlag={reportFlag}
         />{" "}
       </Dialog>
       <Dialog maxWidth="md" open={openReport} onClose={handleCloseReport}>
