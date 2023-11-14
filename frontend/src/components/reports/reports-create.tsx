@@ -168,7 +168,14 @@ const CreateReport: FC<CreateReportProps> = (props) => {
     []
   );
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "#CAF0F8",
+      }}
+    >
       <Paper
         elevation={9}
         sx={{
@@ -177,13 +184,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
           p: "20px 20px",
           width: "95%",
 
-          ...(true && {
-            bgcolor: (theme) =>
-              alpha(
-                theme.palette.info.contrastText,
-                theme.palette.action.activatedOpacity
-              ),
-          }),
+          bgcolor: "#CAF0F8",
         }}
       >
         {" "}
@@ -196,6 +197,58 @@ const CreateReport: FC<CreateReportProps> = (props) => {
 
               {sessionDeptName != "Quran" && (
                 <>
+                  {/* level */}
+                  <FormControl
+                    sx={{
+                      width: { xs: "100%" },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                      marginTop: 2,
+                      mb: 1,
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    <InputLabel
+                      sx={{
+                        top: -6,
+                      }}
+                      id="outlined-level"
+                    >
+                      Grade
+                    </InputLabel>
+                    <Select
+                      name="level"
+                      id="outlined-level"
+                      labelId="outlined-level"
+                      value={formik.values.level}
+                      onChange={(event) => {
+                        formik.setFieldValue("level", event.target.value);
+                      }}
+                    >
+                      {levels.map((level) => (
+                        <MenuItem
+                          sx={{
+                            color: "black",
+                            ...(true && {
+                              bgcolor: (theme) =>
+                                alpha(
+                                  theme.palette.info.contrastText,
+                                  theme.palette.action.activatedOpacity
+                                ),
+                            }),
+                            fontFamily: "sans-serif",
+                          }}
+                          key={level}
+                          value={level}
+                        >
+                          {level}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   {/* Book */}
                   <FormControl
                     sx={{
@@ -303,58 +356,6 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       },
                     }}
                   />
-                  {/* level */}
-                  <FormControl
-                    sx={{
-                      width: { xs: "100%" },
-                      "& .MuiInputBase-root": {
-                        height: 40,
-                      },
-                      mr: 1,
-                      marginTop: 2,
-                      mb: 1,
-                    }}
-                    variant="outlined"
-                  >
-                    {" "}
-                    <InputLabel
-                      sx={{
-                        top: -6,
-                      }}
-                      id="outlined-level"
-                    >
-                      Level
-                    </InputLabel>
-                    <Select
-                      name="level"
-                      id="outlined-level"
-                      labelId="outlined-level"
-                      value={formik.values.level}
-                      onChange={(event) => {
-                        formik.setFieldValue("level", event.target.value);
-                      }}
-                    >
-                      {levels.map((level) => (
-                        <MenuItem
-                          sx={{
-                            color: "black",
-                            ...(true && {
-                              bgcolor: (theme) =>
-                                alpha(
-                                  theme.palette.info.contrastText,
-                                  theme.palette.action.activatedOpacity
-                                ),
-                            }),
-                            fontFamily: "sans-serif",
-                          }}
-                          key={level}
-                          value={level}
-                        >
-                          {level}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
                 </>
               )}
               {sessionDeptName === "Arabic" && (
@@ -631,7 +632,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       }}
                       id="outlined-memorizationLevel"
                     >
-                      Memorization Level
+                      Memorization Grade
                     </InputLabel>
                     <Select
                       name="memorizationLevel"
@@ -686,7 +687,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       }}
                       id="outlined-revisionLevel"
                     >
-                      Revision Level
+                      Revision Grade
                     </InputLabel>
                     <Select
                       name="revisionLevel"
@@ -741,7 +742,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       }}
                       id="outlined-readingLevel"
                     >
-                      Reading Level
+                      Reading Grade
                     </InputLabel>
                     <Select
                       name="readingLevel"

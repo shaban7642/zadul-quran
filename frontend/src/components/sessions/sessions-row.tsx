@@ -551,10 +551,12 @@ export const SessionsRow: FC<RowProps> = (props) => {
           sessionDeptName={row.patch?.department?.name}
           sessionId={row.id}
           handleCloseCreateReport={handleCloseCreateReport}
-        />
+        />{" "}
       </Dialog>
       <Dialog maxWidth="md" open={openReport} onClose={handleCloseReport}>
-        <Report session={row} handleCloseReport={handleCloseReport} />
+        <Box sx={{ width: "100%", typography: "body1", bgcolor: "#CAF0F8" }}>
+          <Report session={row} handleCloseReport={handleCloseReport} />{" "}
+        </Box>
       </Dialog>
     </Fragment>
   );

@@ -109,13 +109,6 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           accessed: true,
         },
         {
-          title: "Reports",
-          path: "/reports",
-          icon: <BillsIcon fontSize="small" />,
-          disabled: false,
-          accessed: true,
-        },
-        {
           title: "Documents",
           path: "/documents",
 
