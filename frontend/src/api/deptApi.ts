@@ -1,10 +1,14 @@
 import { apiService } from "../services/api.service";
-
+import { generateQuery } from "../utils/generate-query";
 class DeptApi {
-  async getDepts(limit: number, page: number) {
+  async getDepts(limit: number, offset: number) {
     return new Promise((resolve, reject) => {
+      const queries = {
+        limit,
+        offset,
+      };
       try {
-        const depts = apiService.get("/department/", { limit, page: ++page });
+        const depts = apiService.get(`/department/?${generateQuery(queries)}`);
         resolve(depts);
       } catch (err) {
         reject(new Error("Internal server error"));

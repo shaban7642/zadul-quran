@@ -19,7 +19,7 @@ const DashboardLayoutRoot = styled("div")(() => ({
 
 export const DashboardLayout: FC<DashboardLayoutProps> = (props) => {
   const { children } = props;
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   return (
     <Box>
@@ -27,7 +27,6 @@ export const DashboardLayout: FC<DashboardLayoutProps> = (props) => {
         <Box
           sx={{
             display: "flex",
-
             flex: "1 1 auto",
             flexDirection: "column",
             width: "100%",

@@ -41,16 +41,13 @@ const HomeLogo = () => {
       sx={{
         alignItems: "center",
         display: "flex",
-        mr: 2,
+        m: 0,
+        p: 0,
       }}
     >
       <Tooltip title="goHome">
-        <IconButton
-          sx={{ m: "auto" }}
-          edge="end"
-          onClick={() => router.push("/sessions")}
-        >
-          <LightBgLogo sx={{ height: "50px", width: "250px" }} />
+        <IconButton edge="end" onClick={() => router.push("/sessions")}>
+          <LightBgLogo />
         </IconButton>
       </Tooltip>
     </Box>
@@ -79,7 +76,7 @@ const AccountButton = () => {
         sx={{
           alignItems: "center",
           display: "flex",
-          ml: 2,
+          mr: 1,
         }}
       >
         <Tooltip title={`Profile`}>
@@ -99,13 +96,14 @@ export const DashboardNavbar: FC<DashboardNavbarProps> = (props) => {
   const { toggle, open, ...other } = props;
 
   return (
-    <AppBar position="fixed" open={open}>
+    <AppBar position="fixed">
       <Toolbar
         disableGutters
         sx={{
           minHeight: 64,
           left: 0,
           px: 2,
+          ml: 1,
         }}
       >
         <IconButton

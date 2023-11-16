@@ -97,7 +97,7 @@ export const RolesTable = () => {
         <TableContainer>
           <Table
             sx={{
-              minWidth: 100 * 2,
+              minWidth: 100 * headCells.length,
             }}
             aria-labelledby="tableTitle"
             size="small"

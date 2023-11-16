@@ -14,7 +14,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import { TableHeads } from "./users-heads";
-import { IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { UsersRow } from "./users-row";
 import { userApi } from "../../api/userApi";
 import { useMounted } from "../../hooks/use-mounted";
@@ -52,7 +51,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
   const [usersCount, setUsersCount] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const headCells: readonly any[] = [
     {
       id: "username",
@@ -159,14 +158,6 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
     }
   };
 
-  useEffect(
-    () => {
-      getUsers(rowsPerPage, page);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [page, rowsPerPage]
-  );
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
     getUsers(rowsPerPage, newPage);
@@ -175,13 +166,16 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    getUsers(rowsPerPage, page);
+    getUsers(parseInt(event.target.value, 10), 0);
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
+  useEffect(
+    () => {
+      getUsers(rowsPerPage, page);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   return (
     <Box sx={{ width: "100%", scrollBehavior: "auto" }}>
       <Paper
@@ -199,7 +193,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         <TableContainer>
           <Table
             sx={{
-              minWidth: 100 * usersCount,
+              minWidth: 100 * headCells.length,
             }}
             aria-labelledby="tableTitle"
             size="small"
@@ -226,7 +220,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         <TablePagination
           component="div"
           count={usersCount}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 25, 50]}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}

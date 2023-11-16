@@ -21,11 +21,13 @@ export const LightBgLogo = styled((props: LogoProps) => {
       <Image
         alt="logo"
         src={src || "/static/zadlogo.svg"}
-        width={250}
-        height={53}
+        width={260}
+        height={56}
         {...other}
         style={{
           overflow: "visible",
+          marginTop: -8,
+          marginBottom: -10,
         }}
       />
       <style>{`

@@ -1,27 +1,30 @@
 import { apiService } from "../services/api.service";
+import { generateQuery } from "../utils/generate-query";
 
 class UserApi {
   async getUsers(
     limit: number,
-    page: number,
+    offset: number,
     name?: string,
     name1?: string,
     name2?: string
   ) {
     return new Promise((resolve, reject) => {
       let path = `/user/`;
-
+      const queries = {
+        limit,
+        offset: offset * limit,
+        roleId: name,
+      };
       try {
         if (name1 && name) {
-          path = `/user/?roleId=${name}&roleId=${name1}&roleId=${name2}&limit=${limit}&page=${++page}`;
+          path = `/user/?${generateQuery(
+            queries
+          )}&roleId=${name1}&roleId=${name2}`;
           const users = apiService.get(path);
           resolve(users);
         } else {
-          const users = apiService.get(path, {
-            roleId: name,
-            limit,
-            page: ++page,
-          });
+          const users = apiService.get(`/user/?${generateQuery(queries)}`);
 
           resolve(users);
         }

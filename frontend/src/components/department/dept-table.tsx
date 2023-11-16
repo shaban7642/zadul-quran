@@ -30,7 +30,7 @@ export const DeptTable = () => {
   const [page, setPage] = useState(0);
   const [depts, setDepts] = useState([]);
   const [deptCount, setDeptsCount] = useState(depts?.length);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const isMounted = useMounted();
   const getDepts = useCallback(
     async (rowsPerPage: number, page: number) => {
@@ -38,6 +38,7 @@ export const DeptTable = () => {
         const data: any = await deptApi.getDepts(rowsPerPage, page);
         if (isMounted()) {
           setDepts(data.rows);
+          setDeptsCount(data.count);
         }
       } catch (err: any) {
         toast.error(err.message || "failed");
@@ -111,19 +112,16 @@ export const DeptTable = () => {
       label: "Title",
     },
   ];
-  useEffect(() => {
-    setDeptsCount(depts?.length);
-  }, [depts?.length]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-    getDepts(rowsPerPage, newPage);
+    getDepts(rowsPerPage, newPage * rowsPerPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    getDepts(rowsPerPage, page);
+    getDepts(parseInt(event.target.value, 10), 0);
   };
   useEffect(
     () => {
@@ -176,7 +174,7 @@ export const DeptTable = () => {
             <TableContainer>
               <Table
                 sx={{
-                  minWidth: 100 * 2,
+                  minWidth: 100 * headCells.length,
                 }}
                 aria-labelledby="tableTitle"
                 size="small"
@@ -199,7 +197,7 @@ export const DeptTable = () => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 25, 50]}
               component="div"
               count={deptCount}
               rowsPerPage={rowsPerPage}

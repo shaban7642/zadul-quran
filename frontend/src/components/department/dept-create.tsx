@@ -92,9 +92,9 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
                     >
                       <TextField
                         size="small"
-                        label="Department"
+                        label="Subject"
                         margin="normal"
-                        name="department"
+                        name="subject"
                         type="text"
                         onChange={(e) => setFormValues(e.target.value)}
                         sx={{ mr: 1, width: "100%" }}
