@@ -364,18 +364,21 @@ const CreateSession = () => {
                     // weekends={false}
                     events={sessions}
                     customButtons={{
-                        addEventButton: {
-                            text: 'add event',
-                            click: function (selectInfo, ev) {
-                                handleOpen();
+                        ...((user?.role === 'admin' ||
+                            user?.role === 'super_admin') && {
+                            addEventButton: {
+                                text: 'add event',
+                                click: function (selectInfo, ev) {
+                                    handleOpen();
+                                },
                             },
-                        },
-                        filterButton: {
-                            text: 'Filter',
-                            click: function (selectInfo, ev) {
-                                handleToggleFilters();
+                            filterButton: {
+                                text: 'Filter',
+                                click: function (selectInfo, ev) {
+                                    handleToggleFilters();
+                                },
                             },
-                        },
+                        }),
                     }}
                 />
             </Box>
