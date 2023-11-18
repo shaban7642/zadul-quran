@@ -153,237 +153,280 @@ export const Report: FC<reportProps> = (props) => {
         </Grid>
       </Grid>
 
-      <Divider textAlign="left" sx={{ m: 1 }}>
-        <Chip label="Feedback " sx={{ fontWeight: "600" }} />
-      </Divider>
-      <Grid container component={List}>
-        <Grid item xs={12}>
-          {" "}
-          <Grid container component={List} sx={{ p: 0 }}>
-            <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+      {session?.reports[0] && (
+        <>
+          <Divider textAlign="left" sx={{ m: 1 }}>
+            <Chip label="Feedback " sx={{ fontWeight: "600" }} />
+          </Divider>
+          <Grid container component={List}>
+            <Grid item xs={12}>
               {" "}
-              <ListItem>
-                Submition Date:
-                <Typography
-                  color={"black"}
-                  sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                >
+              <Grid container component={List} sx={{ p: 0 }}>
+                <Grid item xs={12} sm={6} sx={{ p: 0 }}>
                   {" "}
-                  {moment(session?.reports[0]?.date || "No data").format(
-                    "MMM-D-YYYY"
+                  {session?.reports[0].date && (
+                    <ListItem>
+                      Submition Date:
+                      <Typography
+                        color={"black"}
+                        sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                      >
+                        {" "}
+                        {moment(session?.reports[0].date || "No data").format(
+                          "MMM-D-YYYY"
+                        )}
+                      </Typography>{" "}
+                    </ListItem>
                   )}
-                </Typography>{" "}
-              </ListItem>
-            </Grid>
-            <Grid item xs={12} sm={6} sx={{ p: 0 }}>
-              {" "}
-              <ListItem>
-                File:{" "}
-                <IconButton
-                  onClick={() =>
-                    download(
-                      `http://localhost:4000/${session?.reports[0]?.document?.fileStoragePath}`,
-                      session?.reports[0]?.document?.fileName
-                    )
-                  }
-                  sx={{
-                    p: 0.5,
-                    ml: 0.5,
-                    color: "black",
-                    border: "1px solid black",
-                    fontSize: "16px",
-                  }}
-                >
-                  {"Download "} <FileDownloadOutlinedIcon fontSize="medium" />
-                </IconButton>
-                {/* <p>Size:{size}</p>
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+                  {" "}
+                  {session?.reports[0].document && (
+                    <ListItem>
+                      File:{" "}
+                      <IconButton
+                        onClick={() =>
+                          download(
+                            `http://localhost:4000/${session?.reports[0].document?.fileStoragePath}`,
+                            session?.reports[0].document?.fileName
+                          )
+                        }
+                        sx={{
+                          p: 0.5,
+                          ml: 0.5,
+                          color: "black",
+                          border: "1px solid black",
+                          fontSize: "16px",
+                        }}
+                      >
+                        {"Download "}{" "}
+                        <FileDownloadOutlinedIcon fontSize="medium" />
+                      </IconButton>
+                      {/* <p>Size:{size}</p>
           <label htmlFor="file">progress:</label>
           <progress id="file" value={percentage} max="100" /> */}
-                {error && (
-                  <p style={{ color: "red" }}>
-                    possible error {JSON.stringify(error)}
-                  </p>
-                )}
-              </ListItem>
-            </Grid>
-          </Grid>
-          {session.patch?.department?.name != "Quran" && (
-            <Grid container component={List}>
-              <Grid item xs={12} sm={6} sx={{ p: 0 }}>
-                <ListItem>
-                  Grade:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.level || "No data"}
-                  </Typography>{" "}
-                </ListItem>{" "}
-                <ListItem>
-                  Book:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.book?.fileName || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Unit:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.unit || "No data"}
-                  </Typography>{" "}
-                </ListItem>{" "}
+                      {error && (
+                        <p style={{ color: "red" }}>
+                          possible error {JSON.stringify(error)}
+                        </p>
+                      )}
+                    </ListItem>
+                  )}
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} sx={{ p: 0 }}>
-                <ListItem>
-                  Topic:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.topic || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-              </Grid>{" "}
-            </Grid>
-          )}
-          {session.patch?.department?.name == "Arabic" && (
-            <>
-              <ListItem>
-                New Words:{" "}
-                <Typography
-                  color={"black"}
-                  sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                >
-                  {session?.reports[0]?.newWords || "No data"}
-                </Typography>{" "}
-              </ListItem>
+              {session.patch?.department?.name != "Quran" && (
+                <Grid container component={List}>
+                  <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+                    {session?.reports[0].level && (
+                      <ListItem>
+                        Grade:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].level || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].book && (
+                      <ListItem>
+                        Book:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].book?.fileName || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                  </Grid>
+                  <Grid item xs={12} sm={6} sx={{ p: 0 }}>
+                    {session?.reports[0].unit && (
+                      <ListItem>
+                        Unit:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].unit || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].topic && (
+                      <ListItem>
+                        Topic:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].topic || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                  </Grid>{" "}
+                </Grid>
+              )}
+              {session.patch?.department?.name == "Arabic" && (
+                <>
+                  {session?.reports[0].newWords && (
+                    <ListItem>
+                      New Words:{" "}
+                      <Typography
+                        color={"black"}
+                        sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                      >
+                        {session?.reports[0].newWords || "No data"}
+                      </Typography>{" "}
+                    </ListItem>
+                  )}
 
-              <ListItem>
-                Expressions:{" "}
-                <Typography
-                  color={"black"}
-                  sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                >
-                  {session?.reports[0]?.expressions || "No data"}
-                </Typography>{" "}
-              </ListItem>
-              <ListItem>
-                Rules:{" "}
-                <Typography
-                  color={"black"}
-                  sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                >
-                  {session?.reports[0]?.rules || "No data"}
-                </Typography>{" "}
-              </ListItem>
-            </>
-          )}
-          {session.patch?.department?.name == "Quran" && (
-            <Grid container component={List}>
-              <Grid item xs={12} sm={6}>
-                {" "}
-                <ListItem>
-                  Memorization:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.memorization || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Revision:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.revision || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Recitation:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.recitation || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Reading:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.reading || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <ListItem>
-                  Memorization Grade:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.memorizationLevel || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Revision Grade:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.revisionLevel || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Tajweed:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.tajweed || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-                <ListItem>
-                  Reading Grade:{" "}
-                  <Typography
-                    color={"black"}
-                    sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-                  >
-                    {session?.reports[0]?.readingLevel || "No data"}
-                  </Typography>{" "}
-                </ListItem>
-              </Grid>
+                  {session?.reports[0].expressions && (
+                    <ListItem>
+                      Expressions:{" "}
+                      <Typography
+                        color={"black"}
+                        sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                      >
+                        {session?.reports[0].expressions || "No data"}
+                      </Typography>{" "}
+                    </ListItem>
+                  )}
+                  {session?.reports[0].rules && (
+                    <ListItem>
+                      Rules:{" "}
+                      <Typography
+                        color={"black"}
+                        sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                      >
+                        {session?.reports[0].rules || "No data"}
+                      </Typography>{" "}
+                    </ListItem>
+                  )}
+                </>
+              )}
+              {session.patch?.department?.name == "Quran" && (
+                <Grid container component={List}>
+                  <Grid item xs={12} sm={6}>
+                    {" "}
+                    {session?.reports[0].memorization && (
+                      <ListItem>
+                        Memorization:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].memorization || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].revision && (
+                      <ListItem>
+                        Revision:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].revision || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].recitation && (
+                      <ListItem>
+                        Recitation:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].recitation || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].reading && (
+                      <ListItem>
+                        Reading:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].reading || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    {session?.reports[0].memorizationLevel && (
+                      <ListItem>
+                        Memorization Grade:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].memorizationLevel || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].revisionLevel && (
+                      <ListItem>
+                        Revision Grade:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].revisionLevel || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].tajweed && (
+                      <ListItem>
+                        Tajweed:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0].tajweed || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                    {session?.reports[0].readingLevel && (
+                      <ListItem>
+                        Reading Grade:{" "}
+                        <Typography
+                          color={"black"}
+                          sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                        >
+                          {session?.reports[0]?.readingLevel || "No data"}
+                        </Typography>{" "}
+                      </ListItem>
+                    )}
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
-          )}
-        </Grid>
-        <ListItem>
-          H.W:
-          <Typography
-            color={"black"}
-            sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-          >
-            {session?.reports[0]?.homework || "No data"}
-          </Typography>{" "}
-        </ListItem>
-        <ListItem>
-          Notes:{" "}
-          <Typography
-            color={"black"}
-            sx={{ overflowWrap: "break-word", minWidth: "100px" }}
-          >
-            {session?.reports[0]?.notes || "No data"}
-          </Typography>{" "}
-        </ListItem>
-      </Grid>
+            {session?.reports[0]?.homework && (
+              <ListItem>
+                H.W:
+                <Typography
+                  color={"black"}
+                  sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                >
+                  {session?.reports[0]?.homework || "No data"}
+                </Typography>{" "}
+              </ListItem>
+            )}
+            {session?.reports[0]?.notes && (
+              <ListItem>
+                Notes:{" "}
+                <Typography
+                  color={"black"}
+                  sx={{ overflowWrap: "break-word", minWidth: "100px" }}
+                >
+                  {session?.reports[0]?.notes || "No data"}
+                </Typography>{" "}
+              </ListItem>
+            )}
+          </Grid>
+        </>
+      )}
     </Paper>
   );
 };
