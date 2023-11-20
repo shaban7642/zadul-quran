@@ -242,8 +242,6 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         },
     ];
 
-    console.log({ typesCount });
-
     const typesTabs: any[] = sessionTypes?.map((type) => ({
         label: type.name,
         value: type.duration,
