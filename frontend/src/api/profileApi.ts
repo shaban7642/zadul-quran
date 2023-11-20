@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { apiService } from "../services/api.service";
 
 class ProfileApi {

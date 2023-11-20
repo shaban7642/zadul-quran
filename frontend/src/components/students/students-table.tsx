@@ -96,7 +96,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
           setUsers(data.rows);
           setUsersCount(data.count);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.log(err);
       }
     },
@@ -118,7 +118,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
         toast.error("deleteUserFailed");
         return { success: false };
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "deleteUsersFailed");
       return { success: false };
@@ -142,7 +142,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
         toast.error("updateUserFailed");
         return { success: false };
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "updateUsersFailed");
       return { success: false };
@@ -207,7 +207,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
               rows.slice().sort(getComparator(order, orderBy)) */}
-              {users.map((row, index) => {
+              {users.map((row: any, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return (
                   <StudentsRow

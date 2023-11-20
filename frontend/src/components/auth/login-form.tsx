@@ -36,7 +36,7 @@ export const LoginForm: FC = (props) => {
     onSubmit: async (values: any): Promise<void> => {
       try {
         await login(values);
-      } catch (err) {
+      } catch (err: any) {
         toast.error(err.message || "failed");
       }
     },

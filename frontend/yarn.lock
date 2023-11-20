@@ -2196,13 +2196,6 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/lodash-es@^4.17.6":
-  version "4.17.7"
-  resolved "https://registry.npmjs.org/@types/lodash-es/-/lodash-es-4.17.7.tgz"
-  integrity sha512-z0ptr6UI10VlU6l5MYhGwS4mC8DZyYer2mCoyysZtSF7p26zOX8UpbrV0YpNYLGS8K4PUFIyEr62IMFFjveSiQ==
-  dependencies:
-    "@types/lodash" "*"
-
 "@types/lodash.foreach@^4.5.7":
   version "4.5.7"
   resolved "https://registry.npmjs.org/@types/lodash.foreach/-/lodash.foreach-4.5.7.tgz"
@@ -2551,11 +2544,6 @@ camelcase-css@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/camelcase-css/-/camelcase-css-2.0.1.tgz"
   integrity sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==
-
-can-use-dom@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/can-use-dom/-/can-use-dom-0.1.0.tgz"
-  integrity sha512-ceOhN1DL7Y4O6M0j9ICgmTYziV89WMd96SvSl0REd8PMgrY0B/WBOPoed5S1KUmJqXgUXh8gzSe6E3ae27upsQ==
 
 caniuse-lite@^1.0.30001332:
   version "1.0.30001515"
@@ -4682,23 +4670,6 @@ simple-swizzle@^0.2.2:
   integrity sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==
   dependencies:
     is-arrayish "^0.3.1"
-
-simplebar-core@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.npmjs.org/simplebar-core/-/simplebar-core-1.2.4.tgz"
-  integrity sha512-P+Sqshef4fq3++gQ82TgNYcgl3qZFSCP5jS2/8NMmw18oagXOijMzs1G+vm6RUY3oMvpwH3wGoqh9u6SyDjHfQ==
-  dependencies:
-    "@types/lodash-es" "^4.17.6"
-    can-use-dom "^0.1.0"
-    lodash "^4.17.21"
-    lodash-es "^4.17.21"
-
-simplebar-react@^3.2.4:
-  version "3.2.4"
-  resolved "https://registry.npmjs.org/simplebar-react/-/simplebar-react-3.2.4.tgz"
-  integrity sha512-ogLN79e7JUm82wJChD7NSUB+4EHCFvDkjXpiu8hT1Alk7DnCekUWds61NXcsP9jC97KOgF5To/AVjYFbX0olgg==
-  dependencies:
-    simplebar-core "^1.2.4"
 
 slash@^3.0.0:
   version "3.0.0"

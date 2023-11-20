@@ -41,7 +41,7 @@ const Employees: NextPage = () => {
         if (isMounted()) {
           setRoles(data.resp);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.log(err);
       }
     },

@@ -31,7 +31,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
       onClose?.();
       await logout();
       router.push("/").catch(console.error);
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err?.message || "failed");
     }
   };

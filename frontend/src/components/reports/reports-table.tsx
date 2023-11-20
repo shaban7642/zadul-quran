@@ -169,7 +169,7 @@ export const ReportsTable = () => {
           >
             <ReportHeads headCells={headCells} rowCount={reportCount} />
             <TableBody>
-              {reports?.map((row, index) => {
+              {reports?.map((row: any, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return (
                   <ReportRow

@@ -68,7 +68,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
         toast.error("createStudentFailed");
         return { success: false };
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "createStudentsFailed");
       return { success: false };

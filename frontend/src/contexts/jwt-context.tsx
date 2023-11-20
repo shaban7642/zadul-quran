@@ -156,7 +156,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
             },
           });
         }
-      } catch (err) {
+      } catch (err : any) {
         if (err.code === 30018) {
           await authApi.logout();
           router.push("/").catch(console.error);
@@ -226,7 +226,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
           },
         });
       }
-    } catch (err) {
+    } catch (err : any) {
       dispatch({
         type: ActionType.INITIALIZE,
         payload: {

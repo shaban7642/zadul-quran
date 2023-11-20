@@ -74,7 +74,7 @@ export const Profile: FC<profileProps> = (props) => {
         if (isMounted()) {
           setRoles(data.resp);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.log(err);
       }
     },

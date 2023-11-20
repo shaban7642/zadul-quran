@@ -62,7 +62,7 @@ export const ChangePasswordForm: FC = (props) => {
           toast.dismiss(load);
           toast.error("changeFailed");
         }
-      } catch (err) {
+      } catch (err: any) {
         toast.dismiss(load);
         toast.error(err.message || "changeFailed");
       }

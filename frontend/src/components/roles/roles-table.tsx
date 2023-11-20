@@ -104,7 +104,7 @@ export const RolesTable = () => {
           >
             <RolesHeads headCells={headCells} />
             <TableBody>
-              {roles?.map((row, index) => {
+              {roles?.map((row: any, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return <RolesRow key={row.id} row={row} labelId={labelId} />;
               })}

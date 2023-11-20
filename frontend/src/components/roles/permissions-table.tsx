@@ -102,7 +102,7 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
     }
   }, [isMounted]);
   const getResult = () => {
-    const data = permissions.map((row, index) => {
+    const data = permissions.map((row: any, index) => {
       return {
         ...row,
         matched: rolePermissions.some((rP) => rP.permissionId === row.id),
@@ -227,7 +227,7 @@ export const PermissionsTable: FC<PermissionsTableProps> = (props) => {
           <Table aria-labelledby="tableTitle" size="small">
             <RolesHeads headCells={headCells} />
             <TableBody>
-              {result?.map((row, index) => {
+              {result?.map((row: any, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (

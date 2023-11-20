@@ -181,7 +181,7 @@ export const DeptTable = () => {
               >
                 <DeptHeads headCells={headCells} rowCount={deptCount} />
                 <TableBody>
-                  {depts?.map((row, index) => {
+                  {depts?.map((row: any, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <DeptRow

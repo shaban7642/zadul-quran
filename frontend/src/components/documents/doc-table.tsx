@@ -214,7 +214,7 @@ export const DocumentTable = () => {
               >
                 <DocumentHeads headCells={headCells} rowCount={documentCount} />
                 <TableBody>
-                  {documents?.map((row, index) => {
+                  {documents?.map((row: any, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <DocumentRow

@@ -105,7 +105,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
           setUsers(data.rows);
           setUsersCount(data.count);
         }
-      } catch (err) {
+      } catch (err: any) {
         toast.error(err.message || "Need Permission");
       }
     },
@@ -127,7 +127,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         toast.error("deleteUserFailed");
         return { success: false };
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "deleteUsersFailed");
       return { success: false };
@@ -151,7 +151,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
         toast.error("updateUserFailed");
         return { success: false };
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "updateUsersFailed");
       return { success: false };
@@ -201,7 +201,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
             <TableHeads headCells={headCells} />
 
             <TableBody>
-              {users.map((row, index) => {
+              {users.map((row: any, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
                 return (
                   <UsersRow
