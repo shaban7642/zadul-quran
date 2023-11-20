@@ -325,6 +325,7 @@ export const baseThemeOptions: ThemeOptions = {
       letterSpacing: 1.3,
       fontSize: "1.5rem",
       lineHeight: 1.375,
+      color: "#0077B6",
     },
     h6: {
       fontWeight: 600,

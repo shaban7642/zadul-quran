@@ -113,6 +113,8 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const rootRef = useRef<HTMLDivElement | null>(null);
     const [openFilters, setOpenFilters] = useState<boolean>(false);
 
+    const [reportFlag, setReoprtFlag] = useState<boolean>(false);
+
     const statuses: readonly string[] = [
         'waiting',
         'expired',
@@ -230,6 +232,12 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
             label: 'absent',
             value: 'absent',
             count: statusCount.find((item) => item.status.match('absent'))
+                ?.count,
+        },
+        {
+            label: 'rescheduled',
+            value: 'rescheduled',
+            count: statusCount.find((item) => item.status.match('rescheduled'))
                 ?.count,
         },
     ];
@@ -353,6 +361,17 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
+    );
+    useEffect(
+        () => {
+            getSessions({
+                limit: rowsPerPage,
+                offset: page,
+                status: currentTab,
+            });
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [reportFlag]
     );
 
     useEffect(
@@ -602,6 +621,10 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                                                         updateSession
                                                     }
                                                     statuses={statuses}
+                                                    setReoprtFlag={
+                                                        setReoprtFlag
+                                                    }
+                                                    reportFlag={reportFlag}
                                                 />
                                             );
                                         })}

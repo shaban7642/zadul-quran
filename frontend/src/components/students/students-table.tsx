@@ -47,7 +47,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(0);
   const [usersCount, setUsersCount] = useState(2);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const headCells: readonly any[] = [
     {
       id: "firstName",
@@ -159,6 +159,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getUsers(rowsPerPage, newPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -197,7 +198,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
         <TableContainer>
           <Table
             sx={{
-              minWidth: 100 * usersCount,
+              minWidth: 100 * headCells.length,
             }}
             aria-labelledby="tableTitle"
             size="small"
@@ -225,7 +226,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
         <TablePagination
           component="div"
           count={usersCount}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 25, 50]}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}

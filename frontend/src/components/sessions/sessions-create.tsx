@@ -128,7 +128,7 @@ const CreateSession = () => {
     const getSubjects = useCallback(
         async () => {
             try {
-                const data: any = await deptApi.getDepts();
+                const data: any = await deptApi.getDepts('ALL', -1);
                 if (isMounted()) {
                     setSubjects(data.rows);
                 }
@@ -364,8 +364,8 @@ const CreateSession = () => {
                     // weekends={false}
                     events={sessions}
                     customButtons={{
-                        ...((user?.role === 'admin' ||
-                            user?.role === 'super_admin') && {
+                        ...((user?.role?.name === 'admin' ||
+                            user?.role?.name === 'super_admin') && {
                             addEventButton: {
                                 text: 'add event',
                                 click: function (selectInfo, ev) {

@@ -7,9 +7,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CreateUser from "../../components/users/users-create";
 import { DeptTable } from "../../components/department/dept-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
-import { deptApi } from "../../api/deptApi";
 import { useMounted } from "../../hooks/use-mounted";
-import toast from "react-hot-toast";
 import { rolesApi } from "../../api/rolesApi";
 import { OwnerGuard } from "../../components/auth/owner-guard";
 
@@ -22,7 +20,7 @@ interface RoleId {
 const Employees: NextPage = () => {
   const [value, setValue] = useState("1");
   const [valueTable, setValueTable] = useState("0");
-  const [depts, setDepts] = useState([]);
+
   const [roles, setRoles] = useState<RoleId[]>([]);
   const isMounted = useMounted();
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -34,16 +32,7 @@ const Employees: NextPage = () => {
   ) => {
     setValueTable(newValueTable);
   };
-  const getDepts = useCallback(async () => {
-    try {
-      const data: any = await deptApi.getDepts();
-      if (isMounted()) {
-        setDepts(data.rows);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "failed");
-    }
-  }, [isMounted]);
+
   const getRoles = useCallback(
     async () => {
       try {
@@ -59,9 +48,7 @@ const Employees: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [isMounted]
   );
-  useEffect(() => {
-    getDepts();
-  }, []);
+
   useEffect(() => {
     getRoles();
   }, []);
@@ -108,7 +95,7 @@ const Employees: NextPage = () => {
           <CreateUser roles={roles} />
         </TabPanel>
         <TabPanel value="3">
-          <DeptTable getDepts={getDepts} depts={depts}></DeptTable>
+          <DeptTable></DeptTable>
         </TabPanel>
       </TabContext>
     </Box>

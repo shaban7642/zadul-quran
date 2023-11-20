@@ -260,7 +260,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
     const getSubjects = useCallback(
         async () => {
             try {
-                const data: any = await deptApi.getDepts();
+                const data: any = await deptApi.getDepts('ALL', -1);
                 if (isMounted()) {
                     setSubjects(data.rows);
                 }

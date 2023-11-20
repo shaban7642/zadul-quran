@@ -39,15 +39,9 @@ export const DocumentTable = () => {
   const [page, setPage] = useState(0);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [documentCount, setDocumentsCount] = useState(documents?.length);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const isMounted = useMounted();
-  useEffect(
-    () => {
-      getDocuments(rowsPerPage, page);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [page, rowsPerPage]
-  );
+
   const getDocuments = useCallback(
     async (rowsPerPage: number, page: number) => {
       try {
@@ -151,19 +145,24 @@ export const DocumentTable = () => {
       label: "Title",
     },
   ];
-  useEffect(() => {
-    setDocumentsCount(documents?.length);
-  }, [documents?.length]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getDocuments(rowsPerPage, newPage * rowsPerPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    getDocuments(parseInt(event.target.value, 10), 0);
   };
-
+  useEffect(
+    () => {
+      getDocuments(rowsPerPage, page);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Grid container>
@@ -208,7 +207,7 @@ export const DocumentTable = () => {
             <TableContainer>
               <Table
                 sx={{
-                  minWidth: 100 * 2,
+                  minWidth: 100 * headCells.length,
                 }}
                 aria-labelledby="tableTitle"
                 size="small"
@@ -231,7 +230,7 @@ export const DocumentTable = () => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 25, 50]}
               component="div"
               count={documentCount}
               rowsPerPage={rowsPerPage}

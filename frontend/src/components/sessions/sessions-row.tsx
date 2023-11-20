@@ -198,8 +198,8 @@ export const SessionsRow: FC<RowProps> = (props) => {
                     <Box sx={{ display: 'flex' }}>
                         {row?.status === 'waiting' &&
                             row?.zoomSessionMeetings?.length < 1 &&
-                            (user?.role !== 'student' ||
-                                user?.role !== 'parent') && (
+                            (user?.role?.name !== 'student' ||
+                                user?.role?.name !== 'parent') && (
                                 <Button
                                     variant='contained'
                                     onClick={() => {
@@ -232,8 +232,8 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                         Join
                                     </Button>
                                 )}
-                                {(user?.role !== 'student' ||
-                                    user?.role !== 'parent') && (
+                                {(user?.role?.name !== 'student' ||
+                                    user?.role?.name !== 'parent') && (
                                     <Button
                                         variant='contained'
                                         color='success'
@@ -262,8 +262,8 @@ export const SessionsRow: FC<RowProps> = (props) => {
                         {row?.status !== 'done' &&
                             row?.status !== 'cancelled' &&
                             row?.status !== 'running' &&
-                            (user?.role === 'admin' ||
-                                user?.role === 'super_admin') && (
+                            (user?.role?.name === 'admin' ||
+                                user?.role?.name === 'super_admin') && (
                                 <Button
                                     variant='contained'
                                     color='error'

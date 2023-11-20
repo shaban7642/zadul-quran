@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -12,6 +12,7 @@ import { DeptHeads } from "./dept-heads";
 import CreateDept from "./dept-create";
 import toast from "react-hot-toast";
 import { deptApi } from "../../api/deptApi";
+import { useMounted } from "../../hooks/use-mounted";
 
 export interface Dept {
   id: number;
@@ -24,22 +25,26 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
 }
-interface DeptTableProps {
-  getDepts: () => void;
-  depts: any[];
-}
-export const DeptTable: FC<DeptTableProps> = (props) => {
-  const { getDepts, depts } = props;
-  const [page, setPage] = useState(0);
-  const [deptCount, setDeptsCount] = useState(depts?.length);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  useEffect(
-    () => {
-      getDepts();
+export const DeptTable = () => {
+  const [page, setPage] = useState(0);
+  const [depts, setDepts] = useState([]);
+  const [deptCount, setDeptsCount] = useState(depts?.length);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const isMounted = useMounted();
+  const getDepts = useCallback(
+    async (rowsPerPage: number, page: number) => {
+      try {
+        const data: any = await deptApi.getDepts(rowsPerPage, page);
+        if (isMounted()) {
+          setDepts(data.rows);
+          setDeptsCount(data.count);
+        }
+      } catch (err: any) {
+        toast.error(err.message || "failed");
+      }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [isMounted]
   );
 
   const deleteDept = async (id: number) => {
@@ -48,7 +53,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
       const resp = await deptApi.deleteDepts(id);
       toast.dismiss(load);
 
-      getDepts();
+      getDepts(rowsPerPage, page);
     } catch (err: any) {
       toast.dismiss(load);
       toast.error(err.message || "Deleting departments failed");
@@ -63,7 +68,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
       toast.dismiss(load);
       toast.success("Department created");
 
-      getDepts();
+      getDepts(rowsPerPage, page);
 
       return { success: true };
     } catch (err: any) {
@@ -84,7 +89,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
         toast.dismiss(load);
         toast.success("Department updated");
 
-        getDepts();
+        getDepts(rowsPerPage, page);
 
         return { success: true };
       } else {
@@ -107,19 +112,24 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
       label: "Title",
     },
   ];
-  useEffect(() => {
-    setDeptsCount(depts?.length);
-  }, [depts?.length]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getDepts(rowsPerPage, newPage * rowsPerPage);
   };
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    getDepts(parseInt(event.target.value, 10), 0);
   };
-
+  useEffect(
+    () => {
+      getDepts(rowsPerPage, page);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <Grid container>
@@ -164,7 +174,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
             <TableContainer>
               <Table
                 sx={{
-                  minWidth: 100 * 2,
+                  minWidth: 100 * headCells.length,
                 }}
                 aria-labelledby="tableTitle"
                 size="small"
@@ -187,7 +197,7 @@ export const DeptTable: FC<DeptTableProps> = (props) => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 25, 50]}
               component="div"
               count={deptCount}
               rowsPerPage={rowsPerPage}
