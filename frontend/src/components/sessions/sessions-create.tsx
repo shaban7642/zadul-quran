@@ -128,7 +128,7 @@ const CreateSession = () => {
     const getSubjects = useCallback(
         async () => {
             try {
-                const data: any = await deptApi.getDepts();
+                const data: any = await deptApi.getDepts('ALL', -1);
                 if (isMounted()) {
                     setSubjects(data.rows);
                 }
@@ -364,18 +364,21 @@ const CreateSession = () => {
                     // weekends={false}
                     events={sessions}
                     customButtons={{
-                        addEventButton: {
-                            text: 'add event',
-                            click: function (selectInfo, ev) {
-                                handleOpen();
+                        ...((user?.role?.name === 'admin' ||
+                            user?.role?.name === 'super_admin') && {
+                            addEventButton: {
+                                text: 'add event',
+                                click: function (selectInfo, ev) {
+                                    handleOpen();
+                                },
                             },
-                        },
-                        filterButton: {
-                            text: 'Filter',
-                            click: function (selectInfo, ev) {
-                                handleToggleFilters();
+                            filterButton: {
+                                text: 'Filter',
+                                click: function (selectInfo, ev) {
+                                    handleToggleFilters();
+                                },
                             },
-                        },
+                        }),
                     }}
                 />
             </Box>
