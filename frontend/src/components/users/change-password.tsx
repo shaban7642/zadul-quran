@@ -46,7 +46,7 @@ export const ChangePasswordForm: FC = (props) => {
       ),
     }),
     onSubmit: async (values): Promise<void> => {
-      const load = toast.loading(t("change"));
+      const load = toast.loading("change");
       try {
         const { oldPassword, newPassword } = values;
         const response = await authApi.changePassword({

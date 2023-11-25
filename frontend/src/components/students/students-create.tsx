@@ -361,7 +361,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
             value={formik.values.departmentId}
             onChange={formik.handleChange}
           >
-            {depts?.map((department) => (
+            {depts?.map((department: any) => (
               <MenuItem
                 sx={{
                   color: "black",

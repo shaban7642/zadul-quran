@@ -58,7 +58,7 @@ export const Profile: FC<profileProps> = (props) => {
   });
   const getDepts = useCallback(async () => {
     try {
-      const data: any = await deptApi.getDepts();
+      const data: any = await deptApi.getDepts(100, 0);
       if (isMounted()) {
         setDepts(data.rows);
       }
@@ -511,7 +511,7 @@ export const Profile: FC<profileProps> = (props) => {
                     value={formik.values.departmentId}
                     onChange={formik.handleChange}
                   >
-                    {depts?.map((department) => (
+                    {depts?.map((department: any) => (
                       <MenuItem
                         sx={{
                           color: "black",

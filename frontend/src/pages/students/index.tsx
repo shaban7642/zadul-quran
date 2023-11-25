@@ -17,7 +17,7 @@ const Students: NextPage = () => {
   const isMounted = useMounted();
   const getDepts = useCallback(async () => {
     try {
-      const data: any = await deptApi.getDepts();
+      const data: any = await deptApi.getDepts(100, 0);
       if (isMounted()) {
         setDepts(data.rows);
       }

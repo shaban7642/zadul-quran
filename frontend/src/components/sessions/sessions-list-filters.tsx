@@ -419,7 +419,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
             }}
           >
             <Box sx={{ pr: 1 }}>
-              <DatePicker
+              {/* <DatePicker
                 label={"from"}
                 value={filters.date.from as unknown as Date}
                 onChange={(newValue: any) => {
@@ -427,11 +427,24 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                 }}
                 maxDate={new Date() as unknown as Date}
                 renderInput={(params: any) => <TextField {...params} />}
+              /> */}
+              <TextField
+                label="from"
+                name="from"
+                type="date"
+                sx={{ width: "100%" }}
+                onChange={(newValue: any) => {
+                  handleUploadDateChange([newValue, filters.date.to]);
+                }}
+                value={filters.date.from as unknown as Date}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Box>
             <ArrowRight fontSize="inherit" />{" "}
             <Box sx={{ pl: 1 }}>
-              <DatePicker
+              {/* <DatePicker
                 label={"to"}
                 minDate={filters.date.from}
                 maxDate={new Date() as unknown as Date}
@@ -440,6 +453,19 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                   handleUploadDateChange([filters.date.from, newValue]);
                 }}
                 renderInput={(params: any) => <TextField {...params} />}
+              /> */}
+              <TextField
+                label="to"
+                name="to"
+                type="date"
+                sx={{ width: "100%" }}
+                value={filters.date.to as unknown as Date}
+                onChange={(newValue: any) => {
+                  handleUploadDateChange([filters.date.from, newValue]);
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Box>
           </Box>

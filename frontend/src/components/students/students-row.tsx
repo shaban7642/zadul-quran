@@ -245,7 +245,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                     value={formik.values.departmentId}
                     onChange={formik.handleChange}
                   >
-                    {depts?.map((department) => (
+                    {depts?.map((department: any) => (
                       <MenuItem
                         sx={{
                           color: "black",
