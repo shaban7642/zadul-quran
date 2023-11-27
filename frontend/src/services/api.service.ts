@@ -101,7 +101,7 @@ class ApiService implements ApiServiceProps {
     return settings;
   }
 
-  private parseEndpoint(endpoint: string, queryParams?: object) {
+  private parseEndpoint(endpoint: string, queryParams?: any) {
     const url =
       endpoint.indexOf("http") === 0 ? endpoint : `${this.apiUrl}${endpoint}`;
     const queryString = queryParams ? `?${stringify(queryParams)}` : "";
