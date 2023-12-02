@@ -27,8 +27,9 @@
     "db:migrate": "sequelize db:migrate",
     "db:migrate:undo": "sequelize db:migrate:undo",
     "db:skeleton": "sequelize migration:generate --name",
-    "db:task": "sequelize db:seed:all --seeders-path src/db/tasks/"
-  },
+    "db:task": "sequelize db:seed:all --seeders-path src/db/tasks/",
+    "pm2-start": "pm2 start production.config.json"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",

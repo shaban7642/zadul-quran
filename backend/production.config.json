@@ -1,7 +1,7 @@
 {
     "apps": [{
         "name": "nodejs_api",
-        "script": "dist/src/index.js",
+        "script": "dist/src/server.js",
         "instances": 1,
         "autorestart": true,
         "watch": false,
