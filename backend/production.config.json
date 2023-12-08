@@ -8,6 +8,7 @@
       "watch": false,
       "time": true,
       "env": {
+        "MAIN_DOMAIN": ".gomanager.app",
         "NODE_ENV": "production",
         "PORT": 4000,
         "ENV": "production",
