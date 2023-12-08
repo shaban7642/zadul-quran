@@ -1,24 +1,28 @@
 {
-    "apps": [{
-        "name": "nodejs_api",
-        "script": "dist/src/server.js",
-        "instances": 1,
-        "autorestart": true,
-        "watch": false,
-        "time": true,
-        "env": {
-            "NODE_ENV": "production",
-            "PORT": 4000,
-            "ENV": "production",
-            "JWT_SECRET": "secret",
-            "WHITELIST_DOMAINS": "http://localhost:3000,http://localhost:8080,https://71d7-105-33-232-37.ngrok-free.app,https://new.zadulquran.com",
-            "POSTGRES_USERNAME": "omar",
-            "POSTGRES_PASSWORD": "password",
-            "POSTGRES_DATABASE": "zadul",
-            "POSTGRES_HOST":"179.61.219.66",
-            "DB_HOST":"179.61.219.66",
-            "ZOOM_CLIENT_ID": "birMtXX3QOesB5uuhrF3hw",
-            "ZOOM_SECRET_KEY": "SeMbjp47Rdn2csGGfIJkBNv5Ml2bb2fK"
-        }
-    }]
+  "apps": [
+    {
+      "name": "nodejs_api",
+      "script": "dist/src/server.js",
+      "instances": 1,
+      "autorestart": true,
+      "watch": false,
+      "time": true,
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 4000,
+        "ENV": "production",
+        "JWT_SECRET": "secret",
+        "WHITELIST_DOMAINS": "http://localhost:3000,http://localhost:8080,https://71d7-105-33-232-37.ngrok-free.app,https://new.zadulquran.com",
+        "POSTGRES_USERNAME": "omar",
+        "POSTGRES_PASSWORD": "password",
+        "POSTGRES_DATABASE": "zadul",
+        "POSTGRES_HOST": "179.61.219.66",
+        "DB_HOST": "179.61.219.66",
+        "ZOOM_CLIENT_ID": "birMtXX3QOesB5uuhrF3hw",
+        "ZOOM_SECRET_KEY": "SeMbjp47Rdn2csGGfIJkBNv5Ml2bb2fK"
+      },
+      "listen_address": "::",
+      "port": 4000
+    }
+  ]
 }
