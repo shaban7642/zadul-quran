@@ -47,3 +47,7 @@ next-env.d.ts
 .env.deploy.*
 !.env.deploy.example
 !.env.deploy.example.*
+
+/out/
+out
+*/out/*
