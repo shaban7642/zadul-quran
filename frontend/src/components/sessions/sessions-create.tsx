@@ -19,6 +19,7 @@ import {
     DialogActions,
     Button,
     useMediaQuery,
+    Drawer,
 } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -309,19 +310,45 @@ const CreateSession = () => {
     return (
         <Box sx={{ margin: 1, display: 'flex', width: '100%' }}>
             {['super_admin', 'admin'].includes(user?.role?.name) && (
-                <Box sx={{ width: openFilters ? '20%' : '0%' }}>
-                    <SessionListFilters
-                        containerRef={rootRef}
-                        onClose={handleCloseFilters}
-                        open={openFilters}
-                        applyFilters={(filters: any): Promise<void> =>
-                            applyFilters(filters)
-                        }
-                        clearFilters={clearFilters}
-                        isCreatePage={true}
-                    />
-                    {/* <SessionListInner open={openFilters} /> */}
-                </Box>
+                <>
+                    {mdUp ? (
+                        <Box sx={{ width: openFilters ? '20%' : '0%' }}>
+                            <SessionListFilters
+                                containerRef={rootRef}
+                                onClose={handleCloseFilters}
+                                open={openFilters}
+                                applyFilters={(filters: any): Promise<void> =>
+                                    applyFilters(filters)
+                                }
+                                clearFilters={clearFilters}
+                                isCreatePage={true}
+                            />
+                        </Box>
+                    ) : (
+                        <Drawer
+                            open={openFilters}
+                            PaperProps={{
+                                sx: {
+                                    width: 280,
+                                },
+                            }}
+                            onClose={() => {
+                                setOpenFilters(false);
+                            }}
+                        >
+                            <SessionListFilters
+                                containerRef={rootRef}
+                                onClose={handleCloseFilters}
+                                open={openFilters}
+                                applyFilters={(filters: any): Promise<void> =>
+                                    applyFilters(filters)
+                                }
+                                clearFilters={clearFilters}
+                                isCreatePage={true}
+                            />
+                        </Drawer>
+                    )}
+                </>
             )}
             <Box
                 sx={{
@@ -329,15 +356,20 @@ const CreateSession = () => {
                     //     ? 'calc(100% - 380px)'
                     //     : 'calc(100% + 380px)',
                     m: 'auto',
-                    width: openFilters ? '75%' : '90%',
+                    width: openFilters ? '80%' : '120%',
+                    '& .fc .fc-toolbar': {
+                        flexDirection: mdUp ? 'row' : 'column',
+                    },
                 }}
             >
                 <FullCalendar
                     ref={calendar}
+                    expandRows={true}
+                    contentHeight={750}
                     headerToolbar={{
-                        left: 'prev,next today filterButton',
+                        start: 'prev,next today filterButton',
                         center: 'title',
-                        right: 'addEventButton,multiMonthYear,listWeek,dayGridMonth,timeGridWeek,timeGridDay',
+                        end: 'addEventButton,multiMonthYear,listWeek,dayGridMonth,timeGridWeek,timeGridDay',
                     }}
                     initialView='dayGridMonth'
                     plugins={[
@@ -351,7 +383,7 @@ const CreateSession = () => {
                     selectable={true}
                     selectMirror={true}
                     dayMaxEvents={true}
-                    weekends={weekendsVisible}
+                    weekends={true}
                     // initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
                     select={handleDateSelect}
                     // eventContent={renderEventContent} // custom render function
@@ -361,7 +393,6 @@ const CreateSession = () => {
                     eventAdd={function () {}}
                     eventChange={function () {}}
                     eventRemove={function () {}}
-                    // weekends={false}
                     events={sessions}
                     customButtons={{
                         ...((user?.role?.name === 'admin' ||
@@ -397,7 +428,7 @@ const CreateSession = () => {
                         Create patch of sessions
                     </Typography>
                 </DialogTitle>
-                <Box sx={{ p: 2, width: 600, bgcolor: 'white' }}>
+                <Box sx={{ p: 2, bgcolor: 'white' }}>
                     <DialogContent sx={{ mt: 1 }}>
                         <Grid container spacing={2}>
                             <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -779,452 +810,6 @@ const CreateSession = () => {
                     </DialogActions>
                 </Box>
             </Dialog>
-            {/* <form onSubmit={formik.handleSubmit}>
-                <Divider textAlign='left' sx={{ m: 1 }}>
-                    <Chip label='Student Details' sx={{ fontWeight: '600' }} />
-                </Divider>
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.firstName && formik.errors.firstName
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.firstName && formik.errors.firstName
-                    }
-                    label='firstName'
-                    margin='normal'
-                    id='firstName'
-                    name='firstName'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.firstName}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.lastName && formik.errors.lastName
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.lastName && formik.errors.lastName
-                    }
-                    label='lastName'
-                    margin='normal'
-                    id='lastName'
-                    name='lastName'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.lastName}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.birthDate && formik.errors.birthDate
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.birthDate && formik.errors.birthDate
-                    }
-                    label='Date Of Birth'
-                    margin='normal'
-                    id='birthDate'
-                    name='birthDate'
-                    type='date'
-                    onChange={formik.handleChange}
-                    value={formik.values.birthDate}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.phoneNumber && formik.errors.phoneNumber
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.phoneNumber && formik.errors.phoneNumber
-                    }
-                    label='phoneNumber'
-                    margin='normal'
-                    id='phoneNumber'
-                    name='phoneNumber'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.phoneNumber}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <FormControl
-                    sx={{
-                        width: { xs: 100, sm: 150, md: 200, lg: 250, xl: 300 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                        marginTop: 2,
-                    }}
-                    variant='outlined'
-                >
-                    {' '}
-                    <InputLabel id='outlined-adornment-gender'>
-                        Gender
-                    </InputLabel>
-                    <Select
-                        name='gender'
-                        id='outlined-adornment-gender'
-                        labelId='outlined-adornment-gender'
-                        value={formik.values.gender}
-                        onChange={formik.handleChange}
-                    >
-                        {genders.map((gender) => (
-                            <MenuItem key={gender} value={gender}>
-                                {gender}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(formik.touched.city && formik.errors.city)}
-                    // @ts-ignore
-                    helperText={formik.touched.city && formik.errors.city}
-                    label='city'
-                    margin='normal'
-                    id='city'
-                    name='city'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.city}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <Divider textAlign='left' sx={{ m: 1 }}>
-                    <Chip label='Login Details' sx={{ fontWeight: '600' }} />
-                </Divider>
-               
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.username && formik.errors.username
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.username && formik.errors.username
-                    }
-                    label='username'
-                    margin='normal'
-                    id='username'
-                    name='username'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.username}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 150, sm: 175, md: 200, lg: 225, xl: 250 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(formik.touched.email && formik.errors.email)}
-                    // @ts-ignore
-                    helperText={formik.touched.email && formik.errors.email}
-                    label='email'
-                    margin='normal'
-                    id='email'
-                    name='email'
-                    type='email'
-                    onChange={formik.handleChange}
-                    value={formik.values.email}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <FormControl
-                    sx={{
-                        width: { xs: 200, sm: 250, md: 300, lg: 350, xl: 400 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                        marginTop: 2,
-                    }}
-                    variant='outlined'
-                >
-                    <InputLabel htmlFor='outlined-adornment-password'>
-                        password
-                    </InputLabel>
-                    <OutlinedInput
-                        error={Boolean(
-                            formik.touched.password && formik.errors.password
-                        )}
-                        fullWidth
-                        // helperText={formik.touched.password && formik.errors.password}
-                        label='password'
-                        name='password'
-                        onBlur={onBlur}
-                        onChange={formik.handleChange}
-                        onFocus={onFocus}
-                        value={formik.values.password}
-                        type={showPassword ? 'text' : 'password'}
-                        sx={{
-                            fontFamily: 'sans-serif',
-                        }}
-                        endAdornment={
-                            <InputAdornment position='end'>
-                                <IconButton
-                                    aria-label='toggle password visibility'
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge='end'
-                                >
-                                    {showPassword ? (
-                                        <VisibilityOff />
-                                    ) : (
-                                        <Visibility />
-                                    )}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                    {showPasswordValidation === true && (
-                        <PasswordValidationForm
-                            sx={{ bottom: '-180px' }}
-                            password={formik.values.password}
-                        />
-                    )}
-                </FormControl>
-                <TextField
-                    sx={{
-                        width: { xs: 200, sm: 250, md: 300, lg: 350, xl: 400 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.confirmPassword &&
-                            formik.errors.confirmPassword
-                    )}
-                    fullWidth
-                    helperText={
-                        formik.touched.confirmPassword &&
-                        formik.errors.confirmPassword
-                    }
-                    label='confirmPassword'
-                    margin='normal'
-                    name='confirmPassword'
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type={showPassword ? 'text' : 'password'}
-                    value={formik.values.confirmPassword}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <Divider textAlign='left' sx={{ m: 1 }}>
-                    <Chip label='Guardian Details' sx={{ fontWeight: '600' }} />
-                </Divider>
-
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(formik.touched.gName && formik.errors.gName)}
-                    // @ts-ignore
-                    helperText={formik.touched.gName && formik.errors.gName}
-                    label='gName'
-                    margin='normal'
-                    id='gName'
-                    name='gName'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.gName}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.relation && formik.errors.relation
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.relation && formik.errors.relation
-                    }
-                    label='relation'
-                    margin='normal'
-                    id='relation'
-                    name='relation'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.relation}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.gEmail && formik.errors.gEmail
-                    )}
-                    // @ts-ignore
-                    helperText={formik.touched.gEmail && formik.errors.gEmail}
-                    label='gEmail'
-                    margin='normal'
-                    id='gEmail'
-                    name='gEmail'
-                    type='gEmail'
-                    onChange={formik.handleChange}
-                    value={formik.values.gEmail}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <TextField
-                    size='small'
-                    sx={{
-                        width: { xs: 100, sm: 125, md: 150, lg: 175, xl: 200 },
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        mr: 1,
-                    }}
-                    error={Boolean(
-                        formik.touched.gMobile_no && formik.errors.gMobile_no
-                    )}
-                    // @ts-ignore
-                    helperText={
-                        formik.touched.gMobile_no && formik.errors.gMobile_no
-                    }
-                    label='gMobile_no'
-                    margin='normal'
-                    id='gMobile_no'
-                    name='gMobile_no'
-                    type='text'
-                    onChange={formik.handleChange}
-                    value={formik.values.gMobile_no}
-                    InputProps={{
-                        style: {
-                            fontFamily: 'sans-serif',
-                        },
-                    }}
-                />
-                <Divider sx={{ m: 1 }}></Divider>
-                <LoadingButton
-                    type='submit'
-                    sx={{
-                        width: '100%',
-                        '& .MuiInputBase-root': {
-                            height: 40,
-                        },
-                        m: 0.5,
-                    }}
-                    variant='contained'
-                >
-                    Save
-                </LoadingButton>
-            </form> */}
         </Box>
     );
 };
