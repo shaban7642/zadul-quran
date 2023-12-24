@@ -110,3 +110,5 @@ cloudbuild.yaml
 #setting.json for local db test
 .vscode
 **.sql
+
+production.config.json
