@@ -111,4 +111,4 @@ cloudbuild.yaml
 .vscode
 **.sql
 
-production.config.json
+./production.config.json

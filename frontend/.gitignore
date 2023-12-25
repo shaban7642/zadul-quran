@@ -48,6 +48,6 @@ next-env.d.ts
 !.env.deploy.example
 !.env.deploy.example.*
 
-/out/
-out
-*/out/*
+#/out/
+#out
+#*/out/*
