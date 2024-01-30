@@ -39,7 +39,7 @@ const User: NextPage = () => {
           <Typography color="inherit" variant="h4">
             Change Password
           </Typography>
-          <ChangePasswordForm />
+          <ChangePasswordForm id={Number(id)} />
         </TabPanel>
       </TabContext>
     </Box>

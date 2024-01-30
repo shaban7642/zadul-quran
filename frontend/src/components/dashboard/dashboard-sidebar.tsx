@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect } from "react";
 import { useMemo } from "react";
-import { Box, Theme } from "@mui/material";
+import { Box, Theme, useMediaQuery } from "@mui/material";
 import * as React from "react";
 import { styled, CSSObject } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
@@ -91,11 +91,9 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
   const { onClose, open } = props;
   const router = useRouter();
   const { user } = useAuth();
-  // const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"), {
-  //   noSsr: true,
-  // });
-
-  // const isSubscriped = get(user, "store.is_subscribed", false);
+  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"), {
+    noSsr: true,
+  });
 
   const getSections = (): Section[] => [
     {
@@ -164,9 +162,9 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       return;
     }
 
-    // if (open && !lgUp) {
-    //   onClose?.();
-    // }
+    if (open && !lgUp) {
+      onClose?.();
+    }
   };
 
   useEffect(
@@ -185,20 +183,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           mt: 2,
           px: 2.5,
         }}
-      >
-        {/* <Box sx={{ mt: 1 }}>
-          <NextLink href="/" passHref>
-            <a>
-              <Box
-                sx={{
-                  height: 32,
-                  width: 46,
-                }}
-              />
-            </a>
-          </NextLink>
-        </Box> */}
-      </Box>
+      ></Box>
       <Box sx={{ flexGrow: 1 }}>
         {sections.map((section) => (
           // eslint-disable-next-line react/jsx-key
@@ -218,30 +203,6 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
       </Box>
     </>
   );
-
-  // if (lgUp) {
-  //   return (
-  //     <Drawer
-  //       anchor="left"
-  //       open={open}
-  //       onClose={onClose}
-  //       PaperProps={{
-  //         sx: {
-  //           backgroundColor: "neutral.900",
-  //           borderRightColor: "divider",
-  //           borderRightStyle: "solid",
-  //           borderRightWidth: (theme) =>
-  //             theme.palette.mode === "dark" ? 1 : 0,
-  //           color: "neutral.100",
-  //           width: 280,
-  //         },
-  //       }}
-  //       variant="persistent"
-  //     >
-  //       {content}
-  //     </Drawer>
-  //   );
-  // }
 
   return (
     <Drawer
