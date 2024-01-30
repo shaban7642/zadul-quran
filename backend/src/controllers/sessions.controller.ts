@@ -159,7 +159,7 @@ class SessionsController {
         ],
         ...getPagination(limit, offset),
         ...getOrderOptions([
-          { sortKey: sortBy || 'createdAt', sortOrder: sortDir || 'desc' },
+          { sortKey: sortBy || 'date', sortOrder: sortDir || 'desc' },
         ]),
       };
 
@@ -168,7 +168,7 @@ class SessionsController {
       const promises = rows.map(async (session: Session) => {
         if (
           session?.sessionType &&
-          session.date >
+          session.date <
             moment()
               .add(session?.sessionType?.duration / 2, 'minutes')
               .toDate() &&

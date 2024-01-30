@@ -58,21 +58,21 @@ class SessionsService {
         // const targetIndex = dayOfWeek;
         const daysToAdd = (targetIndex - start.getDay() + 7) % 7;
 
-        console.log({ start, end, targetIndex, daysToAdd });
+        // console.log({ start, end, targetIndex, daysToAdd });
         const currentDate = new Date(start);
         currentDate.setDate(start.getDate() + daysToAdd);
 
         while (currentDate <= end) {
-          console.log('while');
+          // console.log('while');
           if (currentDate >= start) {
-            console.log('if');
+            // console.log('if');
             result.push(new Date(currentDate).toString());
           }
           currentDate.setDate(currentDate.getDate() + 7);
         }
       }
 
-      console.log({ result });
+      // console.log({ result });
 
       let sessions;
       for (const res of result) {
@@ -93,11 +93,11 @@ class SessionsService {
         );
       }
 
-      console.log({ sessions });
+      // console.log({ sessions });
 
       return { success: true };
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       logger.log({
         level: 'error',
         label: 'Sessions Service - createMany',
