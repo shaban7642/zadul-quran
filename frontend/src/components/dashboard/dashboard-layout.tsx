@@ -29,7 +29,7 @@ export const DashboardLayout: FC<DashboardLayoutProps> = (props) => {
             display: "flex",
             flex: "1 1 auto",
             flexDirection: "column",
-            width: "100%",
+            width: "90%",
             paddingLeft: isSidebarOpen
               ? `calc(${drawerWidth}px - 5px)`
               : "45px",

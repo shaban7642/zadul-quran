@@ -24,7 +24,12 @@ const User: NextPage = () => {
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <TabList
+            variant="scrollable"
+            scrollButtons="auto"
+            onChange={handleChange}
+            aria-label="lab API tabs example"
+          >
             <Tab label="Profile" value="1" />
             <Tab label="Change Password" value="2" />
           </TabList>

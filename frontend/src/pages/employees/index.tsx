@@ -55,46 +55,63 @@ const Employees: NextPage = () => {
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
-          <TabList onChange={handleChange} aria-label="Employees options">
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            p: "10px 30px",
+          }}
+        >
+          <TabList
+            variant="scrollable"
+            scrollButtons="auto"
+            onChange={handleChange}
+            aria-label="Employees options"
+          >
             <Tab label="List Employees" value="1" />
             <Tab label="Add Employees" value="2" />
             <Tab label="Add Subject" value="3" />
           </TabList>
         </Box>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ p: 1 }}>
           <TabContext value={valueTable}>
             <Box
               sx={{
+                pl: 5,
                 borderBottom: 1,
                 borderColor: "GrayText",
               }}
             >
-              <TabList onChange={handleChangeTable} aria-label="Role options">
+              <TabList
+                variant="scrollable"
+                scrollButtons="auto"
+                onChange={handleChangeTable}
+                aria-label="Role options"
+              >
                 <Tab label="All Employees" value="0" />
                 <Tab label="Super Admins" value="1" />
                 <Tab label="Admins" value="2" />
                 <Tab label="Teachers" value="3" />
               </TabList>
             </Box>
-            <TabPanel value="0">
+            <TabPanel value="0" sx={{ p: 1 }}>
               <UsersTable roles={roles} />
             </TabPanel>
-            <TabPanel value="1">
+            <TabPanel value="1" sx={{ p: 1 }}>
               <UsersTable roles={roles} roleId={"super_admin"} />
             </TabPanel>
-            <TabPanel value="2">
+            <TabPanel value="2" sx={{ p: 1 }}>
               <UsersTable roles={roles} roleId={"admin"} />
             </TabPanel>
-            <TabPanel value="3">
+            <TabPanel value="3" sx={{ p: 1 }}>
               <UsersTable roles={roles} roleId={"teacher"} />
             </TabPanel>
           </TabContext>
         </TabPanel>
-        <TabPanel value="2">
+        <TabPanel value="2" sx={{ p: 1 }}>
           <CreateUser roles={roles} />
         </TabPanel>
-        <TabPanel value="3">
+        <TabPanel value="3" sx={{ p: 1 }}>
           <DeptTable></DeptTable>
         </TabPanel>
       </TabContext>

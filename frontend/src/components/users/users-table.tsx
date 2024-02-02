@@ -179,6 +179,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
   return (
     <Box sx={{ width: "100%", scrollBehavior: "auto" }}>
       <Paper
+        elevation={12}
         sx={{
           m: 0,
           ...(true && {

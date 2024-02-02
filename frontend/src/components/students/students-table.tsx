@@ -184,8 +184,9 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
   return (
     <Box sx={{ width: "100%", scrollBehavior: "auto" }}>
       <Paper
+        elevation={12}
         sx={{
-          m: 1,
+          m: 0,
           ...(true && {
             bgcolor: (theme) =>
               alpha(

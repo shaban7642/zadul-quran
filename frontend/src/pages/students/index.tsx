@@ -35,12 +35,17 @@ const Students: NextPage = () => {
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
-          <TabList onChange={handleChange} aria-label="Students options">
+          <TabList
+            variant="scrollable"
+            scrollButtons="auto"
+            onChange={handleChange}
+            aria-label="Students options"
+          >
             <Tab label="List Students" value="1" />
             <Tab label="Add Students" value="2" />
           </TabList>
         </Box>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ p: 1 }}>
           <StudentsTable depts={depts} roleId={"student"} />
         </TabPanel>
         <TabPanel value="2">

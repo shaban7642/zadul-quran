@@ -17,13 +17,18 @@ const Session: NextPage = () => {
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
-          <TabList onChange={handleChange} aria-label="Session options">
+          <TabList
+            variant="scrollable"
+            scrollButtons="auto"
+            onChange={handleChange}
+            aria-label="Session options"
+          >
             <Tab label="List Session" value="1" />
 
             <Tab label="Add Session" value="2" />
           </TabList>
         </Box>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ p: 0.5 }}>
           <SessionsTable roleId={4} />
         </TabPanel>
         <TabPanel value="2">

@@ -467,15 +467,16 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         <Button
           endIcon={<FilterIcon fontSize="small" />}
           onClick={handleToggleFilters}
-          sx={{ mr: 2 }}
+          sx={{ ml: 1, mt: 1 }}
           variant="outlined"
         >
           Filters
         </Button>
       )}
       <Paper
+        elevation={12}
         sx={{
-          m: 1,
+          mt: 0.5,
           ...(true && {
             bgcolor: (theme) =>
               alpha(
