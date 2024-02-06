@@ -32,7 +32,7 @@ export const DashboardLayout: FC<DashboardLayoutProps> = (props) => {
             width: "90%",
             paddingLeft: isSidebarOpen
               ? `calc(${drawerWidth}px - 5px)`
-              : "45px",
+              : "30px",
           }}
         >
           {children}

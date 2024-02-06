@@ -62,7 +62,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   borderRadius: "10px",
   height: "91%",
   overflowX: "hidden",
-  width: "50px",
+  width: "35px",
 });
 
 const Drawer = styled(MuiDrawer, {

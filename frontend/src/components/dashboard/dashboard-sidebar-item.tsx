@@ -40,7 +40,7 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
         display: "flex",
         mb: 0.5,
         py: 0,
-        px: 2,
+        px: 1,
       }}
     >
       {disabled && (

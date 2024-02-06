@@ -14,7 +14,7 @@ const Session: NextPage = () => {
     setValue(newValue);
   };
   return (
-    <Box sx={{ width: "100%", typography: "body1" }}>
+    <Box sx={{ width: "100%", typography: "body1", zoom: "77%" }}>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
           <TabList
