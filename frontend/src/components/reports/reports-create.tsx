@@ -183,8 +183,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         display: "flex",
         flexDirection: "column",
         bgcolor: "#CAF0F8",
-      }}
-    >
+      }}>
       <Paper
         elevation={9}
         sx={{
@@ -194,8 +193,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
           width: "95%",
 
           bgcolor: "#CAF0F8",
-        }}
-      >
+        }}>
         {" "}
         <Grid container>
           <Grid item xs={12}>
@@ -217,15 +215,13 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       marginTop: 2,
                       mb: 1,
                     }}
-                    variant="outlined"
-                  >
+                    variant="outlined">
                     {" "}
                     <InputLabel
                       sx={{
                         top: -6,
                       }}
-                      id="outlined-level"
-                    >
+                      id="outlined-level">
                       Grade
                     </InputLabel>
                     <Select
@@ -235,8 +231,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       value={formik.values.level}
                       onChange={(event) => {
                         formik.setFieldValue("level", event.target.value);
-                      }}
-                    >
+                      }}>
                       {levels.map((level) => (
                         <MenuItem
                           sx={{
@@ -251,8 +246,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                             fontFamily: "sans-serif",
                           }}
                           key={level}
-                          value={level}
-                        >
+                          value={level}>
                           {level}
                         </MenuItem>
                       ))}
@@ -269,15 +263,13 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       marginTop: 2,
                       mb: 1,
                     }}
-                    variant="outlined"
-                  >
+                    variant="outlined">
                     {" "}
                     <InputLabel
                       sx={{
                         top: -6,
                       }}
-                      id="outlined-adornment-bookId"
-                    >
+                      id="outlined-adornment-bookId">
                       Book
                     </InputLabel>
                     <Select
@@ -288,8 +280,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       onChange={(event) => {
                         formik.setFieldValue("bookId", event.target.value);
                         console.log(event.target.value);
-                      }}
-                    >
+                      }}>
                       {documents?.map((book) => (
                         <MenuItem
                           sx={{
@@ -304,8 +295,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                             fontFamily: "sans-serif",
                           }}
                           key={book?.id}
-                          value={book?.id}
-                        >
+                          value={book?.id}>
                           {book?.fileName}
                         </MenuItem>
                       ))}
@@ -632,15 +622,13 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       marginTop: 2,
                       mb: 1,
                     }}
-                    variant="outlined"
-                  >
+                    variant="outlined">
                     {" "}
                     <InputLabel
                       sx={{
                         top: -6,
                       }}
-                      id="outlined-memorizationLevel"
-                    >
+                      id="outlined-memorizationLevel">
                       Memorization Grade
                     </InputLabel>
                     <Select
@@ -653,8 +641,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                           "memorizationLevel",
                           event.target.value
                         );
-                      }}
-                    >
+                      }}>
                       {levels.map((level) => (
                         <MenuItem
                           sx={{
@@ -669,8 +656,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                             fontFamily: "sans-serif",
                           }}
                           key={level}
-                          value={level}
-                        >
+                          value={level}>
                           {level}
                         </MenuItem>
                       ))}
@@ -687,15 +673,13 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       marginTop: 2,
                       mb: 1,
                     }}
-                    variant="outlined"
-                  >
+                    variant="outlined">
                     {" "}
                     <InputLabel
                       sx={{
                         top: -6,
                       }}
-                      id="outlined-revisionLevel"
-                    >
+                      id="outlined-revisionLevel">
                       Revision Grade
                     </InputLabel>
                     <Select
@@ -708,8 +692,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                           "revisionLevel",
                           event.target.value
                         );
-                      }}
-                    >
+                      }}>
                       {levels.map((level) => (
                         <MenuItem
                           sx={{
@@ -724,8 +707,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                             fontFamily: "sans-serif",
                           }}
                           key={level}
-                          value={level}
-                        >
+                          value={level}>
                           {level}
                         </MenuItem>
                       ))}
@@ -742,15 +724,13 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                       marginTop: 2,
                       mb: 1,
                     }}
-                    variant="outlined"
-                  >
+                    variant="outlined">
                     {" "}
                     <InputLabel
                       sx={{
                         top: -6,
                       }}
-                      id="outlined-readingLevel"
-                    >
+                      id="outlined-readingLevel">
                       Reading Grade
                     </InputLabel>
                     <Select
@@ -763,8 +743,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                           "readingLevel",
                           event.target.value
                         );
-                      }}
-                    >
+                      }}>
                       {levels.map((level) => (
                         <MenuItem
                           sx={{
@@ -779,8 +758,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                             fontFamily: "sans-serif",
                           }}
                           key={level}
-                          value={level}
-                        >
+                          value={level}>
                           {level}
                         </MenuItem>
                       ))}
@@ -855,8 +833,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                 <Button
                   component="label"
                   variant="contained"
-                  startIcon={<CloudUploadIcon />}
-                >
+                  startIcon={<CloudUploadIcon />}>
                   Upload file
                   <VisuallyHiddenInput
                     type="file"
@@ -884,8 +861,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     m: 0.5,
                     p: 1,
                   }}
-                  variant="contained"
-                >
+                  variant="contained">
                   Submit
                 </LoadingButton>
               </div>
