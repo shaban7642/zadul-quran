@@ -157,10 +157,11 @@ class SessionsController {
             ],
           },
         ],
+        order: [['date', 'asc']], // Static Order By Date
         ...getPagination(limit, offset),
-        ...getOrderOptions([
-          { sortKey: sortBy || 'date', sortOrder: sortDir || 'desc' },
-        ]),
+        // ...getOrderOptions([
+        //   { sortKey: sortBy || 'date', sortOrder: sortDir || 'desc' },
+        // ])
       };
 
       const { count, rows } = await this.sessionsService.findAndCountAll(query);

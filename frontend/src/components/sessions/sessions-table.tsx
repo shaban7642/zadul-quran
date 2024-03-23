@@ -103,9 +103,9 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     { sessionTypeId: string; count: number }[]
   >([]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [sessionTypes, setSessionTypes] = useState<any[]>([]);
-  const [currentTab, setCurrentTab] = useState<any>("");
+  const [currentTab, setCurrentTab] = useState<any>("waiting");
   const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("md"), {
     noSsr: false,
   });
