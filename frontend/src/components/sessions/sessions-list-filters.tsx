@@ -196,34 +196,6 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
         };
         onChange?.(newFilters);
     };
-    console.log({ filters });
-
-    const handleSpendDateChange = (newValues: any) => {
-        const newFilters = {
-            ...filters,
-            spendOn: {
-                from: newValues[0],
-                to: newValues[1],
-            },
-        };
-        onChange?.(newFilters);
-    };
-
-    const handleXeroStatusYesChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newFilters = {
-            ...filters,
-            xeroStatusYes: e.target.checked,
-        };
-        onChange?.(newFilters);
-    };
-
-    const handleXeroStatusNoChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newFilters = {
-            ...filters,
-            xeroStatusNo: e.target.checked,
-        };
-        onChange?.(newFilters);
-    };
 
     const onClear = () => {
         setFilters(initialFilters);
