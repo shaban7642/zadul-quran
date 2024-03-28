@@ -157,22 +157,36 @@ class SessionsController {
             ],
           },
         ],
+        order: [
+          ['date', 'asc'],
+          ['startTime', 'asc'],
+        ], // Static Order By Date and startTime
         ...getPagination(limit, offset),
-        ...getOrderOptions([
-          { sortKey: sortBy || 'date', sortOrder: sortDir || 'desc' },
-        ]),
+        // ...getOrderOptions([
+        //   { sortKey: sortBy || 'date', sortOrder: sortDir || 'desc' },
+        // ])
       };
 
       const { count, rows } = await this.sessionsService.findAndCountAll(query);
 
       const promises = rows.map(async (session: Session) => {
+        // Split the time into hours, minutes, and seconds
+        const [hours, minutes, seconds] = session.startTime
+          .toString()
+          .split(':')
+          .map(Number);
+
+        // Create a moment object from session.date
+        const date = moment(session.date);
+
+        // Add the time to the date
+        date.set({ hour: hours, minute: minutes, second: seconds });
+
         if (
           session?.sessionType &&
-          session.date <
-            moment()
-              .add(session?.sessionType?.duration / 2, 'minutes')
-              .toDate() &&
-          session.status === 'waiting'
+          date.add(session?.sessionType?.duration / 2, 'minutes').toDate() <
+            moment().toDate() &&
+          session?.status === 'waiting'
         ) {
           await this.sessionsService.update(
             { where: { id: session.id } },

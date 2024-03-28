@@ -148,25 +148,29 @@ const CreateUser: FC<CreateUserProps> = (props) => {
             value={formik.values.roleId}
             onChange={formik.handleChange}
           >
-            {roles?.map((roleId) => (
-              <MenuItem
-                sx={{
-                  color: "black",
-                  ...(true && {
-                    bgcolor: (theme) =>
-                      alpha(
-                        theme.palette.info.contrastText,
-                        theme.palette.action.activatedOpacity
-                      ),
-                  }),
-                  fontFamily: "sans-serif",
-                }}
-                key={roleId?.id}
-                value={roleId?.id}
-              >
-                {roleId?.displayName}
-              </MenuItem>
-            ))}
+            {roles?.map(
+              (roleId) =>
+                roleId?.id != 4 &&
+                roleId?.id != 5 && (
+                  <MenuItem
+                    sx={{
+                      color: "black",
+                      ...(true && {
+                        bgcolor: (theme) =>
+                          alpha(
+                            theme.palette.info.contrastText,
+                            theme.palette.action.activatedOpacity
+                          ),
+                      }),
+                      fontFamily: "sans-serif",
+                    }}
+                    key={roleId?.id}
+                    value={roleId?.id}
+                  >
+                    {roleId?.displayName}
+                  </MenuItem>
+                )
+            )}
           </Select>
         </FormControl>
         <TextField
