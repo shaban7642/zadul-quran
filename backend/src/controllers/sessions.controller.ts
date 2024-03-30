@@ -194,7 +194,10 @@ class SessionsController {
           );
           return { ...session, status: 'absent' };
         }
-
+        console.log(
+          date.add(session?.sessionType?.duration / 2, 'minutes').toDate(),
+          moment().toDate()
+        );
         return session;
       });
 
