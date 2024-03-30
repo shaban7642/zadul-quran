@@ -1,14 +1,18 @@
 on: push
-name: Publish Website
+name: 🚀 Deploy website on push
 jobs:
-  FTP-Deploy-Action:
-    name: FTP-Deploy-Action
+  web-deploy:
+    name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: FTP-Deploy-Action
-      uses: SamKirkland/FTP-Deploy-Action@2.0.0
-      env:
-        FTP_SERVER: 195.35.9.128
-        FTP_USERNAME: root_admin
-        FTP_PASSWORD: 123456Zz
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v3
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: 195.35.9.128
+        username: root_admin
+        password: 123456Zz
+        protocol: ftps
+        server-dir: /home/projects/zadul-quran/
