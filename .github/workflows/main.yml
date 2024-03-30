@@ -1,16 +1,17 @@
-name: 🚀 Deploy via ftp
-on: push
+name: CI -> Deploy to My website
+on:
+  push:
+    branches: [ main ]
 jobs:
-  deploy:
-    name: Deploy
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Upload ftp
-      uses: genietim/ftp-action@releases/v4
-      with:
-        host: 195.35.9.128
-        user: root_admin
-        password: 123456Zz
-        localDir: "*"
-        remoteDir: "/home/projects/zadul-quran#"
+      - uses: actions/checkout@v4
+      # Here is the deployment action
+      - name: Upload from public_html via FTP
+        uses: airvzxf/ftp-deployment-action@latest
+        with:
+          server: 195.35.9.128
+          user: root_admin
+          password: 123456Zz
+          local_dir: "./home/projects/zadul-quran"
