@@ -1,0 +1,16 @@
+name: 🚀 Deploy via ftp
+on: push
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload ftp
+      uses: genietim/ftp-action@releases/v4
+      with:
+        host: 195.35.9.128
+        user: root_admin
+        password: 123456Zz
+        localDir: "*"
+        remoteDir: "/home/projects/zadul-quran#"
