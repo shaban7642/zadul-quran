@@ -14,4 +14,4 @@ jobs:
           server: 195.35.9.128
           user: root_admin
           password: 123456Zz
-          local_dir: "./home/projects/zadul-quran"
+          local_dir: "/"
