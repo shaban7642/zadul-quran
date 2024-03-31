@@ -11,7 +11,7 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        server: "sftp://195.35.9.128"
+        server: "195.35.9.128"
         username: "root_admin"
         password: "123456Zz"
         protocol: ftps
