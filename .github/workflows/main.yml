@@ -14,5 +14,5 @@ jobs:
         server: "195.35.9.128"
         username: "root_admin"
         password: "123456Zz"
-        protocol: ftp
+        protocol: sftp
         port: 22 # todo replace with your web hosts ftps port
