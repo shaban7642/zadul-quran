@@ -3,16 +3,19 @@ on:
     branches:
       main
 jobs:
-  deploy_job:
-    runs-on: ubuntu-latest
-    name: Deploy
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    deploy_job:
+      runs-on: ubuntu-latest
+      name: deploy
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Deploy file
+          uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+          with:
+            username: root_admin
+            password: 123456Zz
+            server: 195.35.9.128
+            port: 22
+            remote_path: '/home/projects/zadul-quran/'
+            sftp_only: true
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-
-      - name: Deploy file
-        run: |
-          sshpass -p '123456Zz' sftp -oStrictHostKeyChecking=no -P 22 root_admin@195.35.9.128:/home/projects/zadul-quran/
