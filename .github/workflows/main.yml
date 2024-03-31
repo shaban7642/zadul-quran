@@ -12,9 +12,9 @@ jobs:
         - name: Deploy file
           uses: wlixcc/SFTP-Deploy-Action@v1.2.4
           with:
-            username: "root_admin"
-            password: "123456Zz"
-            server: "195.35.9.128"
-            port: "22"
+            username: root_admin
+            password: 123456Zz
+            server: 195.35.9.128
+            port: 22
             remote_path: '/home/projects/zadul-quran/'
             sftp_only: true
