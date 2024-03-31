@@ -3,7 +3,7 @@ name: Deploy Files
 on:
   push:
     branches:
-      - master
+      - main
   # Enables manually triggering of Workflow with file synchronization option
   workflow_dispatch:
     inputs:
