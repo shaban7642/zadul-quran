@@ -1,32 +1,39 @@
-name: Deploy Files
-
+name: CI-SFTP
+ 
+# Controls when the action will run. 
 on:
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches:
-      - master
-  # Enables manually triggering of Workflow with file synchronization option
+    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+ 
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      sync:
-        description: "File synchronization"
-        required: true
-        default: "delta"
-
+ 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy-master:
-    name: "master branch"
-    if: ${{ github.ref == 'refs/heads/master' }}
+  # This workflow contains a single job called "SFTP"
+  deploy-via-sftp:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+          
+      - name: SFTP Deploy
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.1
         with:
-          fetch-depth: 0
-      - name: "Deploy"
-        uses: milanmk/actions-file-deployer@master
-        with:
-          remote-protocol: "ftp"
-          remote-host: "195.35.9.128"
-          remote-user: "root_admin"
-          remote-path: "/home/projects/zadul-quran/"
+          username: root_admin
+          sftp_only: false
+          server: 195.35.9.128
+          port: 22 # default is 22
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+ 
+          
+          # will put all file under this path
+          local_path: ./* # default is ./*
+          # files will copy to under remote_path
+          remote_path: /home/projects/zadul-quran/
+          
+          # sftp args
+          args: '-o ConnectTimeout=5'
