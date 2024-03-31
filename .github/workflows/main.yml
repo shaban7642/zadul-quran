@@ -5,14 +5,14 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v4
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: "195.35.9.128"
-        username: "root_admin"
-        password: "123456Zz"
-        protocol: ftps
-        port: 22 # todo replace with your web hosts ftps port
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: "195.35.9.128"
+          username: "root_admin"
+          password: "123456Zz"
+          protocol: sftp
+          port: 22 # Replace with your SFTP port if different
