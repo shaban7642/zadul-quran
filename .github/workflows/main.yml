@@ -14,5 +14,5 @@ jobs:
         server: 195.35.9.128
         username: root_admin
         password: 123456Zz
-        protocol: ftps
+        protocol: ftp
         server-dir: /home/projects/zadul-quran/
