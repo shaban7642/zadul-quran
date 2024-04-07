@@ -17,6 +17,7 @@ import {
 import moment from "moment";
 import useDownloader from "react-use-downloader";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import { convertTo12HourFormat } from "../sessions/sessions-row";
 
 interface reportProps {
   session: any;
@@ -83,7 +84,9 @@ export const Report: FC<reportProps> = (props) => {
               sx={{ overflowWrap: "break-word", minWidth: "100px" }}
             >
               {" "}
-              {session?.startTime || "no data"}
+              {session?.startTime
+                ? convertTo12HourFormat(session?.startTime)
+                : "no data"}
             </Typography>{" "}
           </ListItem>
           <ListItem>
@@ -94,7 +97,9 @@ export const Report: FC<reportProps> = (props) => {
             >
               {" "}
               {`${session?.startedAt?.substr(0, 10) || "no"} ${
-                session?.startedAt?.substr(11, 8) || "data"
+                session?.startedAt
+                  ? convertTo12HourFormat(session.startedAt.substr(11, 8))
+                  : "data"
               }` || "no data"}
             </Typography>{" "}
           </ListItem>
@@ -135,7 +140,9 @@ export const Report: FC<reportProps> = (props) => {
               sx={{ overflowWrap: "break-word", minWidth: "100px" }}
             >
               {" "}
-              {session?.endTime || "no data"}
+              {session?.endTime
+                ? convertTo12HourFormat(session?.endTime)
+                : "no data"}
             </Typography>{" "}
           </ListItem>
           <ListItem>
@@ -146,7 +153,9 @@ export const Report: FC<reportProps> = (props) => {
             >
               {" "}
               {`${session?.endedAt?.substr(0, 10) || "no"} ${
-                session?.endedAt?.substr(11, 8) || "data"
+                session?.endedAt
+                  ? convertTo12HourFormat(session.endedAt.substr(11, 8))
+                  : "data"
               }` || "no data"}
             </Typography>{" "}
           </ListItem>

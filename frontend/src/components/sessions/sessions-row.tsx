@@ -39,7 +39,7 @@ interface RowProps {
   setReoprtFlag: any;
   reportFlag: boolean;
 }
-const convertTo12HourFormat = (time: String) => {
+export const convertTo12HourFormat = (time: String) => {
   // Split the time into hours and minutes
   let [hours, minutes] = time.split(":");
   let h;
@@ -90,10 +90,12 @@ export const SessionsRow: FC<RowProps> = (props) => {
       "no data",
     <Chip label={row?.status} color={statusColor} /> || "no data",
     `${row?.startedAt?.substr(0, 10) || "no"} ${
-      row?.startedAt?.substr(11, 8) || "data"
+      row?.startededAt
+        ? convertTo12HourFormat(row.startededAt.substr(11, 8))
+        : "data"
     }` || "no data",
     `${row?.endedAt?.substr(0, 10) || "no"} ${
-      row?.endedAt?.substr(11, 8) || "data"
+      row?.endedAt ? convertTo12HourFormat(row.endedAt.substr(11, 8)) : "data"
     }` || "no data",
     row?.patch?.department?.name || "no data",
     row?.date?.substr(0, 10) || "no data",
@@ -231,7 +233,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                   onClick={() => {
                     window.open(
                       `https://zoom.us/oauth/authorize?response_type=code&client_id=birMtXX3QOesB5uuhrF3hw&redirect_uri=http://localhost:3000/sessions/?sessionId=${row?.id}`,
-                      "_self"
+                      "new"
                     );
                   }}
                   sx={{ fontSize: 12, mr: 1 }}
