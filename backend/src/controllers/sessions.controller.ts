@@ -6,6 +6,8 @@ import { FindOptions, Op, Sequelize, WhereOptions } from 'sequelize';
 import axios from 'axios';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import momentTz from 'moment-timezone';
 import jwt from 'jsonwebtoken';
 
 import { SERVICE_IDENTIFIER } from '../constants';
@@ -182,10 +184,14 @@ class SessionsController {
         // Add the time to the date
         date.set({ hour: hours, minute: minutes, second: seconds });
 
+        const isLessThanHalfDurationAgo = moment(date)
+          .add(session?.sessionType?.duration / 2, 'minutes')
+          .tz('UTC')
+          .isBefore(moment.tz('UTC'));
+
         if (
           session?.sessionType &&
-          date.add(session?.sessionType?.duration / 2, 'minutes').toDate() <
-            moment().toDate() &&
+          isLessThanHalfDurationAgo &&
           session?.status === 'waiting'
         ) {
           await this.sessionsService.update(
@@ -194,10 +200,10 @@ class SessionsController {
           );
           return { ...session, status: 'absent' };
         }
-        console.log(
-          date.add(session?.sessionType?.duration / 2, 'minutes').toDate(),
-          moment().toDate()
-        );
+        // console.log(
+        //   date.add(session?.sessionType?.duration / 2, 'minutes').toDate(),
+        //   moment().toDate()
+        // );
         return session;
       });
 

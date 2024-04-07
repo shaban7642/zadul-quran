@@ -29,7 +29,7 @@
     "db:skeleton": "sequelize migration:generate --name",
     "db:task": "sequelize db:seed:all --seeders-path src/db/tasks/",
     "pm2-start": "pm2 start production.config.json"
-    },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -78,6 +78,7 @@
     "jsonwebtoken": "^9.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.45",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.0.1",
