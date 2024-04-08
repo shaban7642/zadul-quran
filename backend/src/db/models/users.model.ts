@@ -20,6 +20,8 @@ class User extends Model {
 
   public email: string;
 
+  public zoomLink: string;
+
   public phoneNumber: string;
 
   public registrationDate: string;
@@ -68,6 +70,10 @@ class User extends Model {
         },
         registrationNumber: {
           type: DataTypes.STRING,
+        },
+        zoomLink: {
+          type: DataTypes.STRING,
+          allowNull: false,
         },
         firstName: {
           type: DataTypes.STRING,

@@ -30,6 +30,7 @@ import { sessionMethods } from "./sessions-create";
 import { useAuth } from "../../hooks/use-auth";
 import CreateReport from "../reports/reports-create";
 import { Report } from "../reports/report";
+import { convertTo12HourFormat } from "../../utils/convertTo12HourFormat";
 interface RowProps {
   row: any;
   labelId: string;
@@ -39,22 +40,7 @@ interface RowProps {
   setReoprtFlag: any;
   reportFlag: boolean;
 }
-export const convertTo12HourFormat = (time: String) => {
-  // Split the time into hours and minutes
-  let [hours, minutes] = time.split(":");
-  let h;
-  // Convert the hours to a number
-  h = parseInt(hours, 10);
 
-  // Determine the suffix (AM/PM)
-  let suffix = h >= 12 ? "PM" : "AM";
-
-  // Convert the hours to 12-hour format
-  h = ((h + 11) % 12) + 1;
-
-  // Return the formatted time
-  return `${h}:${minutes} ${suffix}`;
-};
 export const SessionsRow: FC<RowProps> = (props) => {
   const {
     row,
@@ -231,10 +217,10 @@ export const SessionsRow: FC<RowProps> = (props) => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    window.open(
-                      `https://zoom.us/oauth/authorize?response_type=code&client_id=birMtXX3QOesB5uuhrF3hw&redirect_uri=http://localhost:3000/sessions/?sessionId=${row?.id}`,
-                      "new"
-                    );
+                    const zoomLink = row?.patch?.student?.zoomLink;
+                    const baseUrl = new URL("https://zoom.us/"); // Base URL
+                    const url = new URL(zoomLink, baseUrl); // Create relative URL
+                    window.open(url.toString(), "new");
                   }}
                   sx={{ fontSize: 12, mr: 1 }}
                   size="small"
