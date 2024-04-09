@@ -90,7 +90,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
       "no data",
     <Chip label={row?.status} color={statusColor} /> || "no data",
     `${row?.startedAt?.substr(0, 10) || "no"} ${
-      row?.startededAt
+      row?.startedAt
         ? convertTo12HourFormat(row.startededAt.substr(11, 8))
         : "data"
     }` || "no data",
