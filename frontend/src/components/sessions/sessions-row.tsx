@@ -77,7 +77,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
     <Chip label={row?.status} color={statusColor} /> || "no data",
     `${row?.startedAt?.substr(0, 10) || "no"} ${
       row?.startedAt
-        ? convertTo12HourFormat(row.startededAt.substr(11, 8))
+        ? convertTo12HourFormat(row.startedAt.substr(11, 8))
         : "data"
     }` || "no data",
     `${row?.endedAt?.substr(0, 10) || "no"} ${
@@ -179,6 +179,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
     setOpenCreateReport(true);
   };
   const handleCloseCreateReport = () => {
+    console.log("close");
     setOpenCreateReport(false);
   };
   const handleOpenReport = () => {
@@ -235,7 +236,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                   Start
                 </Button>
               )}
-            {row?.status === "running" ? (
+            {row?.status === "running" && (
               <>
                 {row?.zoomSessionMeetings?.length > 0 && (
                   <Button
@@ -271,8 +272,6 @@ export const SessionsRow: FC<RowProps> = (props) => {
                   </Button>
                 )}
               </>
-            ) : (
-              <></>
             )}
 
             {row?.status !== "done" &&
