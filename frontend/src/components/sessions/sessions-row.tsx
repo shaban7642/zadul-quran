@@ -76,7 +76,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
       "no data",
     <Chip label={row?.status} color={statusColor} /> || "no data",
     `${row?.startedAt?.substr(0, 10) || "no"} ${
-      row?.startededAt
+      row?.startedAt
         ? convertTo12HourFormat(row.startededAt.substr(11, 8))
         : "data"
     }` || "no data",
@@ -187,6 +187,12 @@ export const SessionsRow: FC<RowProps> = (props) => {
   const handleCloseReport = () => {
     setOpenReport(false);
   };
+  const handleOpenZoomLink = () => {
+    const zoomLink = row?.patch?.student?.zoomLink;
+    const baseUrl = new URL("https://zoom.us/"); // Base URL
+    const url = new URL(zoomLink, baseUrl); // Create relative URL
+    window.open(url.toString(), "new");
+  };
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
@@ -217,10 +223,11 @@ export const SessionsRow: FC<RowProps> = (props) => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    const zoomLink = row?.patch?.student?.zoomLink;
-                    const baseUrl = new URL("https://zoom.us/"); // Base URL
-                    const url = new URL(zoomLink, baseUrl); // Create relative URL
-                    window.open(url.toString(), "new");
+                    updateSession(row.id, {
+                      status: "running",
+                      startedAt: new Date(Date.now()),
+                    });
+                    handleOpenZoomLink();
                   }}
                   sx={{ fontSize: 12, mr: 1 }}
                   size="small"
@@ -234,9 +241,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() =>
-                      window.open(row?.zoomSessionMeetings[0]?.meetingLink)
-                    }
+                    onClick={() => handleOpenZoomLink()}
                     sx={{ fontSize: 12, mr: 1 }}
                     size="small"
                   >
