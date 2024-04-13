@@ -19,8 +19,8 @@
         "POSTGRES_DATABASE": "zadul",
         "POSTGRES_HOST": "179.61.219.66",
         "DB_HOST": "179.61.219.66",
-        "ZOOM_CLIENT_ID": "birMtXX3QOesB5uuhrF3hw",
-        "ZOOM_SECRET_KEY": "SeMbjp47Rdn2csGGfIJkBNv5Ml2bb2fK"
+        "ZOOM_CLIENT_ID": "JvukpC3SKSuwCbwE1Lh_A",
+        "ZOOM_SECRET_KEY": "JF8lgpsybwDadvS0snPQvDfwCaCSz9OV"
       },
       "listen_address": "::",
       "port": 4000
