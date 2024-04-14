@@ -182,7 +182,7 @@ class SessionsController {
         const date = moment(session.date);
 
         // Add the time to the date
-        date.set({ hour: hours + 2, minute: minutes, second: seconds });
+        date.set({ hour: hours, minute: minutes, second: seconds });
 
         const isLessThanHalfDurationAgo = moment(date)
           .add(session?.sessionType?.duration / 2, 'minutes')

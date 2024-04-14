@@ -78,12 +78,12 @@ export const SessionsRow: FC<RowProps> = (props) => {
         <Chip label={row?.status} color={statusColor} /> || 'no data',
         `${row?.startedAt?.substr(0, 10) || 'no'} ${
             row?.startedAt
-                ? convertTo12HourFormat(row.startedAt.substr(11, 8))
+                ? convertTo12HourFormat(moment(row.startedAt).format('HH:mm'))
                 : 'data'
         }` || 'no data',
         `${row?.endedAt?.substr(0, 10) || 'no'} ${
             row?.endedAt
-                ? convertTo12HourFormat(row.endedAt.substr(11, 8))
+                ? convertTo12HourFormat(moment(row.endedAt).format('HH:mm'))
                 : 'data'
         }` || 'no data',
         row?.patch?.department?.name || 'no data',
@@ -198,7 +198,6 @@ export const SessionsRow: FC<RowProps> = (props) => {
         window.open(url.toString(), 'new');
     };
 
-    console.log({ object: new Date().toISOString() });
     return (
         <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 0, cursor: 'pointer' } }}>
