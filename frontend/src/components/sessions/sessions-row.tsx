@@ -77,7 +77,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                 ? convertTo12HourFormat(moment(row.startedAt).format('HH:mm'))
                 : 'data'
         }` || 'no data',
-        `${row?.endedAt?.substr(0, 10) || 'no'} ${
+        `${row?.endedAt?.substr(0, 10) || 'no'} ${ 
             row?.endedAt
                 ? convertTo12HourFormat(moment(row.endedAt).format('HH:mm'))
                 : 'data'
