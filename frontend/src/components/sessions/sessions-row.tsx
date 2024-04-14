@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect, useState } from 'react';
+import { FC, Fragment, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import {
     TableCell,
@@ -12,10 +12,7 @@ import {
 } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import NextLink from 'next/link';
-import ArrowForwardIosSharp from '@mui/icons-material/ArrowForwardIosSharp';
 import { BillsIcon } from '../../icons/bills';
-import Checkbox from '@mui/material/Checkbox';
 import Collapse from '@mui/material/Collapse';
 import { useTheme } from '@mui/material/styles';
 import { useFormik } from 'formik';
@@ -24,7 +21,6 @@ import * as yup from 'yup';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import Delete from '@mui/icons-material/Delete';
-import { deptApi } from '../../api/deptApi';
 import { useMounted } from '../../hooks/use-mounted';
 import { sessionMethods } from './sessions-create';
 import { useAuth } from '../../hooks/use-auth';
@@ -178,12 +174,20 @@ export const SessionsRow: FC<RowProps> = (props) => {
             });
         }
     }, [row]);
-    const handleOpenCreateReport = () => {
+    const handleOpenCreateReport = () =>
+    {
+        console.log('open')
         setOpenCreateReport(true);
     };
-    const handleCloseCreateReport = () => {
+    const handleCloseCreateReport = (id:number) => {
         console.log('close');
         setOpenCreateReport(false);
+        updateSession(id, {
+            status: 'done',
+            endedAt: new Date(
+                Date.now()
+            ),
+        });
     };
     const handleOpenReport = () => {
         setOpenReport(true);
@@ -223,6 +227,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                     <Box sx={{ display: 'flex' }}>
                         {row?.status === 'waiting' &&
                             row?.zoomSessionMeetings?.length < 1 &&
+                            row?.patch?.student?.zoomLink &&
                             user?.role?.name !== 'student' &&
                             user?.role?.name !== 'parent' && (
                                 <Button
@@ -242,7 +247,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                             )}
                         {row?.status === 'running' && (
                             <>
-                                {row?.zoomSessionMeetings?.length > 0 && (
+                                {row?.patch?.student?.zoomLink && (
                                     <Button
                                         variant='contained'
                                         color='primary'
@@ -258,14 +263,10 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                         <Button
                                             variant='contained'
                                             color='success'
-                                            onClick={() => {
-                                                updateSession(row.id, {
-                                                    status: 'done',
-                                                    endedAt: new Date(
-                                                        Date.now()
-                                                    ),
-                                                });
-                                                handleOpenCreateReport();
+                                        onClick={() =>
+                                        {
+                                            handleOpenCreateReport();
+                                                  
                                             }}
                                             sx={{
                                                 fontSize: 12,
