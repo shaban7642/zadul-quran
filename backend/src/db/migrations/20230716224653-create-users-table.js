@@ -20,6 +20,10 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      zoomLink: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       username: {
         type: Sequelize.STRING,
       },

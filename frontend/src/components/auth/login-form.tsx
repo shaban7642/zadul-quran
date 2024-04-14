@@ -58,7 +58,7 @@ export const LoginForm: FC = (props) => {
         // autoFocus
         error={Boolean(formik.touched.email && formik.errors.email)}
         fullWidth
-        label="Username or Email"
+        label="Email"
         margin="normal"
         name="email"
         onBlur={formik.handleBlur}

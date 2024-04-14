@@ -85,6 +85,7 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
       birthDate: "",
       departmentId: 1,
       email: "",
+      zoomLink: "",
       phoneNumber: "",
       gender: genders[0],
       password: "",
@@ -108,6 +109,10 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
         .email("emailAddress")
         .max(255)
         .required("email Is Required"),
+      zoomLink: yup
+        .string()
+        .url("Zoom Link must be a url")
+        .required("Zoom link Is Required"),
       phoneNumber: yup.string().required("phoneNumber Is Required"),
       city: yup.string().max(200).required("cityRequired"),
       gender: yup.string().required(),
@@ -382,6 +387,32 @@ const CreateStudent: FC<CreateStudentProps> = (props) => {
             ))}
           </Select>
         </FormControl>
+        <TextField
+          size="small"
+          sx={{
+            width: { xs: "98%" },
+            "& .MuiInputBase-root": {
+              height: 40,
+            },
+            mr: 1,
+          }}
+          error={Boolean(formik.touched.zoomLink && formik.errors.zoomLink)}
+          // @ts-ignore
+          helperText={formik.touched.zoomLink && formik.errors.zoomLink}
+          label="Zoom Link"
+          margin="normal"
+          id="zoomLink"
+          name="zoomLink"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.zoomLink}
+          InputProps={{
+            style: {
+              paddingLeft: "6px",
+              fontFamily: "sans-serif",
+            },
+          }}
+        />
         <Divider textAlign="left" sx={{ m: 1 }}>
           <Chip label="Login Details" sx={{ fontWeight: "600" }} />
         </Divider>

@@ -17,7 +17,7 @@ import {
 import moment from "moment";
 import useDownloader from "react-use-downloader";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { convertTo12HourFormat } from "../sessions/sessions-row";
+import { convertTo12HourFormat } from "../../utils/convertTo12HourFormat";
 
 interface reportProps {
   session: any;

@@ -54,6 +54,7 @@ export const Profile: FC<profileProps> = (props) => {
     birthDate: "",
     departmentId: 1,
     email: "",
+    zoomLink: "",
     phoneNumber: "",
   });
   const getDepts = useCallback(async () => {
@@ -124,6 +125,7 @@ export const Profile: FC<profileProps> = (props) => {
       birthDate: userData?.birthDate,
       departmentId: userData?.departmentId,
       email: userData?.email,
+      zoomLink: userData?.zoomLink,
       phoneNumber: userData?.phoneNumber,
     },
     enableReinitialize: true,
@@ -136,6 +138,10 @@ export const Profile: FC<profileProps> = (props) => {
       gender: yup.string(),
       birthDate: yup.date(),
       email: yup.string().email("emailAddress"),
+      zoomLink: yup
+        .string()
+        .url("Zoom Link must be a url")
+        .required("Zoom link Is Required"),
       phoneNumber: yup.string(),
     }),
     onSubmit: async (values) => {
@@ -154,9 +160,9 @@ export const Profile: FC<profileProps> = (props) => {
     try {
       const resp = await userApi.updateUser(id, values);
       if (resp.success) {
-        setUserData(resp.data);
+        getProfile(id);
         toast.dismiss(load);
-        toast.success("update ");
+        toast.success("updated");
         return { success: true };
       } else {
         toast.dismiss(load);
@@ -243,7 +249,7 @@ export const Profile: FC<profileProps> = (props) => {
                     {getUserRole() || "No data"}
                   </Typography>{" "}
                 </ListItem>
-                {userData.roleId === 4 && (
+                {userData?.roleId === 4 && (
                   <ListItem>
                     Department:{" "}
                     <Typography color={"black"}>
@@ -349,6 +355,36 @@ export const Profile: FC<profileProps> = (props) => {
                   },
                 }}
               />
+              {userData?.roleId === 4 && (
+                <TextField
+                  size="small"
+                  sx={{
+                    width: { xs: "96%" },
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                    mr: 1,
+                  }}
+                  error={Boolean(
+                    formik.touched.zoomLink && formik.errors.zoomLink
+                  )}
+                  // @ts-ignore
+                  helperText={formik.touched.zoomLink && formik.errors.zoomLink}
+                  label="Zoom Link"
+                  margin="normal"
+                  id="zoomLink"
+                  name="zoomLink"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.zoomLink}
+                  InputProps={{
+                    style: {
+                      paddingLeft: "6px",
+                      fontFamily: "sans-serif",
+                    },
+                  }}
+                />
+              )}
               <TextField
                 size="small"
                 sx={{
@@ -483,7 +519,7 @@ export const Profile: FC<profileProps> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              {userData.roleId === 4 && (
+              {userData?.roleId === 4 && (
                 <FormControl
                   sx={{
                     width: { xs: "100%", sm: "47.5%" },
