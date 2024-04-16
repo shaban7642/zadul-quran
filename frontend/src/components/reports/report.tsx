@@ -98,7 +98,7 @@ export const Report: FC<reportProps> = (props) => {
               {" "}
               {`${session?.startedAt?.substr(0, 10) || "no"} ${
                 session?.startedAt
-                  ? convertTo12HourFormat(session.startedAt.substr(11, 8))
+                  ? convertTo12HourFormat(moment(session.startedAt).format("HH:mm"))
                   : "data"
               }` || "no data"}
             </Typography>{" "}
@@ -154,7 +154,7 @@ export const Report: FC<reportProps> = (props) => {
               {" "}
               {`${session?.endedAt?.substr(0, 10) || "no"} ${
                 session?.endedAt
-                  ? convertTo12HourFormat(session.endedAt.substr(11, 8))
+                  ? convertTo12HourFormat(moment(session.endedAt).format("HH:mm"))
                   : "data"
               }` || "no data"}
             </Typography>{" "}

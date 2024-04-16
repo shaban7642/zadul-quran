@@ -232,6 +232,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                             user?.role?.name !== 'parent' && (
                                 <Button
                                     variant='contained'
+                                    disabled={ new Date(row?.date) >= new Date() || row?.startTime  >= new Date().toTimeString() }
                                     onClick={() => {
                                         updateSession(row.id, {
                                             status: 'running',
