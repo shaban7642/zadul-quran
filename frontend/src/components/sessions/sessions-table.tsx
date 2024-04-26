@@ -1,7 +1,6 @@
 import {
     ChangeEvent,
     FC,
-    MouseEvent,
     useCallback,
     useEffect,
     useRef,
@@ -25,14 +24,11 @@ import {
     Tabs,
     useMediaQuery,
 } from '@mui/material';
-import Delete from '@mui/icons-material/Delete';
 import { SessionsRow } from './sessions-row';
-import { userApi } from '../../api/userApi';
 import { useMounted } from '../../hooks/use-mounted';
 import toast from 'react-hot-toast';
 import { sessionApi } from '../../api/sessionsApi';
 import { useRouter } from 'next/router';
-import { deptApi } from '../../api/deptApi';
 import { SessionListFilters } from './sessions-list-filters';
 import { Filter as FilterIcon } from '../../icons/filter';
 import { useAuth } from '../../hooks/use-auth';

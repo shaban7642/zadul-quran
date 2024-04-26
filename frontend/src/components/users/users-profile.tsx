@@ -160,9 +160,9 @@ export const Profile: FC<profileProps> = (props) => {
     try {
       const resp = await userApi.updateUser(id, values);
       if (resp.success) {
-        setUserData(resp.data);
+        getProfile(id);
         toast.dismiss(load);
-        toast.success("update ");
+        toast.success("updated");
         return { success: true };
       } else {
         toast.dismiss(load);
@@ -249,7 +249,7 @@ export const Profile: FC<profileProps> = (props) => {
                     {getUserRole() || "No data"}
                   </Typography>{" "}
                 </ListItem>
-                {userData.roleId === 4 && (
+                {userData?.roleId === 4 && (
                   <ListItem>
                     Department:{" "}
                     <Typography color={"black"}>
@@ -355,7 +355,7 @@ export const Profile: FC<profileProps> = (props) => {
                   },
                 }}
               />
-              {userData.roleId === 4 && (
+              {userData?.roleId === 4 && (
                 <TextField
                   size="small"
                   sx={{
@@ -519,7 +519,7 @@ export const Profile: FC<profileProps> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              {userData.roleId === 4 && (
+              {userData?.roleId === 4 && (
                 <FormControl
                   sx={{
                     width: { xs: "100%", sm: "47.5%" },

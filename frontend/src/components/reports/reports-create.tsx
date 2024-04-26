@@ -28,7 +28,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 interface CreateReportProps {
   sessionDeptName: string;
   sessionId: number;
-  handleCloseCreateReport: () => void;
+  handleCloseCreateReport: (id:number) => void;
   setReoprtFlag: any;
   reportFlag: boolean;
 }
@@ -98,7 +98,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         const { success } = await createReport(values);
         if (success) {
           formik.resetForm();
-          handleCloseCreateReport();
+          handleCloseCreateReport(sessionId);
           setReoprtFlag(!reportFlag);
         }
       } catch (error) {
