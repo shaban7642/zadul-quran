@@ -28,6 +28,8 @@ const App: FC<EnhancedAppProps> = (props) => {
         setUserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
         moment.tz.setDefault(userTimezone);
     }, [userTimezone]);
+
+    console.log("User's Time zone is: ", userTimezone);
     return (
         <>
             <Head>

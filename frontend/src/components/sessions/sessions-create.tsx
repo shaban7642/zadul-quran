@@ -169,8 +169,16 @@ const CreateSession = () => {
                     setSessions(
                         data.rows.map((ra: any) => ({
                             title: ra.title || 'No name',
-                            start: `${ra.date.substr(0, 10)}T${ra.startTime}`,
-                            end: `${ra.date.substr(0, 10)}T${ra.endTime}`,
+                            start: `${ra?.date.substr(0, 11)}${moment(
+                                `${ra?.date.substr(0, 11)}${
+                                    ra.startTime
+                                }${ra.date.substr(19, 24)}`
+                            ).format('hh:mm')}`,
+                            end: `${ra?.date.substr(0, 11)}${moment(
+                                `${ra?.date.substr(0, 11)}${
+                                    ra.endTime
+                                }${ra.date.substr(19, 24)}`
+                            ).format('hh:mm')}`,
                         }))
                     );
                 }
