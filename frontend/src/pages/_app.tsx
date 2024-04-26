@@ -5,10 +5,13 @@ import { createTheme } from '../theme';
 import { AuthConsumer, AuthProvider } from '../contexts/jwt-context';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 // import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import moment from 'moment';
+import 'moment-timezone';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { NextPage } from 'next';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Head from 'next/head';
+
 type EnhancedAppProps = AppProps & {
     Component: NextPage;
 };
@@ -16,7 +19,15 @@ type EnhancedAppProps = AppProps & {
 const App: FC<EnhancedAppProps> = (props) => {
     const { Component, pageProps } = props;
     const getLayout = Component.getLayout ?? ((page) => page);
+    const [userTimezone, setUserTimezone] = useState(
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
 
+    // Get the user's timezone
+    useEffect(() => {
+        setUserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        moment.tz.setDefault(userTimezone);
+    }, [userTimezone]);
     return (
         <>
             <Head>
@@ -31,7 +42,10 @@ const App: FC<EnhancedAppProps> = (props) => {
                     content='Zadul Quran, zadulquran, zadulQuran, Quran, quran, Zad, zad,Zadul,zadul'
                 />
             </Head>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
+            <LocalizationProvider
+                dateAdapter={AdapterMoment}
+                adapterLocale={userTimezone}
+            >
                 <ThemeProvider theme={createTheme()}>
                     <AuthProvider>
                         <Toaster position='top-center' />

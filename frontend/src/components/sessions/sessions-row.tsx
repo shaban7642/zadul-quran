@@ -76,20 +76,20 @@ export const SessionsRow: FC<RowProps> = (props) => {
         `${row?.patch?.student?.firstName} ${row?.patch?.student?.lastName}` ||
             'no data',
         <Chip label={row?.status} color={statusColor} /> || 'no data',
-        `${row?.startedAt?.substr(0, 10) || 'no'} ${
-            row?.startedAt
-                ? convertTo12HourFormat(moment(row.startedAt).format('HH:mm'))
-                : 'data'
-        }` || 'no data',
-        `${row?.endedAt?.substr(0, 10) || 'no'} ${
-            row?.endedAt
-                ? convertTo12HourFormat(moment(row.endedAt).format('HH:mm'))
-                : 'data'
-        }` || 'no data',
+
+        `${moment(row?.startedAt).format('YYYY-MM-DD hh:mm A')}` || 'no data',
+        `${moment(row?.endedAt).format('YYYY-MM-DD hh:mm A')}` || 'no data',
         row?.patch?.department?.name || 'no data',
-        row?.date?.substr(0, 10) || 'no data',
-        convertTo12HourFormat(row?.startTime) || 'no data',
-        convertTo12HourFormat(row?.endTime) || 'no data',
+        `${moment(row?.date).format('YYYY-MM-DD')}` || 'no data',
+        `${moment(
+            `${row?.date.substr(0, 11)}${row.startTime}${row.date.substr(
+                19,
+                24
+            )}`
+        ).format('hh:mm A')}` || 'no data',
+        `${moment(
+            `${row?.date.substr(0, 11)}${row.endTime}${row.date.substr(19, 24)}`
+        ).format('hh:mm A')}` || 'no data',
     ];
 
     const flattenObject = (ob: any) => {

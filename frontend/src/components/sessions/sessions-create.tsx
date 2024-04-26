@@ -45,6 +45,7 @@ import { sessionApi } from '../../api/sessionsApi';
 import { SessionListFilters } from './sessions-list-filters';
 import { SessionListInner } from './sessions-table';
 import { useAuth } from '../../hooks/use-auth';
+import moment from 'moment';
 
 const genders = ['male', 'female'];
 const weekDays = [
@@ -242,7 +243,15 @@ const CreateSession = () => {
         onSubmit: async (values) => {
             console.log({ values });
 
-            const { success } = await createSession(values);
+            // Create a new Moment.js object representing the selected time
+            const startTime = moment(values.startTime, 'HH:mm');
+            const endTime = moment(values.endTime, 'HH:mm');
+
+            const { success } = await createSession({
+                ...values,
+                startTime: startTime.utc().format('HH:mm A'),
+                endTime: endTime.utc().format('HH:mm A'),
+            });
             if (success) {
                 handleClose();
                 formik.resetForm();

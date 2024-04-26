@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "material-ui": "^0.15.0",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.45",
     "mui-file-input": "^3.0.2",
     "next": "12.2.5",
     "qs": "^6.11.2",
