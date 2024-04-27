@@ -60,7 +60,7 @@ const CreateUser: FC<CreateUserProps> = (props) => {
       firstName: "",
       lastName: "",
       city: "",
-      gender: "",
+      gender: "male",
       birthDate: "",
       email: "",
       phoneNumber: "",

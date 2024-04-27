@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { FormEvent, useState, FC } from "react";
+import toast from "react-hot-toast";
 
 interface CreateDeptProps {
   createDept: (values: any) => Promise<{ success: boolean }>;
@@ -23,10 +24,16 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formValues);
-    const { success } = await createDept(formValues);
-    if (success) {
+    if (formValues !== '') {
+      const { success } = await createDept(formValues);
+      if (success) {
       setFormValues("");
     }
+    }else {
+      toast.error('Please enter a subject')
+    }
+    
+    
   };
   return (
     <Paper
@@ -96,6 +103,9 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
                         margin="normal"
                         name="subject"
                         type="text"
+                        value={formValues}
+                        error={formValues === ''}
+                        helperText={formValues === '' ? 'Please enter a subject.':''}
                         onChange={(e) => setFormValues(e.target.value)}
                         sx={{ mr: 1, width: "100%" }}
                       />

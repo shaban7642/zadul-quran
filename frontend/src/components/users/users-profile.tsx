@@ -114,6 +114,28 @@ export const Profile: FC<profileProps> = (props) => {
         return "";
     }
   };
+  const getValidationSchema = (roleId: number) => {
+    let zoomLinkSchema ;
+    if (roleId === 4) {
+      zoomLinkSchema = yup.string()
+        .url("Zoom Link must be a url")
+        .required("Zoom link Is Required");
+    }else {
+      zoomLinkSchema = yup.mixed().nullable()
+    }
+    return yup.object({
+      roleId: yup.number(),
+      username: yup.string(),
+      firstName: yup.string(),
+      lastName: yup.string(),
+      city: yup.string(),
+      gender: yup.string(),
+      birthDate: yup.date(),
+      email: yup.string().email("emailAddress"),
+      zoomLink: zoomLinkSchema,
+      phoneNumber: yup.string(),
+    });
+  };
   const formik = useFormik({
     initialValues: {
       roleId: userData?.roleId,
@@ -129,22 +151,12 @@ export const Profile: FC<profileProps> = (props) => {
       phoneNumber: userData?.phoneNumber,
     },
     enableReinitialize: true,
-    validationSchema: yup.object({
-      roleId: yup.number(),
-      username: yup.string(),
-      firstName: yup.string(),
-      lastName: yup.string(),
-      city: yup.string(),
-      gender: yup.string(),
-      birthDate: yup.date(),
-      email: yup.string().email("emailAddress"),
-      zoomLink: yup
-        .string()
-        .url("Zoom Link must be a url")
-        .required("Zoom link Is Required"),
-      phoneNumber: yup.string(),
-    }),
-    onSubmit: async (values) => {
+    validationSchema: getValidationSchema(userData?.roleId),
+    onSubmit: async (values) =>
+    {
+      if(userData?.roleId !== 4 )
+     { delete values.zoomLink;}
+
       try {
         await updateProfile(values);
 
@@ -384,7 +396,7 @@ export const Profile: FC<profileProps> = (props) => {
                     },
                   }}
                 />
-              )}
+              )} 
               <TextField
                 size="small"
                 sx={{
