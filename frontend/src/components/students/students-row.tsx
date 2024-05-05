@@ -67,9 +67,8 @@ export const StudentsRow: FC<RowProps> = (props) => {
     },
     enableReinitialize: true,
     validationSchema: yup.object({
-      sl: yup.string().max(255).required("sl Is Required"),
-      staff_id: yup.string().max(255).required("staff_id Is Required"),
-      name: yup.string().max(255).required("name Is Required"),
+      firstName: yup.string().max(255).required("first name Is Required"),
+      lastName: yup.string().max(255).required("last name Is Required"),
       email: yup
         .string()
         .email("emailAddress")
@@ -80,7 +79,8 @@ export const StudentsRow: FC<RowProps> = (props) => {
         .min(11, "phoneNumberLengthMessage")
         .required("phoneNumber Is Required"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values) =>
+    {
       const flattened = flattenObject(formik.initialValues);
       //only get the modified values to not accidentally edit old ones.
       let resultObject: any = {};
@@ -205,10 +205,10 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   )}
                   // @ts-ignore
                   helperText={formik.touched.lastName && formik.errors.lastName}
-                  label="firstName"
+                  label="lastName"
                   margin="normal"
-                  id="firstName"
-                  name="firstName"
+                  id="lastName"
+                  name="lastName"
                   type="text"
                   onChange={formik.handleChange}
                   value={formik.values.lastName}
