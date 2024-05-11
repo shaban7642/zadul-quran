@@ -257,8 +257,8 @@ const CreateSession = () => {
 
             const { success } = await createSession({
                 ...values,
-                startTime: startTime.utc().format('HH:mm A'),
-                endTime: endTime.utc().format('HH:mm A'),
+                startTime: startTime.utc().format('HH:mm'),
+                endTime: endTime.utc().format('HH:mm'),
             });
             if (success) {
                 handleClose();
