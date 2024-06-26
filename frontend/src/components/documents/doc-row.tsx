@@ -64,7 +64,7 @@ export const DocumentRow: FC<RowProps> = (props) => {
           <IconButton
             onClick={() =>
               download(
-                `http://localhost:4000/${row.fileStoragePath}`,
+                `https://login-api.zadulquran.com/${row.fileStoragePath}`,
                 row.fileName
               )
             }
