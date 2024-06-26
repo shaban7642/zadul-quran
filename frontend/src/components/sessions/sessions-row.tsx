@@ -194,7 +194,6 @@ export const SessionsRow: FC<RowProps> = (props) => {
     const url = new URL(zoomLink, baseUrl); // Create relative URL
     window.open(url.toString(), "new");
   };
-
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
@@ -219,6 +218,15 @@ export const SessionsRow: FC<RowProps> = (props) => {
         >
           <Box sx={{ display: "flex" }}>
             {row?.status === "waiting" &&
+              `${moment(
+                `${row?.date.substr(0, 11)}${row.startTime}${row.date.substr(
+                  19,
+                  24
+                )}`
+              )
+                .subtract(5, "minutes")
+                .format("MMMM Do YYYY, h:mm:ss a")}` <
+                `${moment().format("MMMM Do YYYY, h:mm:ss a")}` &&
               row?.zoomSessionMeetings?.length < 1 &&
               user?.role?.name !== "student" &&
               user?.role?.name !== "parent" && (
