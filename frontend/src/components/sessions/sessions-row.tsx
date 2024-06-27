@@ -163,18 +163,6 @@ export const SessionsRow: FC<RowProps> = (props) => {
   //     }
   // };
 
-  useEffect(() => {
-    if (row) {
-      formik.setValues({
-        sessionMethod: row?.sessionMethod,
-        title: row?.title,
-        status: row?.status,
-        date: row?.date?.substr(0, 10),
-        startTime: row?.startTime,
-        endTime: row?.endTime,
-      });
-    }
-  }, [row]);
   const handleOpenCreateReport = () => {
     setOpenCreateReport(true);
   };
@@ -194,6 +182,18 @@ export const SessionsRow: FC<RowProps> = (props) => {
     const url = new URL(zoomLink, baseUrl); // Create relative URL
     window.open(url.toString(), "new");
   };
+  useEffect(() => {
+    if (row) {
+      formik.setValues({
+        sessionMethod: row?.sessionMethod,
+        title: row?.title,
+        status: row?.status,
+        date: row?.date?.substr(0, 10),
+        startTime: row?.startTime,
+        endTime: row?.endTime,
+      });
+    }
+  }, [row]);
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
@@ -263,10 +263,6 @@ export const SessionsRow: FC<RowProps> = (props) => {
                       variant="contained"
                       color="success"
                       onClick={() => {
-                        updateSession(row.id, {
-                          status: "done",
-                          endedAt: new Date(Date.now()),
-                        });
                         handleOpenCreateReport();
                       }}
                       sx={{
@@ -581,6 +577,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
           reportFlag={reportFlag}
           sessionDeptName={row.patch?.department?.name}
           sessionId={row.id}
+          updateSession={updateSession}
           handleCloseCreateReport={handleCloseCreateReport}
         />
       </Dialog>
