@@ -498,7 +498,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                     },
                     mr: 1,
                   }}
-                  label="Start Time"
+                  label="Start Time(UTC)"
                   name="startTime"
                   type="time"
                   onChange={formik.handleChange}
@@ -530,7 +530,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                     },
                     mr: 1,
                   }}
-                  label="End Time"
+                  label="End Time(UTC)"
                   name="endTime"
                   type="time"
                   onChange={formik.handleChange}
