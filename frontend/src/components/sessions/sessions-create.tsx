@@ -32,7 +32,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import multiMonthPlugin from "@fullcalendar/multimonth";
-import { formatDate } from "@fullcalendar/core";
 import { useMounted } from "../../hooks/use-mounted";
 import { deptApi } from "../../api/deptApi";
 import { sessionApi } from "../../api/sessionsApi";
@@ -70,8 +69,6 @@ const CreateSession = () => {
   const { user } = useAuth();
   const calendar = useRef(null);
   const [fromDate, setFromDate] = useState<Dayjs | null>(null);
-  const [toDate, setToDate] = useState<Dayjs | null>(null);
-  const [weekendsVisible, setWeekendsVisible] = useState(false);
   const [currentEvents, setCurrentEvents] = useState([]);
   const [students, setStudents] = useState<any[]>([]);
   const [teachers, setTeachers] = useState<any[]>([]);
@@ -225,7 +222,7 @@ const CreateSession = () => {
       studentId: "",
       teacherId: "",
       //  fromDate: "",
-      // toDate: "",
+      toDate: "",
       dayOfWeek: [],
       startTime: "",
       endTime: "",
@@ -240,7 +237,7 @@ const CreateSession = () => {
       teacherId: yup.number().required("teacher is required"),
       dayOfWeek: yup.number().required("dayOfWeek is required"),
       //fromDate: yup.date().required("fromDate is required"),
-      //toDate: yup.date().required("toDate is required"),
+      toDate: yup.date().required("toDate is required"),
       startTime: yup.string().required("startTime is required"),
       endTime: yup.string().required("endTime is required"),
       title: yup.string().required("title is required"),
@@ -256,7 +253,6 @@ const CreateSession = () => {
       const { success } = await createSession({
         ...values,
         fromDate,
-        toDate,
         startTime: startTime.utc().format("HH:mm"),
         endTime: endTime.utc().format("HH:mm"),
       });
@@ -617,7 +613,7 @@ const CreateSession = () => {
                 </LocalizationProvider>
               </Grid>
               <Grid item lg={6} md={6} sm={12} xs={12}>
-                {/* <TextField
+                <TextField
                   label="To Date"
                   name="toDate"
                   type="date"
@@ -629,20 +625,7 @@ const CreateSession = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                /> */}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    name="toDate"
-                    sx={{ width: "100%" }}
-                    label="To Date"
-                    // onChange={formik.handleChange}
-                    // value={formik.values.toDate}
-                    value={toDate}
-                    onChange={(newValue) => {
-                      setToDate(newValue?.$d);
-                    }}
-                  />
-                </LocalizationProvider>
+                />
               </Grid>
               <Grid item lg={6} md={6} sm={12} xs={12}>
                 <TextField
