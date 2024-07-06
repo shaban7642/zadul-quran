@@ -606,7 +606,7 @@ const CreateSession = () => {
                     // onChange={formik.handleChange}
                     // value={formik.values.fromDate}
                     value={fromDate}
-                    onChange={(newValue) => {
+                    onChange={(newValue: any) => {
                       setFromDate(newValue?.$d);
                     }}
                   />
