@@ -35,7 +35,7 @@ export const Report: FC<reportProps> = (props) => {
         display: "flex",
         flexDirection: "column",
         padding: "20px 25px",
-        minHeight: "280px",
+        minHeight: "fit-content",
         m: 1,
         bgcolor: "#CAF0F8",
       }}
@@ -441,7 +441,8 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].memorizationLevel || "No data"}
+                          {`${session?.reports[0].memorizationLevel}  / 10` ||
+                            "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
@@ -455,7 +456,8 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].revisionLevel || "No data"}
+                          {`${session?.reports[0].revisionLevel}  / 10` ||
+                            "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
@@ -483,7 +485,8 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0]?.readingLevel || "No data"}
+                          {`${session?.reports[0]?.readingLevel}  / 10` ||
+                            "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}

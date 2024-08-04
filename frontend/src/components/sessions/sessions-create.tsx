@@ -236,18 +236,17 @@ const CreateSession = () => {
       studentId: yup.number().required("student is required"),
       teacherId: yup.number().required("teacher is required"),
       dayOfWeek: yup.number().required("dayOfWeek is required"),
-      //fromDate: yup.date().required("fromDate is required"),
+      // fromDate: yup.date().required("fromDate is required"),
       toDate: yup.date().required("toDate is required"),
-      startTime: yup.string().required("startTime is required"),
+      //startTime: yup.string().required("startTime is required"),
       endTime: yup.string().required("endTime is required"),
       title: yup.string().required("title is required"),
       sessionMethod: yup.string().required("sessionMethod is required"),
     }),
     onSubmit: async (values) => {
-      console.log({ values });
-
-      // Create a new Moment.js object representing the selected time
-      const startTime = moment(values.startTime, "HH:mm");
+      const date = new Date(String(fromDate));
+      const time = date.getTime();
+      const startTime = moment(time);
       const endTime = moment(values.endTime, "HH:mm");
 
       const { success } = await createSession({
@@ -627,25 +626,7 @@ const CreateSession = () => {
                   }}
                 />
               </Grid>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
-                <TextField
-                  label="Start Time"
-                  name="startTime"
-                  type="time"
-                  sx={{ width: "100%" }}
-                  onChange={formik.handleChange}
-                  value={formik.values.startTime}
-                  error={Boolean(
-                    formik.errors.startTime && formik.touched.startTime
-                  )}
-                  helperText={
-                    formik.touched.startTime && formik.errors.startTime
-                  }
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Grid>
+
               <Grid item lg={6} md={6} sm={12} xs={12}>
                 <TextField
                   label="End Time"
