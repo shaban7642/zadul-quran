@@ -139,26 +139,34 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         userId
       );
 
-      formik.setFieldValue("documentId", doc.data.id);
+      formik.setFieldValue("documentId", doc?.id);
 
       return { success: true };
     } catch (err: any) {
+      console.log(err);
       return { success: false };
     }
   };
   const uploadFile = async (e: any) => {
     e.preventDefault();
-
+    const load = toast.loading("Upload file");
     try {
-      console.log("file", e.target.files[0]);
       setLoading(true);
       let formData = new FormData();
       formData.append("userId", user.id);
       formData.append("file", e.target.files[0]);
 
       const uploadResp = await createDocument(formData, user.id);
-    } catch (error) {
-      console.log(error);
+
+      toast.dismiss(load);
+      if (uploadResp.success) {
+        toast.success("File uploaded");
+      } else {
+        toast.error("Upload file failed");
+      }
+    } catch (error: any) {
+      toast.dismiss(load);
+      toast.error(error.message || "Upload file failed");
       setLoading(false);
     }
   };

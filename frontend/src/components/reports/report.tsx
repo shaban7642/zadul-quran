@@ -231,8 +231,8 @@ export const Report: FC<reportProps> = (props) => {
                       <IconButton
                         onClick={() =>
                           download(
-                            `http://localhost:4000/${session?.reports[0].document?.fileStoragePath}`,
-                            session?.reports[0].document?.fileName
+                            `https://login-api.zadulquran.com/${session.reports[0].document.fileStoragePath}`,
+                            session.reports[0].document.fileName
                           )
                         }
                         sx={{
@@ -246,9 +246,8 @@ export const Report: FC<reportProps> = (props) => {
                         {"Download "}{" "}
                         <FileDownloadOutlinedIcon fontSize="medium" />
                       </IconButton>
-                      {/* <p>Size:{size}</p>
-          <label htmlFor="file">progress:</label>
-          <progress id="file" value={percentage} max="100" /> */}
+                      {/* <label htmlFor="file">progress:</label>
+                      <progress id="file" value={percentage} max="100" /> */}
                       {error && (
                         <p style={{ color: "red" }}>
                           possible error {JSON.stringify(error)}
