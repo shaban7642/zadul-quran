@@ -3,6 +3,7 @@ import fs from 'fs';
 import moment from 'moment';
 import { NextFunction, Response, Router } from 'express';
 import multer from 'multer';
+import Path from 'path';
 import { Route } from '../types/routes.type';
 import authMiddleware from '../middlewares/auth.middleware';
 import accessControlMiddleware from '../middlewares/accessControl.middleware';
@@ -23,7 +24,7 @@ const multerStorage = multer.diskStorage({
     cb(null, path);
   },
   filename: (req: any, file: any, cb: any) => {
-    const ext = file.mimetype.split('/')[1];
+    const ext = Path.extname(file.originalname);
     const filename = file.originalname.split('.')[0];
     cb(null, `${filename}-${moment().format('YYYYMMDD')}.${ext}`);
   },

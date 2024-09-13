@@ -41,12 +41,10 @@ class AuthApi {
   }
   async changePassword({
     id,
-    currentPassword,
     newPassword,
     confirmNewPassword,
   }: {
     id: number;
-    currentPassword: string;
     newPassword: string;
     confirmNewPassword: string;
   }): Promise<any> {
@@ -54,7 +52,7 @@ class AuthApi {
       try {
         const user = apiService.put("/auth/change-password", {
           id,
-          currentPassword,
+
           newPassword,
           confirmNewPassword,
         });

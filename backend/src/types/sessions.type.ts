@@ -13,5 +13,6 @@ export interface Session {
   createdAt?: Date;
   updatedAt?: Date;
   startedAt?: Date;
+  joinedAt?: Date;
   endedAt?: Date;
 }

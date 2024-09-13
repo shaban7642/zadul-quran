@@ -119,6 +119,20 @@ export const Report: FC<reportProps> = (props) => {
                 "no data"}
             </Typography>{" "}
           </ListItem>
+          <ListItem>
+            Joined At:
+            <Typography
+              color={"black"}
+              sx={{
+                overflowWrap: "break-word",
+                minWidth: "100px",
+              }}
+            >
+              {" "}
+              {moment(session?.joinedAt).format("YYYY-MM-DD hh:mm A") ||
+                "no data"}
+            </Typography>{" "}
+          </ListItem>
         </Grid>
         <Grid item xs={12} sm={6}>
           <ListItem>

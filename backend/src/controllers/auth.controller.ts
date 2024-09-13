@@ -139,12 +139,11 @@ class AuthController {
     res: Response,
     next: NextFunction
   ) => {
-    const { userId } = req;
-    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    const { id } = req.body;
+    const { newPassword, confirmNewPassword } = req.body;
     try {
       const result = await this.authService.changePassword(
-        userId,
-        currentPassword,
+        id,
         newPassword,
         confirmNewPassword
       );

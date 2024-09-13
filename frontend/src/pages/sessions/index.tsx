@@ -18,14 +18,47 @@ const Session: NextPage = () => {
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider", p: "10px 30px" }}>
           <TabList
+            TabIndicatorProps={{ style: { display: "none" } }} // Hides the indicator
             variant="scrollable"
             scrollButtons="auto"
             onChange={handleChange}
             aria-label="Session options"
           >
-            <Tab label="List Session" value="1" />
+            <Tab
+              sx={{
+                minHeight: "45px",
+                fontSize: "16px",
+                mt: "auto",
+                mb: "auto",
+                "&.Mui-selected": {
+                  color: "text.context", // Custom color for selected tab
+                  fontWeight: "bold", // Make the selected tab bold
+                  backgroundColor: "secondary.main", // Add background color to selected tab
+                  borderRadius: "10%",
+                  p: "0 4px",
+                },
+              }}
+              label="List Session"
+              value="1"
+            />
 
-            <Tab label="Add Session" value="2" />
+            <Tab
+              sx={{
+                minHeight: "45px",
+                fontSize: "16px",
+                mt: "auto",
+                mb: "auto",
+                "&.Mui-selected": {
+                  color: "text.context", // Custom color for selected tab
+                  fontWeight: "bold", // Make the selected tab bold
+                  backgroundColor: "secondary.main", // Add background color to selected tab
+                  borderRadius: "10%",
+                  p: "0 4px",
+                },
+              }}
+              label="Add Session"
+              value="2"
+            />
           </TabList>
         </Box>
         <TabPanel value="1" sx={{ p: 0.5 }}>

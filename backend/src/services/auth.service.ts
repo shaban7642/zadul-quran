@@ -167,7 +167,6 @@ class AuthService {
 
   public async changePassword(
     id: number,
-    currentPassword: string,
     newPassword: string,
     confirmNewPassword: string
   ): Promise<{ success: boolean }> {
@@ -175,10 +174,6 @@ class AuthService {
       where: { id },
       include: [{ model: RoleModel }],
     })) as UserModel;
-    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!passwordMatch) {
-      throw new HttpException(400, 10002, 'Incorrect password');
-    }
     if (newPassword !== confirmNewPassword) {
       throw new HttpException(400, 30012, 'New passwords do not match');
     }

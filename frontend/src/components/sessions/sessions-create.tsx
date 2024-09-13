@@ -4,14 +4,8 @@ import { Field, useFormik } from "formik";
 import {
   Box,
   TextField,
-  InputAdornment,
-  IconButton,
   FormControl,
-  InputLabel,
-  OutlinedInput,
   MenuItem,
-  Divider,
-  Chip,
   Dialog,
   Grid,
   DialogTitle,
@@ -159,7 +153,6 @@ const CreateSession = () => {
           ...filterObject,
           ...filters,
         });
-
         if (isMounted()) {
           setSessions(
             data.rows.map((ra: any) => ({
@@ -169,13 +162,10 @@ const CreateSession = () => {
                   19,
                   24
                 )}`
-              ).format("hh:mm")}`,
+              ).format("HH:mm")}`,
               end: `${ra?.date.substr(0, 11)}${moment(
-                `${ra?.date.substr(0, 11)}${ra.endTime}${ra.date.substr(
-                  19,
-                  24
-                )}`
-              ).format("hh:mm")}`,
+                `${ra.endTime}${ra.date.substr(19, 24)}`
+              ).format("HH:mm")}`,
             }))
           );
         }
@@ -396,6 +386,16 @@ const CreateSession = () => {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={true}
+          slotLabelFormat={{
+            hour: "numeric",
+            minute: "2-digit",
+            meridiem: "short", // Enables AM/PM
+          }}
+          eventTimeFormat={{
+            hour: "numeric",
+            minute: "2-digit",
+            meridiem: "short", // Ensures AM/PM format for events
+          }}
           // initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
           select={handleDateSelect}
           // eventContent={renderEventContent} // custom render function

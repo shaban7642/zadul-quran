@@ -83,6 +83,9 @@ class Sessions extends Model {
         startedAt: {
           type: DataTypes.DATE,
         },
+        joinedAt: {
+          type: DataTypes.DATE,
+        },
         endedAt: {
           type: DataTypes.DATE,
         },

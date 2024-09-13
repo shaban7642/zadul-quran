@@ -38,6 +38,7 @@ const attributes = [
   'endTime',
   'status',
   'startedAt',
+  'joinedAt',
   'endedAt',
   'createdAt',
   'updatedAt',
@@ -192,7 +193,20 @@ class SessionsController {
         if (
           session?.sessionType &&
           isLessThanHalfDurationAgo &&
-          session?.status === 'waiting'
+          session?.status === 'waiting' &&
+          session?.startedAt === null
+        ) {
+          await this.sessionsService.update(
+            { where: { id: session.id } },
+            { status: 'expired' }
+          );
+          return { ...session, status: 'expired' };
+        }
+        if (
+          session?.sessionType &&
+          isLessThanHalfDurationAgo &&
+          session?.status === 'running' &&
+          session?.joinedAt === null
         ) {
           await this.sessionsService.update(
             { where: { id: session.id } },
@@ -200,10 +214,6 @@ class SessionsController {
           );
           return { ...session, status: 'absent' };
         }
-        // console.log(
-        //   date.add(session?.sessionType?.duration / 2, 'minutes').toDate(),
-        //   moment().toDate()
-        // );
         return session;
       });
 

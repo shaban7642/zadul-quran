@@ -33,30 +33,25 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      currentPassword: "",
       newPassword: "",
       confirmNewPassword: "",
     },
-    // validationSchema: Yup.object({
-    //   newPassword: Yup.string()
-    //     .min(7)
-    //     .max(255)
-    //     .required("Password Is Required"),
-    //   confirmNewPassword: Yup.string().test(
-    //     "passwords-match",
-    //     "Password Must Match",
-    //     function (value) {
-    //       return this.parent.newPassword === value;
-    //     }
-    //   ),
-    // }),
+    validationSchema: Yup.object({
+      newPassword: Yup.string().min(7).required("password Is Required"),
+      confirmNewPassword: Yup.string().test(
+        "passwords-match",
+        "Password Must Match",
+        function (value) {
+          return this.parent.newPassword === value;
+        }
+      ),
+    }),
     onSubmit: async (values): Promise<void> => {
       const load = toast.loading("change");
       try {
-        const { currentPassword, newPassword, confirmNewPassword } = values;
+        const { newPassword, confirmNewPassword } = values;
         const response = await authApi.changePassword({
           id,
-          currentPassword,
           newPassword,
           confirmNewPassword,
         });
@@ -119,43 +114,6 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = (props) => {
               variant="outlined"
             >
               <InputLabel htmlFor="outlined-adornment-password">
-                Current Password
-              </InputLabel>
-              <OutlinedInput
-                error={Boolean(
-                  formik.touched.currentPassword &&
-                    formik.errors.currentPassword
-                )}
-                fullWidth
-                // helperText={formik.touched.password && formik.errors.password}
-                label="Current Password"
-                name="currentPassword"
-                onChange={formik.handleChange}
-                value={formik.values.currentPassword}
-                type={showPassword ? "text" : "password"}
-                sx={{
-                  fontFamily: "sans-serif",
-                }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-
-            <FormControl
-              sx={{ width: "100%", marginTop: "10px" }}
-              variant="outlined"
-            >
-              <InputLabel htmlFor="outlined-adornment-password">
                 New Password
               </InputLabel>
               <OutlinedInput
@@ -187,12 +145,12 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = (props) => {
                   </InputAdornment>
                 }
               />
-              {/* {showPasswordValidation === true && (
+              {showPasswordValidation === true && (
                 <PasswordValidationForm
                   sx={{ bottom: "-180px" }}
                   password={formik.values.newPassword}
                 />
-              )} */}
+              )}
             </FormControl>
             <TextField
               error={Boolean(

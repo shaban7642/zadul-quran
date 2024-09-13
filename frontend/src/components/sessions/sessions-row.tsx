@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import {
   TableCell,
@@ -12,8 +12,6 @@ import {
 } from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import NextLink from "next/link";
-import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
 import { BillsIcon } from "../../icons/bills";
 import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
@@ -24,13 +22,11 @@ import * as yup from "yup";
 import get from "lodash/get";
 import set from "lodash/set";
 import Delete from "@mui/icons-material/Delete";
-import { deptApi } from "../../api/deptApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { sessionMethods } from "./sessions-create";
 import { useAuth } from "../../hooks/use-auth";
 import CreateReport from "../reports/reports-create";
 import { Report } from "../reports/report";
-import { convertTo12HourFormat } from "../../utils/convertTo12HourFormat";
 import moment from "moment";
 interface RowProps {
   row: any;
@@ -142,32 +138,10 @@ export const SessionsRow: FC<RowProps> = (props) => {
     },
   });
 
-  // useEffect(
-  //     () => {
-  //         if (router?.query?.code) {
-  //             startMeeting(router.query.code, router.query.sessionId);
-  //         }
-  //     },
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //     [router.query]
-  // );
-
-  // const startMeeting = async (
-  //     code: string | string[],
-  //     sessionId: string | string[] | undefined
-  // ) => {
-  //     const data = await sessionApi.startMeeting(code, sessionId);
-  //     if (data.success) {
-  //         window.history.replaceState(null, '', '/sessions');
-  //         window.open(data.meetingUrl, '_blank');
-  //     }
-  // };
-
   const handleOpenCreateReport = () => {
     setOpenCreateReport(true);
   };
   const handleCloseCreateReport = () => {
-    console.log("close");
     setOpenCreateReport(false);
   };
   const handleOpenReport = () => {
@@ -250,7 +224,15 @@ export const SessionsRow: FC<RowProps> = (props) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleOpenZoomLink()}
+                    onClick={() => {
+                      if (user?.role?.name === "student") {
+                        updateSession(row.id, {
+                          joinedAt: new Date(),
+                        });
+                      }
+
+                      handleOpenZoomLink();
+                    }}
                     sx={{ fontSize: 12, mr: 1 }}
                     size="small"
                   >
@@ -327,248 +309,255 @@ export const SessionsRow: FC<RowProps> = (props) => {
           </IconButton>
         </TableCell>
       </TableRow>
+
       <TableRow sx={{ border: 0 }}>
         <TableCell
           style={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
           colSpan={12}
         >
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                component="div"
-                sx={{ margin: 0 }}
-              >
-                edit
-              </Typography>
-              <form onSubmit={formik.handleSubmit}>
-                <FormControl>
-                  <TextField
-                    size="small"
-                    sx={{
-                      width: {
-                        xs: 100,
-                        sm: 125,
-                        md: 150,
-                        lg: 175,
-                        xl: 200,
-                      },
-                      "& .MuiInputBase-root": {
-                        height: 40,
-                      },
-                      mr: 1,
-                    }}
-                    label="Session Method"
-                    name="sessionMethod"
-                    value={formik.values.sessionMethod}
-                    error={Boolean(
-                      formik.errors.sessionMethod &&
-                        formik.touched.sessionMethod
-                    )}
-                    helperText={
-                      formik.touched.sessionMethod &&
-                      formik.errors.sessionMethod?.toString()
-                    }
-                    InputLabelProps={{
-                      shrink: formik.values.sessionMethod ? true : false,
-                    }}
-                    fullWidth
-                    required
-                    select
-                    onChange={formik.handleChange}
-                  >
-                    {sessionMethods.map(
-                      (option: { value: string; label: string }) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      )
-                    )}
-                  </TextField>
-                </FormControl>
-                <TextField
-                  label="Title"
-                  name="title"
-                  type="text"
-                  onChange={formik.handleChange}
-                  value={formik.values.title}
-                  error={Boolean(formik.errors.title && formik.touched.title)}
-                  helperText={
-                    formik.touched.title && formik.errors.title?.toString()
-                  }
-                  size="small"
-                  sx={{
-                    width: {
-                      xs: 100,
-                      sm: 125,
-                      md: 150,
-                      lg: 175,
-                      xl: 200,
-                    },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                />
-
-                <FormControl>
-                  <TextField
-                    size="small"
-                    sx={{
-                      width: {
-                        xs: 100,
-                        sm: 125,
-                        md: 150,
-                        lg: 175,
-                        xl: 200,
-                      },
-                      "& .MuiInputBase-root": {
-                        height: 40,
-                      },
-                      mr: 1,
-                    }}
-                    label="Status"
-                    name="status"
-                    value={formik.values.status}
-                    error={Boolean(
-                      formik.errors.status && formik.touched.status
-                    )}
-                    helperText={
-                      formik.touched.status && formik.errors.status?.toString()
-                    }
-                    InputLabelProps={{
-                      shrink: formik.values.status ? true : false,
-                    }}
-                    fullWidth
-                    required
-                    select
-                    onChange={formik.handleChange}
-                  >
-                    {statuses.map((option: string) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </FormControl>
-
-                <TextField
-                  size="small"
-                  sx={{
-                    width: {
-                      xs: 100,
-                      sm: 125,
-                      md: 150,
-                      lg: 175,
-                      xl: 200,
-                    },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  label="Date"
-                  name="date"
-                  type="date"
-                  onChange={formik.handleChange}
-                  value={formik.values.date}
-                  error={Boolean(formik.errors.date && formik.touched.date)}
-                  helperText={
-                    formik.touched.date && formik.errors.date?.toString()
-                  }
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-
-                <TextField
-                  size="small"
-                  sx={{
-                    width: {
-                      xs: 100,
-                      sm: 125,
-                      md: 150,
-                      lg: 175,
-                      xl: 200,
-                    },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  label="Start Time(UTC)"
-                  name="startTime"
-                  type="time"
-                  onChange={formik.handleChange}
-                  value={formik.values.startTime}
-                  error={Boolean(
-                    formik.errors.startTime && formik.touched.startTime
-                  )}
-                  helperText={
-                    formik.touched.startTime &&
-                    formik.errors.startTime?.toString()
-                  }
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-
-                <TextField
-                  size="small"
-                  sx={{
-                    width: {
-                      xs: 100,
-                      sm: 125,
-                      md: 150,
-                      lg: 175,
-                      xl: 200,
-                    },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    mr: 1,
-                  }}
-                  label="End Time(UTC)"
-                  name="endTime"
-                  type="time"
-                  onChange={formik.handleChange}
-                  value={formik.values.endTime}
-                  error={Boolean(
-                    formik.errors.endTime && formik.touched.endTime
-                  )}
-                  helperText={
-                    formik.touched.endTime && formik.errors.endTime?.toString()
-                  }
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-
-                <LoadingButton
-                  type="submit"
-                  sx={{
-                    width: {
-                      xs: 15,
-                      sm: 20,
-                      md: 30,
-                      lg: 40,
-                      xl: 50,
-                    },
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                    },
-                    // m: 0.5,
-                    // mt: 2,
-                  }}
-                  variant="contained"
+          {" "}
+          {(user?.role?.name === "admin" ||
+            user?.role?.name === "super_admin") && (
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  component="div"
+                  sx={{ margin: 0 }}
                 >
-                  submit
-                </LoadingButton>
-              </form>
-            </Box>
-          </Collapse>
+                  edit
+                </Typography>
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl>
+                    <TextField
+                      size="small"
+                      sx={{
+                        width: {
+                          xs: 100,
+                          sm: 125,
+                          md: 150,
+                          lg: 175,
+                          xl: 200,
+                        },
+                        "& .MuiInputBase-root": {
+                          height: 40,
+                        },
+                        mr: 1,
+                      }}
+                      label="Session Method"
+                      name="sessionMethod"
+                      value={formik.values.sessionMethod}
+                      error={Boolean(
+                        formik.errors.sessionMethod &&
+                          formik.touched.sessionMethod
+                      )}
+                      helperText={
+                        formik.touched.sessionMethod &&
+                        formik.errors.sessionMethod?.toString()
+                      }
+                      InputLabelProps={{
+                        shrink: formik.values.sessionMethod ? true : false,
+                      }}
+                      fullWidth
+                      required
+                      select
+                      onChange={formik.handleChange}
+                    >
+                      {sessionMethods.map(
+                        (option: { value: string; label: string }) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        )
+                      )}
+                    </TextField>
+                  </FormControl>
+                  <TextField
+                    label="Title"
+                    name="title"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.title}
+                    error={Boolean(formik.errors.title && formik.touched.title)}
+                    helperText={
+                      formik.touched.title && formik.errors.title?.toString()
+                    }
+                    size="small"
+                    sx={{
+                      width: {
+                        xs: 100,
+                        sm: 125,
+                        md: 150,
+                        lg: 175,
+                        xl: 200,
+                      },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                  />
+
+                  <FormControl>
+                    <TextField
+                      size="small"
+                      sx={{
+                        width: {
+                          xs: 100,
+                          sm: 125,
+                          md: 150,
+                          lg: 175,
+                          xl: 200,
+                        },
+                        "& .MuiInputBase-root": {
+                          height: 40,
+                        },
+                        mr: 1,
+                      }}
+                      label="Status"
+                      name="status"
+                      value={formik.values.status}
+                      error={Boolean(
+                        formik.errors.status && formik.touched.status
+                      )}
+                      helperText={
+                        formik.touched.status &&
+                        formik.errors.status?.toString()
+                      }
+                      InputLabelProps={{
+                        shrink: formik.values.status ? true : false,
+                      }}
+                      fullWidth
+                      required
+                      select
+                      onChange={formik.handleChange}
+                    >
+                      {statuses.map((option: string) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </FormControl>
+
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: {
+                        xs: 100,
+                        sm: 125,
+                        md: 150,
+                        lg: 175,
+                        xl: 200,
+                      },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    label="Date"
+                    name="date"
+                    type="date"
+                    onChange={formik.handleChange}
+                    value={formik.values.date}
+                    error={Boolean(formik.errors.date && formik.touched.date)}
+                    helperText={
+                      formik.touched.date && formik.errors.date?.toString()
+                    }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: {
+                        xs: 100,
+                        sm: 125,
+                        md: 150,
+                        lg: 175,
+                        xl: 200,
+                      },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    label="Start Time(UTC)"
+                    name="startTime"
+                    type="time"
+                    onChange={formik.handleChange}
+                    value={formik.values.startTime}
+                    error={Boolean(
+                      formik.errors.startTime && formik.touched.startTime
+                    )}
+                    helperText={
+                      formik.touched.startTime &&
+                      formik.errors.startTime?.toString()
+                    }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+
+                  <TextField
+                    size="small"
+                    sx={{
+                      width: {
+                        xs: 100,
+                        sm: 125,
+                        md: 150,
+                        lg: 175,
+                        xl: 200,
+                      },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      mr: 1,
+                    }}
+                    label="End Time(UTC)"
+                    name="endTime"
+                    type="time"
+                    onChange={formik.handleChange}
+                    value={formik.values.endTime}
+                    error={Boolean(
+                      formik.errors.endTime && formik.touched.endTime
+                    )}
+                    helperText={
+                      formik.touched.endTime &&
+                      formik.errors.endTime?.toString()
+                    }
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+
+                  <LoadingButton
+                    type="submit"
+                    sx={{
+                      width: {
+                        xs: 15,
+                        sm: 20,
+                        md: 30,
+                        lg: 40,
+                        xl: 50,
+                      },
+                      "& .MuiInputBase-root": {
+                        height: 40,
+                      },
+                      // m: 0.5,
+                      // mt: 2,
+                    }}
+                    variant="contained"
+                  >
+                    submit
+                  </LoadingButton>
+                </form>
+              </Box>
+            </Collapse>
+          )}
         </TableCell>
       </TableRow>
       <Dialog maxWidth="md" open={openCreateReport}>

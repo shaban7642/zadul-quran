@@ -154,8 +154,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
       setLoading(true);
       let formData = new FormData();
       formData.append("userId", user.id);
-      formData.append("file", e.target.files[0]);
-
+      formData.append("file", e.target.files[0], e.target.files[0].name);
       const uploadResp = await createDocument(formData, user.id);
 
       toast.dismiss(load);

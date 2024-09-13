@@ -74,6 +74,7 @@ const text = {
   light: neutral[300],
   offLight: "#BDE0FE",
   disabled: "rgba(55, 65, 81, 0.48)",
+  contrastText: "#FFFFFF",
 };
 
 export const lightThemeOptions: ThemeOptions = {
