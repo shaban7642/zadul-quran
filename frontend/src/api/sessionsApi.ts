@@ -72,10 +72,10 @@ class SessionsApi {
     });
   }
 
-  async deleteSession(id: number): Promise<any> {
+  async deleteSession(ids: number[]): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const resp = apiService.delete(`/sessions/${id}`);
+        const resp = apiService.delete(`/sessions`, { ids });
         resolve(resp);
       } catch (err) {
         reject(new Error("Internal server error"));

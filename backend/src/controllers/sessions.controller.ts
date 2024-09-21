@@ -397,15 +397,25 @@ class SessionsController {
     }
   };
 
-  public deleteSession = async (
+  public deleteSessions = async (
     req: RequestWithIdentity,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const { id: sessionId } = req.params;
+      const { ids: sessionIds } = req.body;
+      // const resp = await this.sessionsService.deleteSession({
+      //   where: { id: Number(sessionIds) },
+      // });
+      if (!Array.isArray(sessionIds) || sessionIds.length === 0) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'Invalid session IDs' });
+      }
+
+      // Call deleteSession method, using Op.in to handle array of IDs
       const resp = await this.sessionsService.deleteSession({
-        where: { id: Number(sessionId) },
+        where: { id: { [Op.in]: sessionIds } }, // Use Sequelize Op.in operator for array
       });
       res.status(200).json({ success: true, resp });
     } catch (error) {

@@ -52,10 +52,10 @@ class SessionRoute implements Route {
     );
 
     this.router.delete(
-      `${this.path}/:id`,
+      `${this.path}`,
       authMiddleware,
       accessControlMiddleware([Permissions.sessions.DELETE]),
-      this.sessionsController.deleteSession
+      this.sessionsController.deleteSessions
     );
 
     this.router.get(

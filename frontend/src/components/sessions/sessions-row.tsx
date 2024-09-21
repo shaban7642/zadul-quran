@@ -30,9 +30,10 @@ import { Report } from "../reports/report";
 import moment from "moment";
 interface RowProps {
   row: any;
+  isItemSelected: boolean;
   labelId: string;
+  handleClick: (event: React.MouseEvent<unknown>, id: number) => void;
   updateSession: (id: any, userData: any) => Promise<{ success: boolean }>;
-  deleteSession: (id: any) => Promise<{ success: boolean }>;
   statuses: readonly string[];
   setReoprtFlag: any;
   reportFlag: boolean;
@@ -41,9 +42,10 @@ interface RowProps {
 export const SessionsRow: FC<RowProps> = (props) => {
   const {
     row,
+    isItemSelected,
     labelId,
+    handleClick,
     updateSession,
-    deleteSession,
     statuses,
     setReoprtFlag,
     reportFlag,
@@ -170,7 +172,13 @@ export const SessionsRow: FC<RowProps> = (props) => {
   }, [row]);
   return (
     <Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
+      <TableRow
+        onClick={(event) => handleClick(event, row.id)}
+        role="checkbox"
+        aria-checked={isItemSelected}
+        selected={isItemSelected}
+        sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}
+      >
         {rows?.map((r: any, idx) => (
           <TableCell
             key={idx}
@@ -295,18 +303,15 @@ export const SessionsRow: FC<RowProps> = (props) => {
             <BillsIcon color="primary" />
           </IconButton>
         </TableCell>
-        <TableCell
-          scope="row"
-          sx={{
-            color: "black",
-          }}
-        >
-          <IconButton
-            onClick={() => deleteSession(row.id)}
-            sx={{ p: 0, ml: 1, mb: 1.5 }}
-          >
-            <Delete color="error" />
-          </IconButton>
+
+        <TableCell padding="checkbox">
+          <Checkbox
+            color="primary"
+            checked={isItemSelected}
+            inputProps={{
+              "aria-labelledby": labelId,
+            }}
+          />
         </TableCell>
       </TableRow>
 

@@ -13,7 +13,7 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
-import { TableHeads } from "../users/users-heads";
+import { TableHeads } from "./sessions-heads";
 import { styled, Theme } from "@mui/material/styles";
 import {
   Button,
@@ -78,7 +78,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
   const isMounted = useMounted();
   const router = useRouter();
   const { user } = useAuth();
-
+  const [selected, setSelected] = useState<number[]>([]);
   const initialFilters: any = {
     date: {
       from: null,
@@ -175,18 +175,6 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
       disablePadding: false,
       label: "End Time",
     },
-    {
-      id: "actions",
-      numeric: true,
-      disablePadding: false,
-      label: "",
-    },
-    {
-      id: "delete",
-      numeric: true,
-      disablePadding: false,
-      label: "",
-    },
   ];
 
   const tabs: any[] = [
@@ -239,6 +227,33 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     count: typesCount.find((item) => item?.sessionTypeId === type.id)?.count,
   }));
 
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelected = sessions.map((n) => n.id);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: number[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    setSelected(newSelected);
+  };
   const handleTabsChange = (event: ChangeEvent<{}>, value: any): void => {
     setCurrentTab(value);
     getSessions({ limit: rowsPerPage, offset: 0, status: value });
@@ -267,10 +282,10 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     [isMounted, filters]
   );
 
-  const deleteSession = async (id: number): Promise<{ success: boolean }> => {
+  const deleteSession = async (): Promise<{ success: boolean }> => {
     const load = toast.loading("delete");
     try {
-      const resp = await sessionApi.deleteSession(id);
+      const resp = await sessionApi.deleteSession(selected);
       if (resp) {
         toast.dismiss(load);
         toast.success("deleteSessionSuccess");
@@ -279,6 +294,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
           offset: page,
           status: currentTab,
         });
+        setSelected([]);
         return { success: true };
       } else {
         toast.dismiss(load);
@@ -597,18 +613,26 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
             <Box sx={{ width: "100%" }}>
               <TableContainer>
                 <Table aria-labelledby="tableTitle" size="small">
-                  <TableHeads headCells={headCells} />
+                  <TableHeads
+                    headCells={headCells}
+                    numSelected={selected.length}
+                    onSelectAllClick={handleSelectAllClick}
+                    deleteSession={deleteSession}
+                    rowCount={sessions.length}
+                  />
                   <TableBody>
                     {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                             rows.slice().sort(getComparator(order, orderBy)) */}
                     {sessions.map((row: any, index) => {
+                      const isItemSelected = selected.includes(row.id);
                       const labelId = `enhanced-table-checkbox-${index}`;
                       return (
                         <SessionsRow
                           key={row?.id}
                           row={row}
+                          handleClick={handleClick}
+                          isItemSelected={isItemSelected}
                           labelId={labelId}
-                          deleteSession={deleteSession}
                           updateSession={updateSession}
                           statuses={statuses}
                           setReoprtFlag={setReoprtFlag}
