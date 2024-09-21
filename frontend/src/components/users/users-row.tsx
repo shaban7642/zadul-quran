@@ -37,7 +37,7 @@ export const UsersRow: FC<RowProps> = (props) => {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const rows = [
-    row?.username || "no data",
+    row?.firstName || "no data",
     row?.role?.displayName || "no data",
 
     row?.email || "no data",
@@ -63,7 +63,7 @@ export const UsersRow: FC<RowProps> = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      username: row?.username,
+      firstName: row?.firstName,
       roleId: row?.roleId,
 
       email: row?.email,
@@ -73,7 +73,7 @@ export const UsersRow: FC<RowProps> = (props) => {
     validationSchema: yup.object({
       roleId: yup.number(),
       id: yup.string().max(255),
-      username: yup.string().max(255),
+      firstName: yup.string().max(255),
       email: yup.string().email("emailAddress").max(255),
       phoneNumber: yup.string().min(11, "phoneNumberLengthMessage"),
     }),
@@ -99,7 +99,7 @@ export const UsersRow: FC<RowProps> = (props) => {
   useEffect(() => {
     if (row) {
       formik.setValues({
-        username: row?.username,
+        firstName: row?.firstName,
         roleId: row?.roleId,
 
         email: row?.email,
@@ -174,17 +174,19 @@ export const UsersRow: FC<RowProps> = (props) => {
                     mr: 1,
                   }}
                   error={Boolean(
-                    formik.touched.username && formik.errors.username
+                    formik.touched.firstName && formik.errors.firstName
                   )}
                   // @ts-ignore
-                  helperText={formik.touched.username && formik.errors.username}
-                  label="username"
+                  helperText={
+                    formik.touched.firstName && formik.errors.firstName
+                  }
+                  label="First Name"
                   margin="normal"
-                  id="username"
-                  name="username"
+                  id="firstName"
+                  name="firstName"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.username}
+                  value={formik.values.firstName}
                   InputProps={{
                     style: {
                       color: "black",
@@ -254,7 +256,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                   error={Boolean(formik.touched.email && formik.errors.email)}
                   // @ts-ignore
                   helperText={formik.touched.email && formik.errors.email}
-                  label="email"
+                  label="Email"
                   margin="normal"
                   id="email"
                   name="email"
@@ -284,7 +286,7 @@ export const UsersRow: FC<RowProps> = (props) => {
                   helperText={
                     formik.touched.phoneNumber && formik.errors.phoneNumber
                   }
-                  label="phoneNumber"
+                  label="Phone Number"
                   margin="normal"
                   id="phoneNumber"
                   name="phoneNumber"

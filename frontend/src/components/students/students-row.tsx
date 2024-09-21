@@ -79,8 +79,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
         .min(11, "phoneNumberLengthMessage")
         .required("phoneNumber Is Required"),
     }),
-    onSubmit: async (values) =>
-    {
+    onSubmit: async (values) => {
       const flattened = flattenObject(formik.initialValues);
       //only get the modified values to not accidentally edit old ones.
       let resultObject: any = {};
@@ -178,7 +177,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   helperText={
                     formik.touched.firstName && formik.errors.firstName
                   }
-                  label="firstName"
+                  label="First Name"
                   margin="normal"
                   id="firstName"
                   name="firstName"
@@ -205,7 +204,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   )}
                   // @ts-ignore
                   helperText={formik.touched.lastName && formik.errors.lastName}
-                  label="lastName"
+                  label="Last Name"
                   margin="normal"
                   id="lastName"
                   name="lastName"
@@ -278,7 +277,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   error={Boolean(formik.touched.email && formik.errors.email)}
                   // @ts-ignore
                   helperText={formik.touched.email && formik.errors.email}
-                  label="email"
+                  label="Email"
                   margin="normal"
                   id="email"
                   name="email"
@@ -307,7 +306,7 @@ export const StudentsRow: FC<RowProps> = (props) => {
                   helperText={
                     formik.touched.phoneNumber && formik.errors.phoneNumber
                   }
-                  label="phoneNumber"
+                  label="Phone Number"
                   margin="normal"
                   id="phoneNumber"
                   name="phoneNumber"

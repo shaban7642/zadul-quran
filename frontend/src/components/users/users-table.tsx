@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -19,6 +12,8 @@ import { userApi } from "../../api/userApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { User } from "../../types/user";
 import toast from "react-hot-toast";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import { Input, InputAdornment } from "@mui/material";
 
 export interface Data {
   id: number;
@@ -49,15 +44,34 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
   const { roleId, roles } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
+  const [temp, setTemp] = useState<User[]>([]);
   const [page, setPage] = useState(0);
   const [usersCount, setUsersCount] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  //initialise search value
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleInputChange = (e: any) => {
+    setSearchValue(e.target.value);
+  };
+  //whenever search value gets updated, we will update patience list
+  useEffect(() => {
+    if (searchValue === "") {
+      setUsers(temp);
+    } else {
+      const newUsers = users.filter((value) =>
+        value.firstName.toLowerCase().startsWith(searchValue.toLowerCase())
+      );
+      setUsers(newUsers);
+    }
+  }, [searchValue]);
+
   const headCells: readonly any[] = [
     {
-      id: "username",
+      id: "firstName",
       numeric: false,
       disablePadding: true,
-      label: "username",
+      label: "First Name",
     },
     {
       id: "role",
@@ -103,6 +117,7 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
             );
           }
           setUsers(data.rows);
+          setTemp(data.rows);
           setUsersCount(data.count);
         }
       } catch (err: any) {
@@ -191,6 +206,21 @@ export const UsersTable: FC<UsersTableProps> = (props) => {
           }),
         }}
       >
+        <Input
+          sx={{
+            m: "10px",
+            ml: "70%",
+          }}
+          type="text"
+          onChange={handleInputChange}
+          value={searchValue}
+          startAdornment={
+            <InputAdornment position="start">
+              <PersonSearchIcon />
+            </InputAdornment>
+          }
+          placeholder="Search by name"
+        />
         <TableContainer>
           <Table
             sx={{

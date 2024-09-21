@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -14,13 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import { TableHeads } from "../users/users-heads";
-import { IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import Delete from "@mui/icons-material/Delete";
+import { Input, InputAdornment } from "@mui/material";
 import { StudentsRow } from "./students-row";
 import { userApi } from "../../api/userApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { User } from "../../types/user";
 import toast from "react-hot-toast";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 
 export interface Data {
   username: string;
@@ -45,9 +38,28 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
   const { roleId, depts } = props;
   const isMounted = useMounted();
   const [users, setUsers] = useState<User[]>([]);
+  const [temp, setTemp] = useState<User[]>([]);
   const [page, setPage] = useState(0);
   const [usersCount, setUsersCount] = useState(2);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  //initialise search value
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleInputChange = (e: any) => {
+    setSearchValue(e.target.value);
+  };
+  //whenever search value gets updated, we will update patience list
+  useEffect(() => {
+    if (searchValue === "") {
+      setUsers(temp);
+    } else {
+      const newUsers = users.filter((value) =>
+        value.firstName.toLowerCase().startsWith(searchValue.toLowerCase())
+      );
+      setUsers(newUsers);
+    }
+  }, [searchValue]);
+
   const headCells: readonly any[] = [
     {
       id: "firstName",
@@ -94,6 +106,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
 
         if (isMounted()) {
           setUsers(data.rows);
+          setTemp(data.rows);
           setUsersCount(data.count);
         }
       } catch (err: any) {
@@ -196,6 +209,21 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
           }),
         }}
       >
+        <Input
+          sx={{
+            m: "10px",
+            ml: "70%",
+          }}
+          type="text"
+          onChange={handleInputChange}
+          value={searchValue}
+          startAdornment={
+            <InputAdornment position="start">
+              <PersonSearchIcon />
+            </InputAdornment>
+          }
+          placeholder="Search by name"
+        />
         <TableContainer>
           <Table
             sx={{
