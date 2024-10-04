@@ -340,6 +340,56 @@ class SessionsController {
     }
   };
 
+  public getSessionByStudentId = async (
+    req: RequestWithIdentity,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { studentId } = req.params;
+
+      if (!studentId) {
+        return res.status(400).json({ message: 'studentId is required' });
+      }
+
+      const query: FindOptions = {
+        where: {
+          // '$patches.studentId$': studentId, // Searching by studentId within the Patches model
+        },
+        include: [
+          {
+            model: Patches,
+            include: [
+              {
+                model: UserModel,
+                as: 'student',
+                where: { id: studentId },
+                required: true, // Ensure the student is linked to the session
+                attributes: {
+                  exclude: ['password'],
+                },
+              },
+            ],
+            required: true,
+          },
+          { model: SessionTypesModel },
+        ],
+        order: [['createdAt', 'DESC']], // Order by creation date in descending order
+        limit: 1, // Fetch only one session
+      };
+
+      const session = await this.sessionsService.findOne(query);
+
+      if (!session) {
+        return res.status(404).json({ message: 'Session not found' });
+      }
+
+      return res.status(200).json({ session });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public createSessions = async (
     req: RequestWithIdentity,
     res: Response,

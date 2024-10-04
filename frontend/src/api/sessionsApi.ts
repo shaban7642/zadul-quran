@@ -61,6 +61,17 @@ class SessionsApi {
     });
   }
 
+  async getSessionByStudentId(studentId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        const session = apiService.get(`/sessions/${studentId}`);
+        resolve(session);
+      } catch (err) {
+        reject(new Error("Internal server error"));
+      }
+    });
+  }
+
   async getSessionTypes(): Promise<any> {
     return new Promise((resolve, reject) => {
       try {

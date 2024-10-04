@@ -49,40 +49,40 @@ class SessionsService {
         departmentId,
         fromDate,
         toDate,
+        dayOfWeek,
       });
+
       const start = new Date(fromDate);
       const end = new Date(toDate);
+      end.setHours(23, 59, 59, 999); // Set end date to the end of the day
       const result = [];
 
-      for (const targetIndex of dayOfWeek) {
-        // const targetIndex = dayOfWeek;
-        const daysToAdd = (targetIndex - start.getDay() + 7) % 7;
-
-        // console.log({ start, end, targetIndex, daysToAdd });
+      // For each day of the week (e.g., [1, 3, 5] for Mon, Wed, Fri)
+      for (const targetDay of dayOfWeek) {
+        // Create a new Date object to prevent modifying the original `start`
         const currentDate = new Date(start);
-        currentDate.setDate(start.getDate() + daysToAdd);
 
+        // Adjust currentDate to the first occurrence of targetDay
+        while (currentDate.getDay() !== targetDay) {
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        // Loop through the dates, adding 7 days at a time, until we pass `end`
         while (currentDate <= end) {
-          // console.log('while');
-          if (currentDate >= start) {
-            // console.log('if');
-            result.push(new Date(currentDate).toString());
-          }
+          result.push(new Date(currentDate).toISOString()); // Save the date
           currentDate.setDate(currentDate.getDate() + 7);
         }
       }
 
-      // console.log({ result });
-
-      let sessions;
-      for (const res of result) {
-        sessions = await this.sessionsModel.create(
+      // Now, create sessions for each valid date in the `result`
+      for (const sessionDate of result) {
+        await this.sessionsModel.create(
           {
             title,
             sessionMethod,
             patchId: patch.id,
             meetingId: `${Math.random()}`.substring(2, 8),
-            date: res,
+            date: sessionDate,
             startTime,
             endTime,
             sessionTypeId,
@@ -93,11 +93,9 @@ class SessionsService {
         );
       }
 
-      // console.log({ sessions });
-
-      return { success: true };
+      console.log(result);
+      return { success: true, sessionsCreated: result.length };
     } catch (err) {
-      // console.log(err);
       logger.log({
         level: 'error',
         label: 'Sessions Service - createMany',

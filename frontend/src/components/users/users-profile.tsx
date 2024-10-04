@@ -28,7 +28,22 @@ import { rolesApi } from "../../api/rolesApi";
 import { useMounted } from "../../hooks/use-mounted";
 import { deptApi } from "../../api/deptApi";
 import moment from "moment";
+import { sessionApi } from "../../api/sessionsApi";
+import { SessionForm } from "../sessions/sessions-form";
+import { useAuth } from "../../hooks/use-auth";
+import { Dayjs } from "dayjs";
+export type Session = {
+  departmentId: string;
+  sessionTypeId: string;
+  studentId: string;
+  teacherId: string;
+  toDate: string;
+  dayOfWeek: [number];
 
+  endTime: string;
+  title: string;
+  sessionMethod: string;
+};
 interface RoleId {
   displayName: string;
   id: number;
@@ -39,9 +54,12 @@ interface profileProps {
 }
 export const Profile: FC<profileProps> = (props) => {
   const { id } = props;
+  const { user } = useAuth();
   const [roles, setRoles] = useState<RoleId[]>([]);
   const [depts, setDepts] = useState([]);
   const genders = ["male", "female"];
+  const [open, setOpen] = useState(false);
+  const [session, setSession] = useState<Session>();
   const isMounted = useMounted();
   const [userData, setUserData] = useState<any>({
     id: 1,
@@ -98,6 +116,29 @@ export const Profile: FC<profileProps> = (props) => {
       console.log(err);
     }
   };
+  const getSession = async (id: number) => {
+    try {
+      const resp = await sessionApi.getSessionByStudentId(id);
+      setSession({
+        departmentId: resp?.session.patch.departmentId,
+        sessionTypeId: resp?.session.sessionTypeId,
+        sessionMethod: resp?.session.sessionMethod,
+        studentId: resp?.session.patch.studentId,
+        teacherId: resp?.session.patch.teacherId,
+        dayOfWeek: resp?.session.patch.dayOfWeek,
+        endTime:
+          moment(
+            `${resp?.session?.date.substr(0, 11)}${
+              resp?.session.endTime
+            }${resp?.session.date.substr(19, 24)}`
+          ).format("HH:mm") || "00:00",
+        toDate: "",
+        title: resp?.session.title,
+      });
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
   const getUserRole = () => {
     switch (userData?.roleId) {
       case 1:
@@ -115,13 +156,14 @@ export const Profile: FC<profileProps> = (props) => {
     }
   };
   const getValidationSchema = (roleId: number) => {
-    let zoomLinkSchema ;
+    let zoomLinkSchema;
     if (roleId === 4) {
-      zoomLinkSchema = yup.string()
+      zoomLinkSchema = yup
+        .string()
         .url("Zoom Link must be a url")
         .required("Zoom link Is Required");
-    }else {
-      zoomLinkSchema = yup.mixed().nullable()
+    } else {
+      zoomLinkSchema = yup.mixed().nullable();
     }
     return yup.object({
       roleId: yup.number(),
@@ -152,10 +194,10 @@ export const Profile: FC<profileProps> = (props) => {
     },
     enableReinitialize: true,
     validationSchema: getValidationSchema(userData?.roleId),
-    onSubmit: async (values) =>
-    {
-      if(userData?.roleId !== 4 )
-     { delete values.zoomLink;}
+    onSubmit: async (values) => {
+      if (userData?.roleId !== 4) {
+        delete values.zoomLink;
+      }
 
       try {
         await updateProfile(values);
@@ -187,10 +229,37 @@ export const Profile: FC<profileProps> = (props) => {
       return { success: false };
     }
   };
+  const createSession = async (values: any): Promise<{ success: boolean }> => {
+    const load = toast.loading("create");
+    try {
+      const resp = await sessionApi.createSession(values);
+      if (resp) {
+        toast.dismiss(load);
+        toast.success("createSessionSuccess");
+        return { success: true };
+      } else {
+        toast.dismiss(load);
+        toast.error("createSessionFailed");
+        return { success: false };
+      }
+    } catch (err: any) {
+      toast.dismiss(load);
+      toast.error(err.message || "createSessionsFailed");
+      return { success: false };
+    }
+  };
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
   useEffect(() => {
     getProfile(id);
   }, [id]);
+  useEffect(() => {
+    if (userData?.roleId === 4 && !open) {
+      getSession(id);
+    }
+  }, [id, userData, open]);
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>
       <Grid container spacing={3}>
@@ -292,6 +361,25 @@ export const Profile: FC<profileProps> = (props) => {
                 </ListItem>
               </Grid>
             </Grid>
+            {userData?.roleId === 4 &&
+              user?.role?.name === "super_admin" &&
+              session && (
+                <LoadingButton
+                  type="button"
+                  onClick={() => handleOpen()}
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                      width: "100%",
+                    },
+                    m: 0.5,
+                    p: 1,
+                  }}
+                  variant="contained"
+                >
+                  Renew Subscription
+                </LoadingButton>
+              )}
           </Paper>
         </Grid>
         <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -396,7 +484,7 @@ export const Profile: FC<profileProps> = (props) => {
                     },
                   }}
                 />
-              )} 
+              )}
               <TextField
                 size="small"
                 sx={{
@@ -706,6 +794,14 @@ export const Profile: FC<profileProps> = (props) => {
           </Paper>
         </Grid>
       </Grid>
+      {userData?.roleId === 4 && user?.role?.name === "super_admin" && (
+        <SessionForm
+          open={open}
+          setOpen={setOpen}
+          session={session}
+          createSession={createSession}
+        />
+      )}
     </Box>
   );
 };

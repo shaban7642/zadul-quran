@@ -44,6 +44,10 @@ class Patches extends Model {
         toDate: {
           type: DataTypes.DATE,
         },
+        dayOfWeek: {
+          type: DataTypes.ARRAY(DataTypes.INTEGER),
+          allowNull: true,
+        },
       },
       {
         sequelize,
