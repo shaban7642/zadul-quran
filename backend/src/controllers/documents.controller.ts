@@ -62,15 +62,28 @@ class DocumentsController {
     next: NextFunction
   ) => {
     try {
-      const { file, documentType, userId } = req;
-
-      const resp = await this.documentsService.createOne({
-        documentTypeId: documentType.id,
-        userId: +userId,
-        fileName: file.filename,
-        fileType: file.mimetype,
-        fileStoragePath: file.path,
-      });
+      const { file, documentType, userId, query } = req;
+      let resp;
+      if (documentType.id === 2) {
+        // for report document
+        const { reportId } = JSON.parse(query.data.toString());
+        resp = await this.documentsService.createOne({
+          documentTypeId: documentType.id,
+          userId: +userId,
+          reportId,
+          fileName: file.filename,
+          fileType: file.mimetype,
+          fileStoragePath: file.path,
+        });
+      } else {
+        resp = await this.documentsService.createOne({
+          documentTypeId: documentType.id,
+          userId: +userId,
+          fileName: file.filename,
+          fileType: file.mimetype,
+          fileStoragePath: file.path,
+        });
+      }
       return res.status(200).json(resp);
     } catch (error) {
       next(error);

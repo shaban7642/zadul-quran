@@ -3,6 +3,7 @@ import { Request } from 'express';
 export interface RequestWithFile extends Request {
   identityId?: number;
   userId?: number;
+  reportId?: number;
   companyId?: number;
   organizationId?: number;
   accountantId?: number;
@@ -13,6 +14,7 @@ export interface RequestWithFile extends Request {
 export interface RequestWithFileAndDocumentType extends Request {
   identityId?: number;
   userId?: number;
+  reportId?: number;
   companyId?: number;
   organizationId?: number;
   accountantId?: number;

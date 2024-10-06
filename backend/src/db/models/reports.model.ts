@@ -6,7 +6,7 @@ import Documents from './documents.model';
 class Reports extends Model {
   public id!: number;
 
-  public documentId?: number;
+  public documentId?: number[];
 
   public bookId?: number;
 
@@ -35,7 +35,8 @@ class Reports extends Model {
           primaryKey: true,
         },
         documentId: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.ARRAY(DataTypes.INTEGER),
+          allowNull: true,
           references: {
             model: Documents,
             key: 'id',
@@ -131,8 +132,15 @@ class Reports extends Model {
   public static initAssociation(): void {
     this.belongsTo(User);
     this.belongsTo(Sessions);
-    this.belongsTo(Documents, { as: 'document' });
-    this.belongsTo(Documents, { as: 'book' });
+    this.hasMany(Documents, {
+      foreignKey: 'reportId',
+      as: 'document',
+    });
+    this.belongsTo(Documents, {
+      foreignKey: 'bookId',
+      as: 'book',
+      constraints: false,
+    });
   }
 }
 

@@ -172,13 +172,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
   }, [row]);
   return (
     <Fragment>
-      <TableRow
-        onClick={(event) => handleClick(event, row.id)}
-        role="checkbox"
-        aria-checked={isItemSelected}
-        selected={isItemSelected}
-        sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}
-      >
+      <TableRow sx={{ "& > *": { borderBottom: 0, cursor: "pointer" } }}>
         {rows?.map((r: any, idx) => (
           <TableCell
             key={idx}
@@ -304,7 +298,12 @@ export const SessionsRow: FC<RowProps> = (props) => {
           </IconButton>
         </TableCell>
 
-        <TableCell padding="checkbox">
+        <TableCell
+          onClick={(event) => handleClick(event, row.id)}
+          role="checkbox"
+          aria-checked={isItemSelected}
+          padding="checkbox"
+        >
           <Checkbox
             color="primary"
             checked={isItemSelected}

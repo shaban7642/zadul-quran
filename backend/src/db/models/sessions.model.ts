@@ -102,7 +102,8 @@ class Sessions extends Model {
     this.belongsTo(Patches);
     this.belongsTo(SessionTypes);
     this.hasMany(ZoomSessionMeetings);
-    this.hasMany(Reports);
+    // Change to hasOne for 1-to-1 relationship
+    this.hasOne(Reports, { foreignKey: 'sessionId' });
   }
 }
 

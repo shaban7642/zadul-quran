@@ -17,12 +17,14 @@ class DocumentsService {
   public async createOne({
     documentTypeId,
     userId,
+    reportId,
     fileName,
     fileType,
     fileStoragePath,
   }: {
     documentTypeId: number;
     userId: number;
+    reportId?: number;
     fileName: string;
     fileType: string;
     fileStoragePath: string;
@@ -31,6 +33,7 @@ class DocumentsService {
       const document: DocumentsModel = await this.documentsModel.create({
         documentTypeId,
         userId,
+        reportId,
         fileName,
         fileType,
         fileStoragePath,

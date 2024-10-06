@@ -10,6 +10,8 @@ class Documents extends Model {
 
   public userId?: number;
 
+  public reportId?: number;
+
   public fileName?: string;
 
   public fileType?: string;
@@ -32,6 +34,14 @@ class Documents extends Model {
           type: DataTypes.INTEGER,
           references: {
             model: DocumentTypes,
+            key: 'id',
+          },
+        },
+        reportId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: {
+            model: 'reports',
             key: 'id',
           },
         },
@@ -63,6 +73,9 @@ class Documents extends Model {
   public static initAssociation(): void {
     this.belongsTo(User);
     this.belongsTo(DocumentTypes);
+
+    // This association only applies if the document type is a report
+    this.belongsTo(Reports, { foreignKey: 'reportId', constraints: false });
   }
 }
 

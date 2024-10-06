@@ -2,6 +2,7 @@ export interface Document {
   id: number;
   documentTypeId?: number;
   userId?: number;
+  reportId?: number;
   fileName?: string;
   fileType?: string;
   fileStoragePath?: string;

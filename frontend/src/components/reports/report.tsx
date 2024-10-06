@@ -208,7 +208,7 @@ export const Report: FC<reportProps> = (props) => {
         </Grid>
       </Grid>
 
-      {session?.reports[0] && (
+      {session?.report && (
         <>
           <Divider textAlign="left" sx={{ m: 1 }}>
             <Chip label="Feedback " sx={{ fontWeight: "600" }} />
@@ -219,7 +219,7 @@ export const Report: FC<reportProps> = (props) => {
               <Grid container component={List} sx={{ p: 0 }}>
                 <Grid item xs={12} sm={6} sx={{ p: 0 }}>
                   {" "}
-                  {session?.reports[0].date && (
+                  {session?.report.date && (
                     <ListItem>
                       Submition Date:
                       <Typography
@@ -230,7 +230,7 @@ export const Report: FC<reportProps> = (props) => {
                         }}
                       >
                         {" "}
-                        {moment(session?.reports[0].date || "No data").format(
+                        {moment(session?.report.date || "No data").format(
                           "MMM-D-YYYY"
                         )}
                       </Typography>{" "}
@@ -239,42 +239,43 @@ export const Report: FC<reportProps> = (props) => {
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ p: 0 }}>
                   {" "}
-                  {session?.reports[0].document && (
-                    <ListItem>
-                      File:{" "}
-                      <IconButton
-                        onClick={() =>
-                          download(
-                            `https://login-api.zadulquran.com/${session.reports[0].document.fileStoragePath}`,
-                            session.reports[0].document.fileName
-                          )
-                        }
-                        sx={{
-                          p: 0.5,
-                          ml: 0.5,
-                          color: "black",
-                          border: "1px solid black",
-                          fontSize: "16px",
-                        }}
-                      >
-                        {"Download "}{" "}
-                        <FileDownloadOutlinedIcon fontSize="medium" />
-                      </IconButton>
-                      {/* <label htmlFor="file">progress:</label>
+                  {session?.report.document[0] &&
+                    session?.report.document.map((d: any, index: number) => (
+                      <ListItem key={index}>
+                        File:{index + 1}
+                        <IconButton
+                          onClick={() =>
+                            download(
+                              `https://login-api.zadulquran.com/${d.fileStoragePath}`,
+                              d.fileName
+                            )
+                          }
+                          sx={{
+                            p: 0.5,
+                            ml: 1,
+                            color: "black",
+                            border: "1px solid black",
+                            fontSize: "16px",
+                          }}
+                        >
+                          {"Download "}{" "}
+                          <FileDownloadOutlinedIcon fontSize="medium" />
+                        </IconButton>
+                        {/* <label htmlFor="file">progress:</label>
                       <progress id="file" value={percentage} max="100" /> */}
-                      {error && (
-                        <p style={{ color: "red" }}>
-                          possible error {JSON.stringify(error)}
-                        </p>
-                      )}
-                    </ListItem>
-                  )}
+                        {error && (
+                          <p style={{ color: "red" }}>
+                            possible error {JSON.stringify(error)}
+                          </p>
+                        )}
+                      </ListItem>
+                    ))}
                 </Grid>
               </Grid>
               {session.patch?.department?.name != "Quran" && (
                 <Grid container component={List}>
                   <Grid item xs={12} sm={6} sx={{ p: 0 }}>
-                    {session?.reports[0].level && (
+                    {session?.report.level && (
                       <ListItem>
                         Grade:{" "}
                         <Typography
@@ -284,11 +285,11 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {`${session?.reports[0].level} / 10` || "No data"}
+                          {`${session?.report.level} / 10` || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].book && (
+                    {session?.report.book && (
                       <ListItem>
                         Book:{" "}
                         <Typography
@@ -298,13 +299,13 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].book?.fileName || "No data"}
+                          {session?.report.book?.fileName || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
                   </Grid>
                   <Grid item xs={12} sm={6} sx={{ p: 0 }}>
-                    {session?.reports[0].unit && (
+                    {session?.report.unit && (
                       <ListItem>
                         Unit:{" "}
                         <Typography
@@ -314,11 +315,11 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].unit || "No data"}
+                          {session?.report.unit || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].topic && (
+                    {session?.report.topic && (
                       <ListItem>
                         Topic:{" "}
                         <Typography
@@ -328,7 +329,7 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].topic || "No data"}
+                          {session?.report.topic || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
@@ -337,7 +338,7 @@ export const Report: FC<reportProps> = (props) => {
               )}
               {session.patch?.department?.name == "Arabic" && (
                 <>
-                  {session?.reports[0].newWords && (
+                  {session?.report.newWords && (
                     <ListItem>
                       New Words:{" "}
                       <Typography
@@ -347,12 +348,12 @@ export const Report: FC<reportProps> = (props) => {
                           minWidth: "100px",
                         }}
                       >
-                        {session?.reports[0].newWords || "No data"}
+                        {session?.report.newWords || "No data"}
                       </Typography>{" "}
                     </ListItem>
                   )}
 
-                  {session?.reports[0].expressions && (
+                  {session?.report.expressions && (
                     <ListItem>
                       Expressions:{" "}
                       <Typography
@@ -362,11 +363,11 @@ export const Report: FC<reportProps> = (props) => {
                           minWidth: "100px",
                         }}
                       >
-                        {session?.reports[0].expressions || "No data"}
+                        {session?.report.expressions || "No data"}
                       </Typography>{" "}
                     </ListItem>
                   )}
-                  {session?.reports[0].rules && (
+                  {session?.report.rules && (
                     <ListItem>
                       Rules:{" "}
                       <Typography
@@ -376,7 +377,7 @@ export const Report: FC<reportProps> = (props) => {
                           minWidth: "100px",
                         }}
                       >
-                        {session?.reports[0].rules || "No data"}
+                        {session?.report.rules || "No data"}
                       </Typography>{" "}
                     </ListItem>
                   )}
@@ -386,7 +387,7 @@ export const Report: FC<reportProps> = (props) => {
                 <Grid container component={List}>
                   <Grid item xs={12} sm={6}>
                     {" "}
-                    {session?.reports[0].memorization && (
+                    {session?.report.memorization && (
                       <ListItem>
                         Memorization:{" "}
                         <Typography
@@ -396,11 +397,11 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].memorization || "No data"}
+                          {session?.report.memorization || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].revision && (
+                    {session?.report.revision && (
                       <ListItem>
                         Revision:{" "}
                         <Typography
@@ -410,11 +411,11 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].revision || "No data"}
+                          {session?.report.revision || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].recitation && (
+                    {session?.report.recitation && (
                       <ListItem>
                         Recitation:{" "}
                         <Typography
@@ -424,11 +425,11 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].recitation || "No data"}
+                          {session?.report.recitation || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].reading && (
+                    {session?.report.reading && (
                       <ListItem>
                         Reading:{" "}
                         <Typography
@@ -438,13 +439,13 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].reading || "No data"}
+                          {session?.report.reading || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    {session?.reports[0].memorizationLevel && (
+                    {session?.report.memorizationLevel && (
                       <ListItem>
                         Memorization Grade:{" "}
                         <Typography
@@ -454,12 +455,12 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {`${session?.reports[0].memorizationLevel}  / 10` ||
+                          {`${session?.report.memorizationLevel}  / 10` ||
                             "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].revisionLevel && (
+                    {session?.report.revisionLevel && (
                       <ListItem>
                         Revision Grade:{" "}
                         <Typography
@@ -469,12 +470,12 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {`${session?.reports[0].revisionLevel}  / 10` ||
+                          {`${session?.report.revisionLevel}  / 10` ||
                             "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].tajweed && (
+                    {session?.report.tajweed && (
                       <ListItem>
                         Tajweed:{" "}
                         <Typography
@@ -484,11 +485,11 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {session?.reports[0].tajweed || "No data"}
+                          {session?.report.tajweed || "No data"}
                         </Typography>{" "}
                       </ListItem>
                     )}
-                    {session?.reports[0].readingLevel && (
+                    {session?.report.readingLevel && (
                       <ListItem>
                         Reading Grade:{" "}
                         <Typography
@@ -498,7 +499,7 @@ export const Report: FC<reportProps> = (props) => {
                             minWidth: "100px",
                           }}
                         >
-                          {`${session?.reports[0]?.readingLevel}  / 10` ||
+                          {`${session?.report?.readingLevel}  / 10` ||
                             "No data"}
                         </Typography>{" "}
                       </ListItem>
@@ -507,7 +508,7 @@ export const Report: FC<reportProps> = (props) => {
                 </Grid>
               )}
             </Grid>
-            {session?.reports[0]?.homework && (
+            {session?.report?.homework && (
               <ListItem>
                 H.W:
                 <Typography
@@ -517,11 +518,11 @@ export const Report: FC<reportProps> = (props) => {
                     minWidth: "100px",
                   }}
                 >
-                  {session?.reports[0]?.homework || "No data"}
+                  {session?.report?.homework || "No data"}
                 </Typography>{" "}
               </ListItem>
             )}
-            {session?.reports[0]?.notes && (
+            {session?.report?.notes && (
               <ListItem>
                 Notes:{" "}
                 <Typography
@@ -531,7 +532,7 @@ export const Report: FC<reportProps> = (props) => {
                     minWidth: "100px",
                   }}
                 >
-                  {session?.reports[0]?.notes || "No data"}
+                  {session?.report?.notes || "No data"}
                 </Typography>{" "}
               </ListItem>
             )}
