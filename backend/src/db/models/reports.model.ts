@@ -6,8 +6,6 @@ import Documents from './documents.model';
 class Reports extends Model {
   public id!: number;
 
-  public documentId?: number[];
-
   public bookId?: number;
 
   public userId?: number;
@@ -33,14 +31,6 @@ class Reports extends Model {
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
-        },
-        documentId: {
-          type: DataTypes.ARRAY(DataTypes.INTEGER),
-          allowNull: true,
-          references: {
-            model: Documents,
-            key: 'id',
-          },
         },
         userId: {
           type: DataTypes.INTEGER,

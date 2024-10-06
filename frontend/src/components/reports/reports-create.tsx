@@ -124,12 +124,12 @@ const CreateReport: FC<CreateReportProps> = (props) => {
       return { id: 0, success: false };
     }
   };
-  const updateReport = async (values: any): Promise<{ success: boolean }> => {
+  const updateReport = async (): Promise<{ success: boolean }> => {
     const load = toast.loading("updateReports");
 
     try {
       if (reportId !== 0) {
-        await reportApi.updateReport(reportId, { documentId: values });
+        // await reportApi.updateReport(reportId, values );
 
         toast.dismiss(load);
         toast.success("update Report");
@@ -217,15 +217,18 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         display: "flex",
         flexDirection: "column",
         bgcolor: "#CAF0F8",
+        overflowX: "hidden",
       }}
     >
       <Paper
         elevation={9}
         sx={{
           display: "flex",
+          alignItems: "center",
           flexDirection: "column",
-          p: "20px 20px",
-          width: "85%",
+          p: "10px 10px",
+          mr: 1,
+          width: "95%",
 
           bgcolor: "#CAF0F8",
         }}
@@ -939,11 +942,11 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                   />
                 ))}
               </div>
-              <Divider sx={{ mb: 1, mt: 2 }} />
+              <Divider sx={{ mb: 1, mt: 2, mr: 1 }} />
               <div style={{ textAlign: "center" }}>
                 <LoadingButton
                   type="submit"
-                  onClick={() => updateReport(documentId)}
+                  onClick={() => updateReport()}
                   sx={{
                     "& .MuiInputBase-root": {
                       height: 40,

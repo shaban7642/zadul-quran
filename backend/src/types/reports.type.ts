@@ -1,6 +1,5 @@
 export interface Report {
   id: number;
-  documentId?: number[];
   userId?: number;
   sessionId?: number;
   date?: Date;
