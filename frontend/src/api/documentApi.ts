@@ -25,7 +25,7 @@ class DocumentApi {
     documentType: any,
     documentData: any,
     userId: number,
-    reportId: number
+    reportId?: number
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
