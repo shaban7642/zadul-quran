@@ -38,7 +38,7 @@ export type Session = {
   studentId: string;
   teacherId: string;
   toDate: string;
-  dayOfWeek: [number];
+  dayOfWeek: number[];
 
   endTime: string;
   title: string;

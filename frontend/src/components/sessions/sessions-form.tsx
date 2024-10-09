@@ -118,6 +118,7 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
   }, []);
   useEffect(() => {
     if (session) {
+      console.log(session);
       formik.setValues(session);
     }
   }, [session]);
@@ -387,7 +388,11 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                 <TextField
                   label="Day of week"
                   name="dayOfWeek"
-                  value={formik.values.dayOfWeek}
+                  value={
+                    Array.isArray(formik.values.dayOfWeek)
+                      ? formik.values.dayOfWeek
+                      : []
+                  } // Ensure dayOfWeek is an array
                   error={Boolean(
                     formik.errors.dayOfWeek && formik.touched.dayOfWeek
                   )}
