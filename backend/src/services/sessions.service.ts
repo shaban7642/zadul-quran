@@ -63,7 +63,7 @@ class SessionsService {
         const currentDate = new Date(start);
 
         // Adjust currentDate to the first occurrence of targetDay
-        while (currentDate.getDay() !== targetDay) {
+        while (currentDate.getDay() !== targetDay - 1) {
           currentDate.setDate(currentDate.getDate() + 1);
         }
 
@@ -76,7 +76,6 @@ class SessionsService {
 
       // Now, create sessions for each valid date in the `result`
       for (const sessionDate of result) {
-        console.log('test');
         await this.sessionsModel.create(
           {
             title,
