@@ -69,7 +69,6 @@ class SessionsService {
 
         // Loop through the dates, adding 7 days at a time, until we pass `end`
         while (currentDate <= end) {
-          console.log('test');
           result.push(new Date(currentDate).toISOString()); // Save the date
           currentDate.setDate(currentDate.getDate() + 7);
         }
@@ -77,6 +76,7 @@ class SessionsService {
 
       // Now, create sessions for each valid date in the `result`
       for (const sessionDate of result) {
+        console.log('test');
         await this.sessionsModel.create(
           {
             title,
