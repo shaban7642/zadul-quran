@@ -1,23 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Typography from "@mui/material/Typography";
-import { Field, useFormik } from "formik";
-import {
-  Box,
-  TextField,
-  FormControl,
-  MenuItem,
-  Dialog,
-  Grid,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  useMediaQuery,
-  Drawer,
-} from "@mui/material";
+import { Box, useMediaQuery, Drawer } from "@mui/material";
 import { Theme } from "@mui/material/styles";
-import LoadingButton from "@mui/lab/LoadingButton";
-import * as yup from "yup";
 import toast from "react-hot-toast";
 import { userApi } from "../../api/userApi";
 import FullCalendar from "@fullcalendar/react";
@@ -27,16 +10,10 @@ import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import { useMounted } from "../../hooks/use-mounted";
-import { deptApi } from "../../api/deptApi";
 import { sessionApi } from "../../api/sessionsApi";
 import { SessionListFilters } from "./sessions-list-filters";
-import { SessionListInner } from "./sessions-table";
 import { useAuth } from "../../hooks/use-auth";
 import moment from "moment";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
 import { SessionForm } from "./sessions-form";
 
 export const sessionMethods = [{ value: "zoom", label: "zoom" }];

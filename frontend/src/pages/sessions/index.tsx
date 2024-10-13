@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 import { NextPage } from "next";
-import { Box, Tab, Typography } from "@mui/material";
+import { Box, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CreateSession from "../../components/sessions/sessions-create";
 import { SessionsTable } from "../../components/sessions/sessions-table";
 import { AuthGuard } from "../../components/auth/auth-guard";
-import { OwnerGuard } from "../../components/auth/owner-guard";
 
 const Session: NextPage = () => {
   const [value, setValue] = useState("1");

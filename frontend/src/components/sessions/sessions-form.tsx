@@ -347,7 +347,7 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                   label="From Date & Start Time"
                   value={fromDate}
                   onChange={(newValue: any) => {
-                    setFromDate(newValue?.$d);
+                    setFromDate(newValue);
                   }}
                 />
               </LocalizationProvider>

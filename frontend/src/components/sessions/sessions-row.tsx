@@ -73,7 +73,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
       "no data",
     `${row?.patch?.student?.firstName} ${row?.patch?.student?.lastName}` ||
       "no data",
-    <Chip label={row?.status} color={statusColor} /> || "no data",
+    row?.status ? <Chip label={row?.status} color={statusColor} /> : "no data",
 
     `${moment(row?.startedAt).format("YYYY-MM-DD hh:mm A")}` || "no data",
     `${moment(row?.endedAt).format("YYYY-MM-DD hh:mm A")}` || "no data",
