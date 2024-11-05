@@ -35,7 +35,7 @@ const weekDays = [
   { value: 4, label: "Thursday" },
   { value: 5, label: "Friday" },
   { value: 6, label: "Saturday" },
-  { value: 7, label: "Sunday" },
+  { value: 0, label: "Sunday" },
 ];
 
 interface SessionFormProps {
