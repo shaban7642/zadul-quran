@@ -63,7 +63,7 @@ class SessionsService {
         const currentDate = new Date(start);
 
         // Adjust currentDate to the first occurrence of targetDay
-        while (currentDate.getDay() !== targetDay - 1) {
+        while (currentDate.getDay() !== targetDay) {
           currentDate.setDate(currentDate.getDate() + 1);
         }
 
