@@ -47,7 +47,7 @@ export const Report: FC<reportProps> = (props) => {
         <Chip label="Primary Details" sx={{ fontWeight: "600" }} />
       </Divider>
       <Grid container component={List}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={7}>
           <ListItem>
             Teacher:{" "}
             <Typography
@@ -106,7 +106,7 @@ export const Report: FC<reportProps> = (props) => {
             </Typography>{" "}
           </ListItem>
           <ListItem>
-            Started At:
+            Teacher Joined At:
             <Typography
               color={"black"}
               sx={{
@@ -115,12 +115,11 @@ export const Report: FC<reportProps> = (props) => {
               }}
             >
               {" "}
-              {moment(session?.startedAt).format("YYYY-MM-DD hh:mm A") ||
-                "no data"}
+              {moment(session?.startedAt).format("hh:mm A") || "no data"}
             </Typography>{" "}
           </ListItem>
           <ListItem>
-            Joined At:
+            Student Joined At:
             <Typography
               color={"black"}
               sx={{
@@ -129,12 +128,11 @@ export const Report: FC<reportProps> = (props) => {
               }}
             >
               {" "}
-              {moment(session?.joinedAt).format("YYYY-MM-DD hh:mm A") ||
-                "no data"}
+              {moment(session?.joinedAt).format("hh:mm A") || "no data"}
             </Typography>{" "}
           </ListItem>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={5}>
           <ListItem>
             Student:{" "}
             <Typography

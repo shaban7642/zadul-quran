@@ -185,6 +185,11 @@ class SessionsController {
         // Add the time to the date
         date.set({ hour: hours, minute: minutes, second: seconds });
 
+        const isLessThanFiveMinutesAgo = moment(date)
+          .subtract(5, 'minutes')
+          .tz('UTC')
+          .isBefore(moment.tz('UTC'));
+        console.log(session.id, isLessThanFiveMinutesAgo);
         const isLessThanHalfDurationAgo = moment(date)
           .add(session?.sessionType?.duration / 2, 'minutes')
           .tz('UTC')
@@ -192,8 +197,19 @@ class SessionsController {
 
         if (
           session?.sessionType &&
-          isLessThanHalfDurationAgo &&
           session?.status === 'waiting' &&
+          isLessThanFiveMinutesAgo
+        ) {
+          await this.sessionsService.update(
+            { where: { id: session.id } },
+            { status: 'running' }
+          );
+          return { ...session, status: 'running' };
+        }
+        if (
+          session?.sessionType &&
+          isLessThanHalfDurationAgo &&
+          session?.status === 'running' &&
           session?.startedAt === null
         ) {
           await this.sessionsService.update(

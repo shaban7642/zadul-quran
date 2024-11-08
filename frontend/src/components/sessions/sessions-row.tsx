@@ -193,15 +193,8 @@ export const SessionsRow: FC<RowProps> = (props) => {
           }}
         >
           <Box sx={{ display: "flex" }}>
-            {row?.status === "waiting" &&
-              moment(
-                `${row?.date.substr(0, 11)}${row.startTime}${row.date.substr(
-                  19,
-                  24
-                )}`
-              )
-                .subtract(5, "minutes")
-                .isBefore(moment()) &&
+            {row?.status === "running" &&
+              row?.startedAt === null &&
               row?.zoomSessionMeetings?.length < 1 &&
               user?.role?.name !== "student" &&
               user?.role?.name !== "parent" && (
@@ -209,7 +202,6 @@ export const SessionsRow: FC<RowProps> = (props) => {
                   variant="contained"
                   onClick={() => {
                     updateSession(row.id, {
-                      status: "running",
                       startedAt: new Date(),
                     });
                     handleOpenZoomLink();
@@ -222,12 +214,33 @@ export const SessionsRow: FC<RowProps> = (props) => {
               )}
             {row?.status === "running" && (
               <>
+                {user?.role?.name !== "student" &&
+                  user?.role?.name !== "parent" &&
+                  row?.startedAt !== null && (
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => {
+                        handleOpenCreateReport();
+                      }}
+                      sx={{
+                        fontSize: 12,
+                        mr: 1,
+                      }}
+                      size="small"
+                    >
+                      End
+                    </Button>
+                  )}
                 {row?.zoomSessionMeetings?.length < 1 && (
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="success"
                     onClick={() => {
-                      if (user?.role?.name === "student") {
+                      if (
+                        user?.role?.name === "student" &&
+                        row?.joinedAt === null
+                      ) {
                         updateSession(row.id, {
                           joinedAt: new Date(),
                         });
@@ -235,30 +248,16 @@ export const SessionsRow: FC<RowProps> = (props) => {
 
                       handleOpenZoomLink();
                     }}
-                    sx={{ fontSize: 12, mr: 1 }}
+                    sx={{
+                      fontSize: 12,
+                      mr: 1,
+                      backgroundColor: "green",
+                    }}
                     size="small"
                   >
                     Join
                   </Button>
                 )}
-                {user?.role?.name !== "student" &&
-                  user?.role?.name !== "parent" && (
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => {
-                        handleOpenCreateReport();
-                      }}
-                      sx={{
-                        fontSize: 12,
-                        mr: 1,
-                        backgroundColor: "green",
-                      }}
-                      size="small"
-                    >
-                      End
-                    </Button>
-                  )}
               </>
             )}
 
