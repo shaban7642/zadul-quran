@@ -185,27 +185,50 @@ class SessionsController {
         // Add the time to the date
         date.set({ hour: hours, minute: minutes, second: seconds });
 
-        const isLessThanFiveMinutesAgo = moment(date)
-          .subtract(5, 'minutes')
-          .tz('UTC')
-          .isBefore(moment.tz('UTC'));
-        console.log(session.id, isLessThanFiveMinutesAgo);
         const isLessThanHalfDurationAgo = moment(date)
           .add(session?.sessionType?.duration / 2, 'minutes')
           .tz('UTC')
           .isBefore(moment.tz('UTC'));
 
+        // Create a moment object for the session start time
+        const sessionStartTime = moment(session.date)
+          .set({
+            hour: hours,
+            minute: minutes,
+            second: seconds,
+          })
+          .tz('UTC');
+
+        // Get current time in UTC
+        const currentTime = moment.tz('UTC');
+
+        // Calculate the difference in minutes
+        const minutesUntilStart = sessionStartTime.diff(currentTime, 'minutes');
+
+        console.log(`Session ${session.id}:`, {
+          status: session.status,
+          startTime: sessionStartTime.format(),
+          currentTime: currentTime.format(),
+          minutesUntilStart,
+        });
+
+        // Check if we're within 5 minutes of start time
+        const isNearStartTime =
+          minutesUntilStart <= 5 && minutesUntilStart >= 0;
+
         if (
           session?.sessionType &&
           session?.status === 'waiting' &&
-          isLessThanFiveMinutesAgo
+          isNearStartTime
         ) {
+          console.log(`Updating session ${session.id} to running`);
           await this.sessionsService.update(
             { where: { id: session.id } },
             { status: 'running' }
           );
           return { ...session, status: 'running' };
         }
+
         if (
           session?.sessionType &&
           isLessThanHalfDurationAgo &&
