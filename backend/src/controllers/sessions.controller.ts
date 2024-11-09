@@ -205,16 +205,15 @@ class SessionsController {
         // Calculate the difference in minutes
         const minutesUntilStart = sessionStartTime.diff(currentTime, 'minutes');
 
-        console.log(`Session ${session.id}:`, {
-          status: session.status,
-          startTime: sessionStartTime.format(),
-          currentTime: currentTime.format(),
-          minutesUntilStart,
-        });
+        // console.log(`Session ${session.id}:`, {
+        //   status: session.status,
+        //   startTime: sessionStartTime.format(),
+        //   currentTime: currentTime.format(),
+        //   minutesUntilStart,
+        // });
 
         // Check if we're within 5 minutes of start time
-        const isNearStartTime =
-          minutesUntilStart <= 5 && minutesUntilStart >= 0;
+        const isNearStartTime = minutesUntilStart <= 5;
 
         if (
           session?.sessionType &&
