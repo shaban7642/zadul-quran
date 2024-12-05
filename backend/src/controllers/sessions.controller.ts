@@ -200,13 +200,6 @@ class SessionsController {
         // Calculate the difference in minutes
         const minutesUntilStart = sessionStartTime.diff(currentTime, 'minutes');
 
-        // console.log(`Session ${session.id}:`, {
-        //   status: session.status,
-        //   startTime: sessionStartTime.format(),
-        //   currentTime: currentTime.format(),
-        //   minutesUntilStart,
-        // });
-
         // Check if we're within 5 minutes of start time
         const isNearStartTime = minutesUntilStart <= 5;
 
@@ -242,6 +235,9 @@ class SessionsController {
           session?.status === 'running' &&
           session?.joinedAt === null
         ) {
+          console.log(
+            `Updating session ${halfDurationPassed} to absent ${currentTime}`
+          );
           await this.sessionsService.update(
             { where: { id: session.id } },
             { status: 'absent' }
