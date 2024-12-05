@@ -208,7 +208,6 @@ class SessionsController {
           session?.status === 'waiting' &&
           isNearStartTime
         ) {
-          console.log(`Updating session ${session.id} to running`);
           await this.sessionsService.update(
             { where: { id: session.id } },
             { status: 'running' }
@@ -235,9 +234,6 @@ class SessionsController {
           session?.status === 'running' &&
           session?.joinedAt === null
         ) {
-          console.log(
-            `Updating session ${halfDurationPassed} to absent ${currentTime}`
-          );
           await this.sessionsService.update(
             { where: { id: session.id } },
             { status: 'absent' }
