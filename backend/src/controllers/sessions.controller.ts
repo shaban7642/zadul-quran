@@ -179,17 +179,6 @@ class SessionsController {
           .split(':')
           .map(Number);
 
-        // Create a moment object from session.date
-        const date = moment(session.date);
-
-        // Add the time to the date
-        date.set({ hour: hours, minute: minutes, second: seconds });
-
-        const isLessThanHalfDurationAgo = moment(date)
-          .add(session?.sessionType?.duration / 2, 'minutes')
-          .tz('UTC')
-          .isBefore(moment.tz('UTC'));
-
         // Create a moment object for the session start time
         const sessionStartTime = moment(session.date)
           .set({
@@ -201,6 +190,12 @@ class SessionsController {
 
         // Get current time in UTC
         const currentTime = moment.tz('UTC');
+
+        // Check if half duration has passed since start time
+        const halfDurationPassed = moment(sessionStartTime)
+          .add(session?.sessionType?.duration / 2, 'minutes')
+          .tz('UTC')
+          .isBefore(currentTime);
 
         // Calculate the difference in minutes
         const minutesUntilStart = sessionStartTime.diff(currentTime, 'minutes');
@@ -228,9 +223,10 @@ class SessionsController {
           return { ...session, status: 'running' };
         }
 
+        // Mark as expired or absent if half duration has passed and session is still running
         if (
           session?.sessionType &&
-          isLessThanHalfDurationAgo &&
+          halfDurationPassed &&
           session?.status === 'running' &&
           session?.startedAt === null
         ) {
@@ -242,7 +238,7 @@ class SessionsController {
         }
         if (
           session?.sessionType &&
-          isLessThanHalfDurationAgo &&
+          halfDurationPassed &&
           session?.status === 'running' &&
           session?.joinedAt === null
         ) {
@@ -252,6 +248,7 @@ class SessionsController {
           );
           return { ...session, status: 'absent' };
         }
+
         return session;
       });
 
