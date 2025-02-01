@@ -216,7 +216,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        bgcolor: "#CAF0F8",
+        bgcolor: "#FFF",
         overflowX: "hidden",
       }}
     >
@@ -226,11 +226,11 @@ const CreateReport: FC<CreateReportProps> = (props) => {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-          p: "10px 10px",
+          p: "15px 15px",
           mr: 1,
           width: "95%",
 
-          bgcolor: "#CAF0F8",
+          bgcolor: "#FFF",
         }}
       >
         {" "}
@@ -325,7 +325,6 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                         value={formik.values.bookId}
                         onChange={(event) => {
                           formik.setFieldValue("bookId", event.target.value);
-                          console.log(event.target.value);
                         }}
                       >
                         {documents?.map((book) => (
@@ -849,6 +848,7 @@ const CreateReport: FC<CreateReportProps> = (props) => {
                     },
                     mr: 1,
                   }}
+                  required
                   error={Boolean(
                     formik.touched.homework && formik.errors.homework
                   )}

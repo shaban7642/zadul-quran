@@ -104,9 +104,6 @@ const CreateSession = () => {
     }
   };
 
-  const handleWeekendsToggle = () => {
-    // setWeekendsVisible(!weekendsVisible);
-  };
 
   const handleDateSelect = (selectInfo: any) => {
     // let title = prompt('Please enter a new title for your event');
@@ -155,11 +152,6 @@ const CreateSession = () => {
     setOpenFilters(false);
   };
 
-  useEffect(() => {
-    // This code will execute whenever `value` changes
-    // `value` will be the previous state value
-    console.log("Previous value:", filters);
-  }, [filters]);
 
   return (
     <Box sx={{ margin: 1, display: "flex", width: "100%" }}>

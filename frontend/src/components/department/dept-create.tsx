@@ -23,7 +23,6 @@ const CreateDept: FC<CreateDeptProps> = (props) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formValues);
     if (formValues !== '') {
       const { success } = await createDept(formValues);
       if (success) {

@@ -20,9 +20,6 @@ import {
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import * as yup from "yup";
-import { get } from "lodash";
-import { useRouter } from "next/router";
-import { Data } from "./users-table";
 import { userApi } from "../../api/userApi";
 import { rolesApi } from "../../api/rolesApi";
 import { useMounted } from "../../hooks/use-mounted";
@@ -31,7 +28,8 @@ import moment from "moment";
 import { sessionApi } from "../../api/sessionsApi";
 import { SessionForm } from "../sessions/sessions-form";
 import { useAuth } from "../../hooks/use-auth";
-import { Dayjs } from "dayjs";
+import { useRouter } from "next/router";
+
 export type Session = {
   departmentId: string;
   sessionTypeId: string;
@@ -55,12 +53,14 @@ interface profileProps {
 export const Profile: FC<profileProps> = (props) => {
   const { id } = props;
   const { user } = useAuth();
+  const router = useRouter();
   const [roles, setRoles] = useState<RoleId[]>([]);
   const [depts, setDepts] = useState([]);
   const genders = ["male", "female"];
   const [open, setOpen] = useState(false);
   const [session, setSession] = useState<Session>();
   const isMounted = useMounted();
+  
   const [userData, setUserData] = useState<any>({
     id: 1,
     roleId: 1,
@@ -249,6 +249,9 @@ export const Profile: FC<profileProps> = (props) => {
     }
   };
 
+  const handleOpenClasses = () => {
+    router.push(`/sessions?student=${userData?.id}`)
+  };
   const handleOpen = () => {
     setOpen(true);
   };
@@ -364,6 +367,22 @@ export const Profile: FC<profileProps> = (props) => {
             {userData?.roleId === 4 &&
               user?.role?.name === "super_admin" &&
               session && (
+                <>
+                <LoadingButton
+                  type="button"
+                  onClick={() => handleOpenClasses()}
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                      width: "100%",
+                    },
+                    m: 0.5,
+                    p: 1,
+                  }}
+                  variant="contained"
+                >
+                  View Classes
+                </LoadingButton>
                 <LoadingButton
                   type="button"
                   onClick={() => handleOpen()}
@@ -379,6 +398,7 @@ export const Profile: FC<profileProps> = (props) => {
                 >
                   Renew Subscription
                 </LoadingButton>
+                </>
               )}
           </Paper>
         </Grid>

@@ -41,7 +41,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
   const [temp, setTemp] = useState<User[]>([]);
   const [page, setPage] = useState(0);
   const [usersCount, setUsersCount] = useState(2);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   //initialise search value
   const [searchValue, setSearchValue] = useState("");
 
@@ -255,7 +255,7 @@ export const StudentsTable: FC<StudentsTableProps> = (props) => {
         <TablePagination
           component="div"
           count={usersCount}
-          rowsPerPageOptions={[10, 25, 50]}
+          rowsPerPageOptions={[10, 50, 100, 200, 500]}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}

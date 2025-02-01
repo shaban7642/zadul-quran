@@ -115,6 +115,8 @@ class SessionsController {
         }
       }
 
+      const sortType = searchValues?.status === 'waiting' ? 'asc' : 'desc';
+
       const query: FindOptions = {
         attributes,
         where: { ...searchParams },
@@ -161,8 +163,8 @@ class SessionsController {
           },
         ],
         order: [
-          ['date', 'asc'],
-          ['startTime', 'asc'],
+          ['date', sortType],
+          ['startTime', sortType],
         ], // Static Order By Date and startTime
         ...getPagination(limit, offset),
         // ...getOrderOptions([

@@ -1,16 +1,18 @@
-import { ThemeProvider } from '@mui/material/styles';
-import type { AppProps } from 'next/app';
-import { Toaster } from 'react-hot-toast';
-import { createTheme } from '../theme';
-import { AuthConsumer, AuthProvider } from '../contexts/jwt-context';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import moment from 'moment';
-import 'moment-timezone';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { NextPage } from 'next';
-import { FC, useEffect, useState } from 'react';
-import Head from 'next/head';
+import { ThemeProvider } from "@mui/material/styles";
+import type { AppProps } from "next/app";
+import { Toaster } from "react-hot-toast";
+import { createTheme } from "../theme";
+import { AuthConsumer, AuthProvider } from "../contexts/jwt-context";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import moment from "moment";
+import "moment-timezone";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { NextPage } from "next";
+import { FC, useEffect, useState } from "react";
+import Head from "next/head";
+
+import "./global-style.css";
+import { LogicContext } from "../contexts/logic-context";
 
 type EnhancedAppProps = AppProps & {
     Component: NextPage;
@@ -35,13 +37,13 @@ const App: FC<EnhancedAppProps> = (props) => {
             <Head>
                 <title>Zadul Quran</title>
                 <meta
-                    name='viewport'
-                    content='initial-scale=1, width=device-width'
+                    name="viewport"
+                    content="initial-scale=1, width=device-width"
                 />
-                <meta name='description' content='Zadul Quran ' />
+                <meta name="description" content="Zadul Quran " />
                 <meta
-                    name='keywords'
-                    content='Zadul Quran, zadulquran, zadulQuran, Quran, quran, Zad, zad,Zadul,zadul'
+                    name="keywords"
+                    content="Zadul Quran, zadulquran, zadulQuran, Quran, quran, Zad, zad,Zadul,zadul"
                 />
             </Head>
             <LocalizationProvider
@@ -50,13 +52,15 @@ const App: FC<EnhancedAppProps> = (props) => {
             >
                 <ThemeProvider theme={createTheme()}>
                     <AuthProvider>
-                        <Toaster position='top-center' />
-                        <AuthConsumer>
-                            {(auth) =>
-                                auth.isInitialized &&
-                                getLayout(<Component {...pageProps} />)
-                            }
-                        </AuthConsumer>
+                        <Toaster position="top-center" />
+                        <LogicContext>
+                            <AuthConsumer>
+                                {(auth) =>
+                                    auth.isInitialized &&
+                                    getLayout(<Component {...pageProps} />)
+                                }
+                            </AuthConsumer>
+                        </LogicContext>
                     </AuthProvider>
                 </ThemeProvider>
             </LocalizationProvider>
