@@ -41,11 +41,11 @@ const weekDays = [
 interface SessionFormProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    session?: Session;
+    sessions?: Session[];
     createSession: (values: any) => Promise<{ success: boolean }>;
 }
 export const SessionForm: FC<SessionFormProps> = (props) => {
-    const { open, setOpen, session, createSession } = props;
+    const { open, setOpen, sessions, createSession } = props;
     const isMounted = useMounted();
 
     const [fromDate, setFromDate] = useState<Dayjs | null>(null);
@@ -118,10 +118,11 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
         getSessionTypes();
     }, []);
     useEffect(() => {
-        if (session) {
-            formik.setValues(session);
+        if (sessions?.length === 1) {
+            formik.setValues({ ...sessions[0], frontId: sessions[0].frontId || "" });
         }
-    }, [session]);
+    }, [sessions]);
+
     const handleClose = () => {
         formik.resetForm();
         setOpen(false);
@@ -139,6 +140,7 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
             endTime: "",
             title: "",
             sessionMethod: "",
+            frontId: "",
         },
 
         validationSchema: yup.object({
@@ -162,6 +164,7 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
 
             const { success } = await createSession({
                 ...values,
+                frontId: "",
                 fromDate,
                 startTime: startTime.utc().format("HH:mm"),
                 endTime: endTime.utc().format("HH:mm"),
@@ -213,6 +216,39 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                 </Typography>
             </DialogTitle>
             <Box sx={{ p: 2, bgcolor: "white" }}>
+                {/* map on sessions and show the session title  */}
+                {sessions?.map((session: Session) => (
+                    <Typography
+                        key={session.frontId} // Use session.id as key
+                        variant="h6"
+                        sx={{
+                            padding: "5px 0",
+                            borderBottom: "1px solid #ccc",
+                            display: "inline-block",
+                            width: "20%",
+                            textAlign: "center",
+                            cursor: "pointer",
+                            backgroundColor:
+                                formik.values?.frontId === session?.frontId
+                                    ? "gray"
+                                    : "transparent",
+                            color:
+                                formik.values?.frontId === session?.frontId
+                                    ? "white"
+                                    : "inherit",
+                            "&:hover": {
+                                backgroundColor: "gray",
+                                color: "white",
+                            },
+                        }}
+                        onClick={() =>
+                            formik.setValues({ ...session, frontId: session.frontId || "" })
+                        }
+                    >
+                        {session.title}
+                    </Typography>
+                ))}
+
                 <DialogContent sx={{ mt: 1 }}>
                     <Grid container spacing={2}>
                         <Grid item lg={6} md={6} sm={12} xs={12}>
