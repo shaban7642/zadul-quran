@@ -25,7 +25,7 @@ const SessionsGroupComponent = ({
     contentRef: any;
     handleGetSessions: any;
     reportFlag: boolean;
-    setReoprtFlag: () => void;
+    setReoprtFlag: any;
 }) => {
     const [selectedDate, setSelectedDate] = useState("");
     const sessionsGroupByDate = sessions?.reduce((acc: any, session: any) => {

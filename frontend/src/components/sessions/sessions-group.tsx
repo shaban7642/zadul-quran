@@ -317,7 +317,7 @@ export const SessionsGroup = () => {
                     </Button>
                     <Button
                         endIcon={<SaveIcon fontSize="small" />}
-                        onClick={handleExportToPdf}
+                        onClick={() => handleExportToPdf()}
                         sx={{ ml: 1, mt: 1 }}
                         variant="outlined"
                     >
