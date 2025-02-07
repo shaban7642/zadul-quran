@@ -35,7 +35,7 @@ export interface HeadCell {
     numeric: boolean;
 }
 
-export const DocumentTable = ({ pageName }: { pageName: string }) => {
+export const DocumentTable = ({ pageName }: { pageName?: string }) => {
     const [page, setPage] = useState(0);
     const [documents, setDocuments] = useState<Document[]>([]);
     const [documentCount, setDocumentsCount] = useState(documents?.length);
