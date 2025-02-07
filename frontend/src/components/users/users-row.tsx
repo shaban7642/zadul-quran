@@ -91,7 +91,6 @@ export const UsersRow: FC<RowProps> = (props) => {
       const { success } = await updateUser(row.id, resultObject);
       if (success) {
         setOpen(false);
-        console.log("done");
       }
     },
   });

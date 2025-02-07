@@ -1,31 +1,11 @@
-import {
-    ChangeEvent,
-    FC,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
-import { TableHeads } from "./sessions-heads";
-import { styled, Theme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import SaveIcon from "@mui/icons-material/Save";
-import {
-    Button,
-    Card,
-    Chip,
-    Divider,
-    Tab,
-    Tabs,
-    useMediaQuery,
-} from "@mui/material";
-import { SessionsRow } from "./sessions-row";
+import { Button, Card, Chip, Divider, Tab, Tabs } from "@mui/material";
 import { useMounted } from "../../hooks/use-mounted";
 import toast from "react-hot-toast";
 import { sessionApi } from "../../api/sessionsApi";
@@ -35,6 +15,7 @@ import { Filter as FilterIcon } from "../../icons/filter";
 import { useAuth } from "../../hooks/use-auth";
 import useSavedState from "../../hooks/useSavedState";
 import { useReactToPrint } from "react-to-print";
+import SessionsGroupComponent from "./sessions-group-component";
 
 export interface Data {
     name: string;
@@ -49,9 +30,6 @@ export interface HeadCell {
     id: keyof Data;
     label: string;
     numeric: boolean;
-}
-interface SessionsTableProps {
-    roleId?: number;
 }
 
 export const SessionListInner = styled("div", {
@@ -77,11 +55,10 @@ export const SessionListInner = styled("div", {
         }),
     }),
 }));
-export const SessionsTable: FC<SessionsTableProps> = (props) => {
+export const SessionsGroup = () => {
     const isMounted = useMounted();
     const router = useRouter();
     const { user } = useAuth();
-    const [selected, setSelected] = useState<number[]>([]);
     const initialFilters: any = {
         date: {
             from: null,
@@ -113,72 +90,6 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const [openFilters, setOpenFilters] = useState<boolean>(false);
 
     const [reportFlag, setReoprtFlag] = useState<boolean>(false);
-
-    const statuses: readonly string[] = [
-        "waiting",
-        "expired",
-        "running",
-        "done",
-        "cancelled",
-        "absent",
-        "rescheduled",
-    ];
-    const headCells: readonly any[] = [
-        {
-            id: "teacher",
-            numeric: false,
-            disablePadding: true,
-            label: "Teacher",
-        },
-        {
-            id: "student",
-            numeric: false,
-            disablePadding: true,
-            label: "Student",
-        },
-        {
-            id: "status",
-            numeric: false,
-            disablePadding: true,
-            label: "Status",
-        },
-        {
-            id: "startedAt",
-            numeric: false,
-            disablePadding: true,
-            label: "Started At",
-        },
-        {
-            id: "endedAt",
-            numeric: false,
-            disablePadding: true,
-            label: "Ended At",
-        },
-        {
-            id: "subject",
-            numeric: true,
-            disablePadding: false,
-            label: "Subject",
-        },
-        {
-            id: "date",
-            numeric: true,
-            disablePadding: false,
-            label: "Date",
-        },
-        {
-            id: "startTime",
-            numeric: true,
-            disablePadding: false,
-            label: "Start Time",
-        },
-        {
-            id: "endTime",
-            numeric: true,
-            disablePadding: false,
-            label: "End Time",
-        },
-    ];
 
     const tabs: any[] = [
         {
@@ -236,39 +147,14 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
             ?.count,
     }));
 
-    const handleSelectAllClick = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        if (event.target.checked) {
-            const newSelected = sessions.map((n) => n.id);
-            setSelected(newSelected);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-        const selectedIndex = selected.indexOf(id);
-        let newSelected: number[] = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-        setSelected(newSelected);
-    };
     const handleTabsChange = (event: ChangeEvent<{}>, value: any): void => {
         setCurrentTab(value);
         getSessions({ limit: rowsPerPage, offset: 0, status: value });
         // setViewParams({ ...viewParams, status: value, pageCount: 1, page: 0 });
+    };
+
+    const handleGetSessions = () => {
+        getSessions({ limit: rowsPerPage, offset: page, status: currentTab });
     };
 
     const getSessions = useCallback(
@@ -297,60 +183,6 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [isMounted, filters]
     );
-
-    const deleteSession = async (): Promise<{ success: boolean }> => {
-        const load = toast.loading("delete");
-        try {
-            const resp = await sessionApi.deleteSession(selected);
-            if (resp) {
-                toast.dismiss(load);
-                toast.success("deleteSessionSuccess");
-                getSessions({
-                    limit: rowsPerPage,
-                    offset: page,
-                    status: currentTab,
-                });
-                setSelected([]);
-                return { success: true };
-            } else {
-                toast.dismiss(load);
-                toast.error("deleteSessionFailed");
-                return { success: false };
-            }
-        } catch (err: any) {
-            toast.dismiss(load);
-            toast.error(err.message || "deleteSessionsFailed");
-            return { success: false };
-        }
-    };
-
-    const updateSession = async (
-        id: number,
-        values: any
-    ): Promise<{ success: boolean }> => {
-        const load = toast.loading("update");
-        try {
-            const resp = await sessionApi.updateSession(id, values);
-            if (resp) {
-                toast.dismiss(load);
-                toast.success("updateSessionSuccess");
-                getSessions({
-                    limit: rowsPerPage,
-                    offset: page,
-                    status: currentTab,
-                });
-                return { success: true };
-            } else {
-                toast.dismiss(load);
-                toast.error("updateSessionFailed");
-                return { success: false };
-            }
-        } catch (err: any) {
-            toast.dismiss(load);
-            toast.error(err.message || "updateSessionsFailed");
-            return { success: false };
-        }
-    };
 
     const getSessionTypes = useCallback(
         async () => {
@@ -485,7 +317,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                     </Button>
                     <Button
                         endIcon={<SaveIcon fontSize="small" />}
-                        onClick={handleExportToPdf}
+                        onClick={() => handleExportToPdf()}
                         sx={{ ml: 1, mt: 1 }}
                         variant="outlined"
                     >
@@ -618,62 +450,13 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                         />
                         <SessionListInner open={openFilters} />
                         <Box sx={{ width: "100%" }}>
-                            <TableContainer>
-                                <Table
-                                    ref={contentRef}
-                                    aria-labelledby="tableTitle"
-                                    size="small"
-                                >
-                                    <style>
-                                        {`
-                                            @media print {
-                                                body {
-                                                    -webkit-print-color-adjust: exact;
-                                                }
-                                                table {
-                                                    padding:10px
-                                                }
-                                                .no-print {
-                                                    display: none !important;
-                                                }
-                                            }
-                                        `}
-                                    </style>
-                                    <TableHeads
-                                        headCells={headCells}
-                                        numSelected={selected.length}
-                                        onSelectAllClick={handleSelectAllClick}
-                                        deleteSession={deleteSession}
-                                        rowCount={sessions.length}
-                                    />
-                                    <TableBody>
-                                        {sessions.map((row: any, index) => {
-                                            const isItemSelected =
-                                                selected.includes(row.id);
-                                            const labelId = `enhanced-table-checkbox-${index}`;
-                                            return (
-                                                <SessionsRow
-                                                    key={row?.id}
-                                                    row={row}
-                                                    handleClick={handleClick}
-                                                    isItemSelected={
-                                                        isItemSelected
-                                                    }
-                                                    labelId={labelId}
-                                                    updateSession={
-                                                        updateSession
-                                                    }
-                                                    statuses={statuses}
-                                                    setReoprtFlag={
-                                                        setReoprtFlag
-                                                    }
-                                                    reportFlag={reportFlag}
-                                                />
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            <SessionsGroupComponent
+                                sessions={sessions}
+                                contentRef={contentRef}
+                                handleGetSessions={handleGetSessions}
+                                reportFlag={reportFlag}
+                                setReoprtFlag={setReoprtFlag}
+                            />
                         </Box>
                     </Box>
                     <TablePagination
@@ -690,3 +473,5 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
         </Box>
     );
 };
+
+export default SessionsGroup;

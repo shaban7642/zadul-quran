@@ -1,6 +1,6 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import type { FC, FormEvent, MutableRefObject } from 'react';
-import PropTypes from 'prop-types';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import type { FC, FormEvent, MutableRefObject } from "react";
+import PropTypes from "prop-types";
 import {
     Box,
     Button,
@@ -15,28 +15,29 @@ import {
     TextField,
     Typography,
     useMediaQuery,
-} from '@mui/material';
-import type { Theme } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { LoadingButton } from '@mui/lab';
-import { Search as SearchIcon } from '../../icons/search';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ArrowRight } from '../../icons/arrow-right';
+} from "@mui/material";
+import type { Theme } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { LoadingButton } from "@mui/lab";
+import { Search as SearchIcon } from "../../icons/search";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { ArrowRight } from "../../icons/arrow-right";
 // import { giveAccess } from 'src/utils/component-guard';
 // import { Role } from 'src/shared/enums';
-import { debounce } from 'lodash';
-import { userApi } from '../../api/userApi';
-import { useMounted } from '../../hooks/use-mounted';
-import { deptApi } from '../../api/deptApi';
+import { debounce } from "lodash";
+import { userApi } from "../../api/userApi";
+import { useMounted } from "../../hooks/use-mounted";
+import { deptApi } from "../../api/deptApi";
+import { useRouter } from "next/router";
 
 export interface Filters {
     teacherId?: number | null;
     studentId?: number | null;
     departmentId?: number | null;
     date: {
-        from?: Date | '' | null;
-        to?: Date | '' | null;
+        from?: Date | "" | null;
+        to?: Date | "" | null;
     };
 }
 
@@ -55,33 +56,34 @@ interface SessionListFiltersProps {
 const FiltersDrawerDesktop = styled(Drawer)({
     flexShrink: 0,
     width: 305,
-    '& .MuiDrawer-paper': {
-        position: 'relative',
+    "& .MuiDrawer-paper": {
+        position: "relative",
         width: 305,
-        backgroundColor: 'white',
+        backgroundColor: "white",
     },
 });
 
 const FiltersDrawerMobile = styled(Drawer)({
-    maxWidth: '100%',
+    maxWidth: "100%",
     width: 305,
-    '& .MuiDrawer-paper': {
-        height: 'calc(100% - 64px)',
-        maxWidth: '100%',
+    "& .MuiDrawer-paper": {
+        height: "calc(100% - 64px)",
+        maxWidth: "100%",
         top: 64,
         width: 305,
     },
 });
 
 export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
+    const router = useRouter();
     const initialFilters: Filters = {
         date: {
-            from: '',
-            to: '',
+            from: "",
+            to: "",
         },
         teacherId: null,
         departmentId: null,
-        studentId: null,
+        studentId: Number(router?.query?.student) || null,
     };
     const isMounted = useMounted();
     const [teachers, setTeachers] = useState<any[]>([]);
@@ -116,7 +118,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
         departmentId: null,
         studentId: null,
     });
-    const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+    const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
 
     const handleTeacherChange = useRef(
         debounce((value) => {
@@ -208,8 +210,8 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                 const data: any = await userApi.getUsers(
                     rowsPerPage,
                     page,
-                    'teacher',
-                    'student'
+                    "teacher",
+                    "student"
                 );
 
                 if (isMounted()) {
@@ -233,7 +235,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
     const getSubjects = useCallback(
         async () => {
             try {
-                const data: any = await deptApi.getDepts('ALL', -1);
+                const data: any = await deptApi.getDepts("ALL", -1);
                 if (isMounted()) {
                     setSubjects(data.rows);
                 }
@@ -246,7 +248,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
     );
 
     useEffect(() => {
-        getUsers('ALL', -1);
+        getUsers("ALL", -1);
         getSubjects();
     }, []);
 
@@ -264,13 +266,13 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                 px: 3,
             }}
         >
-            <Box component='form'>
+            <Box component="form">
                 <TextField
-                    label='Teacher'
-                    name='teacherId'
+                    label="Teacher"
+                    name="teacherId"
                     value={filters.teacherId}
                     onKeyDown={(e: any) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                             e.preventDefault();
                             handleTeacherChange(e.target.value);
                         }
@@ -278,8 +280,8 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                     inputProps={{ ref: teacherIdRef }}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position='start'>
-                                <SearchIcon fontSize='small' />
+                            <InputAdornment position="start">
+                                <SearchIcon fontSize="small" />
                             </InputAdornment>
                         ),
                     }}
@@ -306,14 +308,14 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                     )}
                 </TextField>
             </Box>
-            <Box component='form'>
+            <Box component="form">
                 <TextField
                     sx={{ mt: 3 }}
-                    label='Student'
-                    name='studentId'
+                    label="Student"
+                    name="studentId"
                     value={filters.studentId}
                     onKeyDown={(e: any) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                             e.preventDefault();
                             handleStudentChange(e.target.value);
                         }
@@ -321,8 +323,8 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                     inputProps={{ ref: studentIdRef }}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position='start'>
-                                <SearchIcon fontSize='small' />
+                            <InputAdornment position="start">
+                                <SearchIcon fontSize="small" />
                             </InputAdornment>
                         ),
                     }}
@@ -349,14 +351,14 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                     )}
                 </TextField>
             </Box>
-            <Box component='form'>
+            <Box component="form">
                 <TextField
                     sx={{ mt: 3 }}
-                    label='Subject'
-                    name='departmentId'
+                    label="Subject"
+                    name="departmentId"
                     value={filters.departmentId}
                     onKeyDown={(e: any) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                             e.preventDefault();
                             handleDepartmentChange(e.target.value);
                         }
@@ -364,8 +366,8 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                     inputProps={{ ref: departmentIdRef }}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position='start'>
-                                <SearchIcon fontSize='small' />
+                            <InputAdornment position="start">
+                                <SearchIcon fontSize="small" />
                             </InputAdornment>
                         ),
                     }}
@@ -388,20 +390,20 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
             </Box>
 
             <Typography
-                color='textSecondary'
+                color="textSecondary"
                 sx={{ mt: 4 }}
-                variant='subtitle2'
+                variant="subtitle2"
             >
-                {'Date'}
+                {"Date"}
             </Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Box
                         sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            width: '100%',
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
                         }}
                     >
                         {/* <Box sx={{ pr: 1 }}> */}
@@ -415,10 +417,10 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                 renderInput={(params: any) => <TextField {...params} />}
               /> */}
                         <TextField
-                            label='from'
-                            name='from'
-                            type='date'
-                            sx={{ width: '50%' }}
+                            label="from"
+                            name="from"
+                            type="date"
+                            sx={{ width: "50%" }}
                             onChange={(e: any) => {
                                 handleUploadDateChange([
                                     e.target.value,
@@ -431,7 +433,7 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                             }}
                         />
                         {/* </Box> */}
-                        <ArrowRight fontSize='inherit' />{' '}
+                        <ArrowRight fontSize="inherit" />{" "}
                         {/* <Box sx={{ pl: 1 }}> */}
                         {/* <DatePicker
                 label={"to"}
@@ -444,10 +446,10 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
                 renderInput={(params: any) => <TextField {...params} />}
               /> */}
                         <TextField
-                            label='to'
-                            name='to'
-                            type='date'
-                            sx={{ width: '50%' }}
+                            label="to"
+                            name="to"
+                            type="date"
+                            sx={{ width: "50%" }}
                             value={filters.date.to as unknown as Date}
                             onChange={(e: any) => {
                                 handleUploadDateChange([
@@ -466,32 +468,31 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
             <LoadingButton
                 loading={loading}
                 sx={{ mt: 2 }}
-                variant='contained'
+                variant="contained"
                 onClick={() => {
                     const previousFilters = prevFiltersRef.current;
-                    console.log({ filters, previousFilters });
                     applyFilters(filters);
                 }}
             >
                 Apply Filters
             </LoadingButton>
-            <Button sx={{ mt: 2 }} variant='text' onClick={onClear}>
+            <Button sx={{ mt: 2 }} variant="text" onClick={onClear}>
                 Clear
             </Button>
         </Box>
     );
 
     if (isCreatePage) {
-        return open ? <Box>{content}</Box> : <Box sx={{ width: '0px' }}></Box>;
+        return open ? <Box>{content}</Box> : <Box sx={{ width: "0px" }}></Box>;
     }
 
     if (lgUp) {
         return (
             <FiltersDrawerDesktop
-                anchor='left'
+                anchor="left"
                 open={open}
                 SlideProps={{ container: containerRef?.current }}
-                variant='persistent'
+                variant="persistent"
                 {...other}
             >
                 {content}
@@ -501,12 +502,12 @@ export const SessionListFilters: FC<SessionListFiltersProps> = (props) => {
 
     return (
         <FiltersDrawerMobile
-            anchor='left'
+            anchor="left"
             ModalProps={{ container: containerRef?.current }}
             onClose={onClose}
             open={open}
             SlideProps={{ container: containerRef?.current }}
-            variant='temporary'
+            variant="temporary"
             {...other}
         >
             {content}

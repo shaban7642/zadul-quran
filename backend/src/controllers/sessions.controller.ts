@@ -115,6 +115,8 @@ class SessionsController {
         }
       }
 
+      const sortType = searchValues?.status === 'waiting' ? 'asc' : 'desc';
+
       const query: FindOptions = {
         attributes,
         where: { ...searchParams },
@@ -161,8 +163,8 @@ class SessionsController {
           },
         ],
         order: [
-          ['date', 'asc'],
-          ['startTime', 'asc'],
+          ['date', sortType],
+          ['startTime', sortType],
         ], // Static Order By Date and startTime
         ...getPagination(limit, offset),
         // ...getOrderOptions([
@@ -374,15 +376,14 @@ class SessionsController {
   ) => {
     try {
       const { studentId } = req.params;
+      const { forRenew = false } = req.query;
 
       if (!studentId) {
         return res.status(400).json({ message: 'studentId is required' });
       }
 
       const query: FindOptions = {
-        where: {
-          // '$patches.studentId$': studentId, // Searching by studentId within the Patches model
-        },
+        where: {},
         include: [
           {
             model: Patches,
@@ -391,27 +392,42 @@ class SessionsController {
                 model: UserModel,
                 as: 'student',
                 where: { id: studentId },
-                required: true, // Ensure the student is linked to the session
-                attributes: {
-                  exclude: ['password'],
-                },
+                required: true,
+                attributes: { exclude: ['password'] },
               },
             ],
             required: true,
           },
           { model: SessionTypesModel },
         ],
-        order: [['createdAt', 'DESC']], // Order by creation date in descending order
-        limit: 1, // Fetch only one session
+        order: [['createdAt', 'DESC']],
+        limit: forRenew ? 100 : 1,
       };
 
-      const session = await this.sessionsService.findOne(query);
+      const sessions = forRenew
+        ? await this.sessionsService.findAll(query)
+        : await this.sessionsService.findOne(query);
 
-      if (!session) {
+      if (!sessions || (Array.isArray(sessions) && sessions.length === 0)) {
         return res.status(404).json({ message: 'Session not found' });
       }
 
-      return res.status(200).json({ session });
+      if (forRenew) {
+        const uniqueSessions = [];
+        const seenPatches = new Map();
+
+        for (const session of sessions) {
+          if (!seenPatches.has(session.patchId)) {
+            seenPatches.set(session.patchId, true);
+            uniqueSessions.push(session);
+          }
+          if (uniqueSessions.length === 5) break;
+        }
+
+        return res.status(200).json({ session: uniqueSessions });
+      }
+
+      return res.status(200).json({ session: sessions });
     } catch (error) {
       next(error);
     }

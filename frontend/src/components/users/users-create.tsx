@@ -40,7 +40,6 @@ const CreateUser: FC<CreateUserProps> = (props) => {
   const isMounted = useMounted();
 
   const createUser = async (values: any) => {
-    console.log("fff");
     const load = toast.loading("create");
     try {
       await userApi.createUser(values);
