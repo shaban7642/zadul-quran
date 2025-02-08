@@ -615,6 +615,23 @@ class SessionsController {
       next(error);
     }
   };
+
+  public createSessionTypes = async (
+    req: RequestWithIdentity,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { name, duration } = req.body;
+      await this.sessionTypesModel.create({
+        name,
+        duration,
+      });
+      res.status(201).json({ success: true });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default SessionsController;

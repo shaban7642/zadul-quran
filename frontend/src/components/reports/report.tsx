@@ -241,6 +241,7 @@ export const Report: FC<ReportProps> = ({
                                 user?.role?.name == "admin" ||
                                 user?.role?.name == "teacher") && (
                                 <Chip
+                                    className="no-print"
                                     onClick={() => setView(!view)}
                                     label="Edit"
                                     color="success"
@@ -254,6 +255,7 @@ export const Report: FC<ReportProps> = ({
                             <EditFeedback
                                 session={session}
                                 setReoprtFlag={setReoprtFlag}
+                                setView={setView}
                             />
                         )}
                     </>
@@ -607,9 +609,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
 const EditFeedback = ({
     session,
     setReoprtFlag,
+    setView,
 }: {
     session: any;
     setReoprtFlag: any;
+    setView: any;
 }) => {
     const [editedSession, setEditedSession] = useState(session);
     const sessionDeptName = session?.patch?.department?.name;
@@ -665,7 +669,9 @@ const EditFeedback = ({
         }));
     };
 
+    const [isPending, setIsPending] = useState(false);
     const onSave = async () => {
+        setIsPending(true);
         try {
             const res = await reportApi.updateReport(
                 editedSession.report?.id,
@@ -674,9 +680,21 @@ const EditFeedback = ({
 
             toast.success("Updated successfully");
             setReoprtFlag((prev: Boolean) => !prev);
+            setTimeout(() => {
+                setView(true);
+            }, 500);
         } catch (err: any) {
             toast.error(err.message || "updateReportsFailed");
+        } finally {
+            setTimeout(() => {
+                setIsPending(false);
+            }, 500);
         }
+    };
+
+    const onCancel = () => {
+        setEditedSession(session);
+        setView(true);
     };
 
     return (
@@ -915,16 +933,17 @@ const EditFeedback = ({
                     <Button
                         variant="contained"
                         color="primary"
+                        disabled={isPending}
                         onClick={onSave}
                     >
-                        Save
+                        {isPending ? "Loading..." : "Save"}
                     </Button>
                 </Grid>
                 <Grid item>
                     <Button
                         // variant="outlined"
                         // color="secondary"
-                        onClick={() => setEditedSession(session)}
+                        onClick={onCancel}
                     >
                         Cancel
                     </Button>
