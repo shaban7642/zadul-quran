@@ -8,92 +8,92 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 interface CreateDocumentProps {
-  createDocument: (
-    values: any,
-    userId: number
-  ) => Promise<{ success: boolean }>;
+    createDocument: (
+        values: any,
+        userId: number
+    ) => Promise<{ success: boolean }>;
+    pageName?: string;
 }
 const CreateDocument: FC<CreateDocumentProps> = (props) => {
-  const { createDocument } = props;
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
+    const { createDocument, pageName } = props;
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(false);
 
-  const uploadFile = async (e: any) => {
-    e.preventDefault();
+    const uploadFile = async (e: any) => {
+        e.preventDefault();
 
-    try {
-      setLoading(true);
-      let formData = new FormData();
-      formData.append("userId", user.id);
-      formData.append("file", e.target.files[0], e.target.files[0].name);
+        try {
+            setLoading(true);
+            let formData = new FormData();
+            formData.append("userId", user.id);
+            formData.append("file", e.target.files[0], e.target.files[0].name);
 
-      const uploadResp = await createDocument(formData, user.id);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
-  return (
-    <Paper
-      elevation={9}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        p: "10px 10px",
-        width: "100%",
+            const uploadResp = await createDocument(formData, user.id);
+        } catch (error) {
+            setLoading(false);
+        }
+    };
+    const VisuallyHiddenInput = styled("input")({
+        clip: "rect(0 0 0 0)",
+        clipPath: "inset(50%)",
+        height: 1,
+        overflow: "hidden",
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        whiteSpace: "nowrap",
+        width: 1,
+    });
+    return (
+        <Paper
+            elevation={9}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                p: "10px 10px",
+                width: "100%",
 
-        ...(true && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.info.contrastText,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-    >
-      <Box
-        sx={{
-          alignItems: "center",
-          backgroundColor: "primary.light",
-          color: "primary.contrastText",
-          display: "flex",
-          justifyContent: "space-between",
-          px: 3,
-          py: 2,
-        }}
-      >
-        <Typography color="inherit" variant="h6">
-          Add Document
-        </Typography>
-      </Box>
-      <Box sx={{ margin: 1 }}>
-        <Button
-          component="label"
-          variant="contained"
-          startIcon={<CloudUploadIcon />}
-        >
-          Upload file
-          <VisuallyHiddenInput
-            type="file"
-            onChange={(e: any) => {
-              uploadFile(e);
+                ...(true && {
+                    bgcolor: (theme) =>
+                        alpha(
+                            theme.palette.info.contrastText,
+                            theme.palette.action.activatedOpacity
+                        ),
+                }),
             }}
-          />
-        </Button>
-      </Box>
-    </Paper>
-  );
+        >
+            <Box
+                sx={{
+                    alignItems: "center",
+                    backgroundColor: "primary.light",
+                    color: "primary.contrastText",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    px: 3,
+                    py: 2,
+                }}
+            >
+                <Typography color="inherit" variant="h6">
+                    {pageName == "home-work" ? "Add Homework" : "Add Document"}
+                </Typography>
+            </Box>
+            <Box sx={{ margin: 1 }}>
+                <Button
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                >
+                    Upload file
+                    <VisuallyHiddenInput
+                        type="file"
+                        onChange={(e: any) => {
+                            uploadFile(e);
+                        }}
+                    />
+                </Button>
+            </Box>
+        </Paper>
+    );
 };
 
 export default CreateDocument;

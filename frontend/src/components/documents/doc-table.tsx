@@ -169,7 +169,7 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
         <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
             <Grid container>
                 <Grid item lg={3.8} md={3.8} sm={3.8} xs={12}>
-                    <CreateDocument createDocument={createDocument} />
+                    <CreateDocument pageName={pageName} createDocument={createDocument} />
                 </Grid>
                 <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
                     <Box></Box>
@@ -190,7 +190,6 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
                             }),
                         }}
                     >
-                        {" "}
                         <Toolbar
                             sx={{
                                 pl: { sm: 2 },
@@ -203,7 +202,9 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
                                 id="tableTitle"
                                 component="div"
                             >
-                                Document List
+                                {pageName == "home-work"
+                                    ? "Homework List"
+                                    : "Document List"}
                             </Typography>
                         </Toolbar>
                         <TableContainer>
