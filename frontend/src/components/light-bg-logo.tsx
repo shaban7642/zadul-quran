@@ -6,47 +6,48 @@ import { useSettings } from "../hooks/use-settings";
 type Variant = "light" | "primary";
 
 interface LogoProps {
-  src?: string;
-  variant?: Variant;
+    src?: string;
+    variant?: Variant;
+    loading?: "lazy" | "eager" | undefined;
 }
 
 export const LightBgLogo = styled((props: LogoProps) => {
-  const { src, ...other } = props;
-  const { settings } = useSettings();
+    const { src, ...other } = props;
+    const { settings } = useSettings();
 
-  // const color = variant === 'light' ? '#C1C4D6' : '#5048E5';
+    // const color = variant === 'light' ? '#C1C4D6' : '#5048E5';
 
-  return (
-    <>
-      <Image
-        alt="logo"
-        src={src || "/static/zadlogo.svg"}
-        width={260}
-        height={56}
-        {...other}
-        style={{
-          overflow: "visible",
-          marginTop: -8,
-          marginBottom: -10,
-        }}
-      />
-      <style>{`
+    return (
+        <>
+            <Image
+                alt="logo"
+                src={src || "/static/zadlogo.svg"}
+                width={260}
+                height={56}
+                {...other}
+                style={{
+                    overflow: "visible",
+                    marginTop: -8,
+                    marginBottom: -10,
+                }}
+            />
+            <style>{`
         .image {
           overflow: visible;
         }
       `}</style>
-    </>
-  );
+        </>
+    );
 })`
-  .image {
-    overflow: visible;
-  }
+    .image {
+        overflow: visible;
+    }
 `;
 
 LightBgLogo.defaultProps = {
-  variant: "primary",
+    variant: "primary",
 };
 
 LightBgLogo.propTypes = {
-  variant: PropTypes.oneOf<Variant>(["light", "primary"]),
+    variant: PropTypes.oneOf<Variant>(["light", "primary"]),
 };

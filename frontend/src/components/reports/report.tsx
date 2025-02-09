@@ -14,6 +14,7 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    Box,
 } from "@mui/material";
 
 import useDownloader from "react-use-downloader";
@@ -27,6 +28,7 @@ import { useMounted } from "../../hooks/use-mounted";
 import { documentApi } from "../../api/documentApi";
 import toast from "react-hot-toast";
 import { reportApi } from "../../api/reportApi";
+import { LightBgLogo } from "../light-bg-logo";
 
 interface ReportProps {
     session: any;
@@ -43,6 +45,29 @@ export const Report: FC<ReportProps> = ({
     const reactToPrintFn = useReactToPrint({
         contentRef,
         ignoreGlobalStyles: false,
+        pageStyle: `
+                @media print {
+                    @page {
+                        size: A4;
+                        margin: 3mm 2mm;
+                    }
+                    html, body {
+                        -webkit-print-color-adjust: exact;
+                        margin: 0px !important;
+                        padding: 0px  !important;
+                        overflow: hidden !important;
+                    }
+                    .page {
+                        box-shadow: none !important;
+                    }
+                    .no-print {
+                        display: none !important;
+                    }
+                    .print-only {
+                        display: flex !important;
+                    }
+                }
+            `,
     });
 
     const { user } = useAuth();
@@ -64,21 +89,6 @@ export const Report: FC<ReportProps> = ({
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             }}
         >
-            <style>
-                {`
-                    @media print {
-                        body {
-                            -webkit-print-color-adjust: exact;
-                        }
-                        .no-print {
-                            display: none !important;
-                        }
-                        .page {
-                            box-shadow: none !important;
-                        }
-                    }
-                `}
-            </style>
             {/* Close Icon */}
             <IconButton
                 className="no-print"
@@ -103,6 +113,25 @@ export const Report: FC<ReportProps> = ({
             >
                 Print as pdf
             </Button>
+            <Box
+                className="print-only"
+                sx={{
+                    display: "none",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    p: 2,
+                }}
+            >
+                <Box>
+                    <LightBgLogo loading="eager" />
+                </Box>
+                <Box>
+                    <Typography variant="h4" color="primary">
+                        Zadul Quran
+                    </Typography>
+                </Box>
+            </Box>
             <Typography variant="h5" fontWeight="bold" gutterBottom>
                 Session Information
             </Typography>
@@ -164,7 +193,7 @@ export const Report: FC<ReportProps> = ({
                                     {item.label}:
                                 </Typography>
                                 <Typography
-                                    variant="body1"
+                                    variant="body2"
                                     sx={{
                                         marginLeft: "8px",
                                         color: "text.secondary",
@@ -220,7 +249,7 @@ export const Report: FC<ReportProps> = ({
                                     {item.label}:
                                 </Typography>
                                 <Typography
-                                    variant="body1"
+                                    variant="body2"
                                     sx={{
                                         marginLeft: "8px",
                                         color: "text.secondary",
@@ -272,13 +301,15 @@ const ViewFeedback = ({ session }: { session: any }) => {
             {/* Submission Date */}
             {session?.report.date && (
                 <Grid item xs={12}>
-                    <ListItem>
-                        Submition Date:
+                    <ListItem sx={{ padding: "8px 0" }}>
+                        <Typography variant="subtitle1" fontWeight="bold">
+                            Submition Date:
+                        </Typography>
                         <Typography
-                            color={"black"}
+                            variant="body2"
                             sx={{
-                                overflowWrap: "break-word",
-                                minWidth: "100px",
+                                marginLeft: "8px",
+                                color: "text.secondary",
                             }}
                         >
                             {moment(session?.report.date).format("MMM-D-YYYY")}
@@ -340,13 +371,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                     {/* Non-Quran Report Fields */}
                     <Grid item xs={12} sm={6}>
                         {session?.report.level && (
-                            <ListItem>
-                                Grade:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Grade:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {`${session?.report.level} / 10`}
@@ -354,13 +390,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.book && (
-                            <ListItem>
-                                Book:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Book:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.book?.fileName ||
@@ -371,13 +412,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         {session?.report.unit && (
-                            <ListItem>
-                                Unit:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Unit:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.unit || "No data"}
@@ -385,13 +431,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.topic && (
-                            <ListItem>
-                                Topic:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Topic:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.topic || "No data"}
@@ -406,13 +457,15 @@ const ViewFeedback = ({ session }: { session: any }) => {
             {session.patch?.department?.name === "Arabic" && (
                 <>
                     {session?.report.newWords && (
-                        <ListItem>
-                            New Words:
+                        <ListItem sx={{ padding: "8px 0" }}>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                                New Words:
+                            </Typography>
                             <Typography
-                                color={"black"}
+                                variant="body2"
                                 sx={{
-                                    overflowWrap: "break-word",
-                                    minWidth: "100px",
+                                    marginLeft: "8px",
+                                    color: "text.secondary",
                                 }}
                             >
                                 {session?.report.newWords || "No data"}
@@ -420,13 +473,15 @@ const ViewFeedback = ({ session }: { session: any }) => {
                         </ListItem>
                     )}
                     {session?.report.expressions && (
-                        <ListItem>
-                            Expressions:
+                        <ListItem sx={{ padding: "8px 0" }}>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                                Expressions:
+                            </Typography>
                             <Typography
-                                color={"black"}
+                                variant="body2"
                                 sx={{
-                                    overflowWrap: "break-word",
-                                    minWidth: "100px",
+                                    marginLeft: "8px",
+                                    color: "text.secondary",
                                 }}
                             >
                                 {session?.report.expressions || "No data"}
@@ -434,13 +489,15 @@ const ViewFeedback = ({ session }: { session: any }) => {
                         </ListItem>
                     )}
                     {session?.report.rules && (
-                        <ListItem>
-                            Rules:
+                        <ListItem sx={{ padding: "8px 0" }}>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                                Rules:
+                            </Typography>
                             <Typography
-                                color={"black"}
+                                variant="body2"
                                 sx={{
-                                    overflowWrap: "break-word",
-                                    minWidth: "100px",
+                                    marginLeft: "8px",
+                                    color: "text.secondary",
                                 }}
                             >
                                 {session?.report.rules || "No data"}
@@ -456,13 +513,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                     {/* Quran Report Fields */}
                     <Grid item xs={12} sm={6}>
                         {session?.report.memorization && (
-                            <ListItem>
-                                Memorization:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Memorization:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.memorization || "No data"}
@@ -470,13 +532,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.revision && (
-                            <ListItem>
-                                Revision:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Revision:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.revision || "No data"}
@@ -484,13 +551,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.recitation && (
-                            <ListItem>
-                                Recitation:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Recitation:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.recitation || "No data"}
@@ -498,13 +570,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.reading && (
-                            <ListItem>
-                                Reading:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Reading:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.reading || "No data"}
@@ -514,13 +591,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         {session?.report.memorizationLevel && (
-                            <ListItem>
-                                Memorization Grade:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Memorization Grade:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {`${session?.report.memorizationLevel} / 10`}
@@ -528,13 +610,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.revisionLevel && (
-                            <ListItem>
-                                Revision Grade:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Revision Grade:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {`${session?.report.revisionLevel} / 10`}
@@ -542,13 +629,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.tajweed && (
-                            <ListItem>
-                                Tajweed:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Tajweed:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {session?.report.tajweed || "No data"}
@@ -556,13 +648,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                             </ListItem>
                         )}
                         {session?.report.readingLevel && (
-                            <ListItem>
-                                Reading Grade:
+                            <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
-                                    color={"black"}
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Reading Grade:
+                                </Typography>
+                                <Typography
+                                    variant="body2"
                                     sx={{
-                                        overflowWrap: "break-word",
-                                        minWidth: "100px",
+                                        marginLeft: "8px",
+                                        color: "text.secondary",
                                     }}
                                 >
                                     {`${session?.report.readingLevel} / 10`}
@@ -575,13 +672,15 @@ const ViewFeedback = ({ session }: { session: any }) => {
 
             {/* Homework and Notes */}
             {session?.report?.homework && (
-                <ListItem>
-                    H.W:
+                <ListItem sx={{ padding: "8px 0" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                        H.W:
+                    </Typography>
                     <Typography
-                        color={"black"}
+                        variant="body2"
                         sx={{
-                            overflowWrap: "break-word",
-                            minWidth: "100px",
+                            marginLeft: "8px",
+                            color: "text.secondary",
                         }}
                     >
                         {session?.report?.homework || "No data"}
@@ -589,13 +688,15 @@ const ViewFeedback = ({ session }: { session: any }) => {
                 </ListItem>
             )}
             {session?.report?.notes && (
-                <ListItem>
-                    Notes:
+                <ListItem sx={{ padding: "8px 0" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                        Notes:
+                    </Typography>
                     <Typography
-                        color={"black"}
+                        variant="body2"
                         sx={{
-                            overflowWrap: "break-word",
-                            minWidth: "100px",
+                            marginLeft: "8px",
+                            color: "text.secondary",
                         }}
                     >
                         {session?.report?.notes || "No data"}

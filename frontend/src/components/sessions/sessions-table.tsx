@@ -23,6 +23,7 @@ import {
     Divider,
     Tab,
     Tabs,
+    Typography,
     useMediaQuery,
 } from "@mui/material";
 import { SessionsRow } from "./sessions-row";
@@ -35,6 +36,7 @@ import { Filter as FilterIcon } from "../../icons/filter";
 import { useAuth } from "../../hooks/use-auth";
 import useSavedState from "../../hooks/useSavedState";
 import { useReactToPrint } from "react-to-print";
+import { LightBgLogo } from "../light-bg-logo";
 
 export interface Data {
     name: string;
@@ -459,6 +461,34 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const handleExportToPdf = useReactToPrint({
         contentRef,
         ignoreGlobalStyles: false,
+        pageStyle: `
+                @media print {
+                    @page {
+                        size: A4;
+                        margin: 5mm 2mm;
+                    }
+                    html, body {
+                        -webkit-print-color-adjust: exact;
+                        margin: 0px !important;
+                        padding: 0px  !important;
+                        overflow: hidden !important;
+                    }
+                    table th {
+                        font-size: 12px !important;
+                        padding: 7px !important;
+                    }
+                    table td {
+                        font-size: 11px !important;
+                        padding: 7px !important;
+                    }
+                    .no-print {
+                        display: none !important;
+                    }
+                    .print-only {
+                        display: flex !important;
+                    }
+                }
+            `,
     });
 
     return (
@@ -614,62 +644,69 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                         />
                         <SessionListInner open={openFilters} />
                         <Box sx={{ width: "100%" }}>
-                            <TableContainer>
-                                <Table
-                                    ref={contentRef}
-                                    aria-labelledby="tableTitle"
-                                    size="small"
-                                >
-                                    <style>
-                                        {`
-                                            @media print {
-                                                body {
-                                                    -webkit-print-color-adjust: exact;
-                                                }
-                                                table {
-                                                    padding:10px
-                                                }
-                                                .no-print {
-                                                    display: none !important;
-                                                }
+                            <Box>
+                                <TableContainer ref={contentRef}>
+                                    <Box
+                                        className="print-only"
+                                        sx={{
+                                            display: "none",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            flexDirection: "row",
+                                            p: 2,
+                                        }}
+                                    >
+                                        <Box>
+                                            <LightBgLogo loading="eager" />
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="h4" color="primary">Zadul Quran</Typography>
+                                        </Box>
+                                    </Box>
+                                    <Table
+                                        aria-labelledby="tableTitle"
+                                        size="small"
+                                    >
+                                        <TableHeads
+                                            headCells={headCells}
+                                            numSelected={selected.length}
+                                            onSelectAllClick={
+                                                handleSelectAllClick
                                             }
-                                        `}
-                                    </style>
-                                    <TableHeads
-                                        headCells={headCells}
-                                        numSelected={selected.length}
-                                        onSelectAllClick={handleSelectAllClick}
-                                        deleteSession={deleteSession}
-                                        rowCount={sessions.length}
-                                    />
-                                    <TableBody>
-                                        {sessions.map((row: any, index) => {
-                                            const isItemSelected =
-                                                selected.includes(row.id);
-                                            const labelId = `enhanced-table-checkbox-${index}`;
-                                            return (
-                                                <SessionsRow
-                                                    key={row?.id}
-                                                    row={row}
-                                                    handleClick={handleClick}
-                                                    isItemSelected={
-                                                        isItemSelected
-                                                    }
-                                                    labelId={labelId}
-                                                    updateSession={
-                                                        updateSession
-                                                    }
-                                                    statuses={statuses}
-                                                    setReoprtFlag={
-                                                        setReoprtFlag
-                                                    }
-                                                    reportFlag={reportFlag}
-                                                />
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                            deleteSession={deleteSession}
+                                            rowCount={sessions.length}
+                                        />
+                                        <TableBody>
+                                            {sessions.map((row: any, index) => {
+                                                const isItemSelected =
+                                                    selected.includes(row.id);
+                                                const labelId = `enhanced-table-checkbox-${index}`;
+                                                return (
+                                                    <SessionsRow
+                                                        key={row?.id}
+                                                        row={row}
+                                                        handleClick={
+                                                            handleClick
+                                                        }
+                                                        isItemSelected={
+                                                            isItemSelected
+                                                        }
+                                                        labelId={labelId}
+                                                        updateSession={
+                                                            updateSession
+                                                        }
+                                                        statuses={statuses}
+                                                        setReoprtFlag={
+                                                            setReoprtFlag
+                                                        }
+                                                        reportFlag={reportFlag}
+                                                    />
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
                         </Box>
                     </Box>
                     <TablePagination
