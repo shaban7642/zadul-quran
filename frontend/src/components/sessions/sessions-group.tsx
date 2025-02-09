@@ -161,13 +161,9 @@ export const SessionsGroup = () => {
         async (filterObject: any) => {
             try {
                 const data: any = await sessionApi.getSessions({
+                    studentId: router?.query?.student || null,
+                    ...filters,
                     ...filterObject,
-                    // ...filters,
-                    studentId:
-                        filterObject.studentId ||
-                        filters?.studentId ||
-                        router?.query?.student ||
-                        null,
                 });
                 if (isMounted()) {
                     setSessions(data.rows);
