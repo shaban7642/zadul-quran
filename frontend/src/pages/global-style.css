@@ -1,10 +1,10 @@
-.MuiButtonBase-root.Mui-selected,
-.MuiButtonBase-root:hover {
+.MuiMenuItem-root.Mui-selected,
+.MuiMenuItem-root:hover {
     color: white;
     background-color: rgba(0, 118, 182, 0.822) !important;
 }
 
-.MuiButtonBase-root:focus {
+.MuiMenuItem-root:focus {
     color: white;
     background-color: rgba(0, 118, 182, 0.588) !important;
 }
