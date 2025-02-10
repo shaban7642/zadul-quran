@@ -14,17 +14,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import { TableHeads } from "./sessions-heads";
-import { styled, Theme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import SaveIcon from "@mui/icons-material/Save";
 import {
     Button,
     Card,
     Chip,
+    CircularProgress,
     Divider,
     Tab,
     Tabs,
     Typography,
-    useMediaQuery,
 } from "@mui/material";
 import { SessionsRow } from "./sessions-row";
 import { useMounted } from "../../hooks/use-mounted";
@@ -100,6 +100,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const [statusCount, setStatusCount] = useState<
         { status: string; count: number }[]
     >([]);
+    const [sessionLoading, setSessionLoading] = useState(false);
     const [typesCount, setTypesCount] = useState<
         { sessionTypeId: string; count: number }[]
     >([]);
@@ -276,6 +277,7 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
     const getSessions = useCallback(
         async (filterObject: any) => {
             try {
+                setSessionLoading(true);
                 const data: any = await sessionApi.getSessions({
                     studentId: router?.query?.student || null,
                     ...filters,
@@ -290,6 +292,8 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                 }
             } catch (err: any) {
                 console.log(err);
+            } finally {
+                setSessionLoading(false);
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -582,6 +586,15 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                                 />
                             ))}
                         </Tabs>
+                        {sessionLoading && (
+                            <Typography
+                                variant="h6"
+                                color="primary"
+                                sx={{ mx: 2 }}
+                            >
+                                <CircularProgress size={40} />
+                            </Typography>
+                        )}
                     </Box>
                     <Divider />
                     <Box
@@ -660,7 +673,12 @@ export const SessionsTable: FC<SessionsTableProps> = (props) => {
                                             <LightBgLogo loading="eager" />
                                         </Box>
                                         <Box>
-                                            <Typography variant="h4" color="primary">Zadul Quran</Typography>
+                                            <Typography
+                                                variant="h4"
+                                                color="primary"
+                                            >
+                                                Zadul Quran
+                                            </Typography>
                                         </Box>
                                     </Box>
                                     <Table

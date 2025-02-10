@@ -1,3 +1,7 @@
+html,
+body {
+    margin: 0;
+}
 .MuiMenuItem-root.Mui-selected,
 .MuiMenuItem-root:hover {
     color: white;
@@ -11,5 +15,5 @@
 
 .bg-none .MuiPaper-root {
     background-color: white !important;
-    padding: 0 !important;
+    /* padding: 0 !important; */
 }
