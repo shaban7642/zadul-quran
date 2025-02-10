@@ -111,7 +111,7 @@ class UserController {
   ) => {
     try {
       const userId = Number(req.params.id);
-      const resp = await this.userService.findOne({
+      const resp: any = await this.userService.findOne({
         where: { id: userId },
         attributes: {
           exclude: ['password'],
@@ -122,7 +122,22 @@ class UserController {
           { model: Departments },
         ],
       });
-      res.status(200).json(resp);
+
+      const students: any = [];
+
+      if (req?.role?.name === 'teacher') {
+        const studentIds = resp?.studentParents?.map(
+          (student: StudentParents) => student.id
+        );
+        for (let i = 0; i < studentIds.length; i += 1) {
+          const stu: any = await this.userService.findOne({
+            where: { id: studentIds[i] },
+            attributes: ['id', 'firstName', 'lastName'],
+          });
+          students.push(stu);
+        }
+      }
+      res.status(200).json({ ...resp, students });
     } catch (error) {
       next(error);
     }
