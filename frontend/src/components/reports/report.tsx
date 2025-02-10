@@ -266,9 +266,7 @@ export const Report: FC<ReportProps> = ({
                     <>
                         <Divider sx={{ marginBottom: "16px" }}>
                             <Chip label="Feedback" color="primary" />
-                            {(user?.role?.name == "super_admin" ||
-                                user?.role?.name == "admin" ||
-                                user?.role?.name == "teacher") && (
+                            {user?.role?.name != "student" && (
                                 <Chip
                                     className="no-print"
                                     onClick={() => setView(!view)}
@@ -299,7 +297,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
     return (
         <Grid container component={List}>
             {/* Submission Date */}
-            {session?.report.date && (
+            {session?.report?.date && (
                 <Grid item xs={12}>
                     <ListItem sx={{ padding: "8px 0" }}>
                         <Typography variant="subtitle1" fontWeight="bold">
@@ -312,18 +310,18 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                 color: "text.secondary",
                             }}
                         >
-                            {moment(session?.report.date).format("MMM-D-YYYY")}
+                            {moment(session?.report?.date).format("MMM-D-YYYY")}
                         </Typography>
                     </ListItem>
                 </Grid>
             )}
 
             {/* Documents */}
-            {session?.report.document &&
-                session?.report.document.length > 0 && (
+            {session?.report?.document &&
+                session?.report?.document.length > 0 && (
                     <Grid className="no-print" item xs={12}>
                         <Grid container sx={{ p: 0 }}>
-                            {session?.report.document.map(
+                            {session?.report?.document.map(
                                 (d: any, index: number) => (
                                     <Grid item xs={12} sm={6} key={index}>
                                         <ListItem>
@@ -370,7 +368,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
                 <Grid container component={List}>
                     {/* Non-Quran Report Fields */}
                     <Grid item xs={12} sm={6}>
-                        {session?.report.level && (
+                        {session?.report?.level && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -385,11 +383,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {`${session?.report.level} / 10`}
+                                    {`${session?.report?.level} / 10`}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.book && (
+                        {session?.report?.book && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -404,14 +402,14 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.book?.fileName ||
+                                    {session?.report?.book?.fileName ||
                                         "No data"}
                                 </Typography>
                             </ListItem>
                         )}
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        {session?.report.unit && (
+                        {session?.report?.unit && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -426,11 +424,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.unit || "No data"}
+                                    {session?.report?.unit || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.topic && (
+                        {session?.report?.topic && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -445,7 +443,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.topic || "No data"}
+                                    {session?.report?.topic || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
@@ -456,7 +454,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
             {/* Arabic-specific Fields */}
             {session.patch?.department?.name === "Arabic" && (
                 <>
-                    {session?.report.newWords && (
+                    {session?.report?.newWords && (
                         <ListItem sx={{ padding: "8px 0" }}>
                             <Typography variant="subtitle1" fontWeight="bold">
                                 New Words:
@@ -468,11 +466,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                     color: "text.secondary",
                                 }}
                             >
-                                {session?.report.newWords || "No data"}
+                                {session?.report?.newWords || "No data"}
                             </Typography>
                         </ListItem>
                     )}
-                    {session?.report.expressions && (
+                    {session?.report?.expressions && (
                         <ListItem sx={{ padding: "8px 0" }}>
                             <Typography variant="subtitle1" fontWeight="bold">
                                 Expressions:
@@ -484,11 +482,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                     color: "text.secondary",
                                 }}
                             >
-                                {session?.report.expressions || "No data"}
+                                {session?.report?.expressions || "No data"}
                             </Typography>
                         </ListItem>
                     )}
-                    {session?.report.rules && (
+                    {session?.report?.rules && (
                         <ListItem sx={{ padding: "8px 0" }}>
                             <Typography variant="subtitle1" fontWeight="bold">
                                 Rules:
@@ -500,7 +498,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                     color: "text.secondary",
                                 }}
                             >
-                                {session?.report.rules || "No data"}
+                                {session?.report?.rules || "No data"}
                             </Typography>
                         </ListItem>
                     )}
@@ -512,7 +510,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
                 <Grid container component={List}>
                     {/* Quran Report Fields */}
                     <Grid item xs={12} sm={6}>
-                        {session?.report.memorization && (
+                        {session?.report?.memorization && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -527,11 +525,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.memorization || "No data"}
+                                    {session?.report?.memorization || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.revision && (
+                        {session?.report?.revision && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -546,11 +544,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.revision || "No data"}
+                                    {session?.report?.revision || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.recitation && (
+                        {session?.report?.recitation && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -565,11 +563,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.recitation || "No data"}
+                                    {session?.report?.recitation || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.reading && (
+                        {session?.report?.reading && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -584,13 +582,13 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.reading || "No data"}
+                                    {session?.report?.reading || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        {session?.report.memorizationLevel && (
+                        {session?.report?.memorizationLevel && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -605,11 +603,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {`${session?.report.memorizationLevel} / 10`}
+                                    {`${session?.report?.memorizationLevel} / 10`}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.revisionLevel && (
+                        {session?.report?.revisionLevel && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -624,11 +622,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {`${session?.report.revisionLevel} / 10`}
+                                    {`${session?.report?.revisionLevel} / 10`}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.tajweed && (
+                        {session?.report?.tajweed && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -643,11 +641,11 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {session?.report.tajweed || "No data"}
+                                    {session?.report?.tajweed || "No data"}
                                 </Typography>
                             </ListItem>
                         )}
-                        {session?.report.readingLevel && (
+                        {session?.report?.readingLevel && (
                             <ListItem sx={{ padding: "8px 0" }}>
                                 <Typography
                                     variant="subtitle1"
@@ -662,7 +660,7 @@ const ViewFeedback = ({ session }: { session: any }) => {
                                         color: "text.secondary",
                                     }}
                                 >
-                                    {`${session?.report.readingLevel} / 10`}
+                                    {`${session?.report?.readingLevel} / 10`}
                                 </Typography>
                             </ListItem>
                         )}
