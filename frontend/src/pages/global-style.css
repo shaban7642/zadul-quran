@@ -1,18 +1,15 @@
-.css-ngqxpy-MuiButtonBase-root-MuiMenuItem-root.Mui-selected,
-.css-127e8vx-MuiButtonBase-root-MuiMenuItem-root.Mui-selected,
-.css-127e8vx-MuiButtonBase-root-MuiMenuItem-root:hover,
-.css-ngqxpy-MuiButtonBase-root-MuiMenuItem-root:hover {
+.MuiButtonBase-root.Mui-selected,
+.MuiButtonBase-root:hover {
     color: white;
     background-color: rgba(0, 118, 182, 0.822) !important;
 }
 
-.css-127e8vx-MuiButtonBase-root-MuiMenuItem-root:focus,
-.css-ngqxpy-MuiButtonBase-root-MuiMenuItem-root:focus {
+.MuiButtonBase-root:focus {
     color: white;
     background-color: rgba(0, 118, 182, 0.588) !important;
 }
 
-.bg-none .css-1pt1z6c-MuiPaper-root-MuiDialog-paper {
+.bg-none .MuiPaper-root {
     background-color: white !important;
     padding: 0 !important;
 }
