@@ -222,34 +222,34 @@ export const SessionsRow: FC<RowProps> = (props) => {
                             )}
                         {row?.status === "running" && (
                             <>
-                                {row?.startedAt != null &&
-                                    row?.zoomSessionMeetings?.length < 1 && (
-                                        <Button
-                                            variant="contained"
-                                            color="success"
-                                            onClick={() => {
-                                                if (
-                                                    user?.role?.name ===
-                                                        "student" &&
-                                                    row?.joinedAt === null
-                                                ) {
-                                                    updateSession(row.id, {
-                                                        joinedAt: new Date(),
-                                                    });
-                                                }
+                                {(row?.startedAt != null ||
+                                    user?.role?.name === "student") && (
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => {
+                                            if (
+                                                user?.role?.name ===
+                                                    "student" &&
+                                                row?.joinedAt === null
+                                            ) {
+                                                updateSession(row.id, {
+                                                    joinedAt: new Date(),
+                                                });
+                                            }
 
-                                                handleOpenZoomLink();
-                                            }}
-                                            sx={{
-                                                fontSize: 12,
-                                                mr: 1,
-                                                backgroundColor: "green",
-                                            }}
-                                            size="small"
-                                        >
-                                            Join
-                                        </Button>
-                                    )}
+                                            handleOpenZoomLink();
+                                        }}
+                                        sx={{
+                                            fontSize: 12,
+                                            mr: 1,
+                                            backgroundColor: "green",
+                                        }}
+                                        size="small"
+                                    >
+                                        Join
+                                    </Button>
+                                )}
                                 {user?.role?.name !== "student" &&
                                     user?.role?.name !== "parent" &&
                                     row?.startedAt !== null && (

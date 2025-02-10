@@ -29,7 +29,15 @@ import { sessionApi } from "../../api/sessionsApi";
 import { SessionForm } from "../sessions/sessions-form";
 import { useAuth } from "../../hooks/use-auth";
 import { useRouter } from "next/router";
-
+const weekDays = [
+    { value: 1, label: "Monday" },
+    { value: 2, label: "Tuesday" },
+    { value: 3, label: "Wednesday" },
+    { value: 4, label: "Thursday" },
+    { value: 5, label: "Friday" },
+    { value: 6, label: "Saturday" },
+    { value: 0, label: "Sunday" },
+];
 export type Session = {
     departmentId: string;
     sessionTypeId: string;
@@ -42,6 +50,7 @@ export type Session = {
     title: string;
     sessionMethod: string;
     frontId?: string | undefined;
+    patch?: any;
 };
 interface RoleId {
     displayName: string;
@@ -376,6 +385,58 @@ export const Profile: FC<profileProps> = (props) => {
                                         {userData?.phoneNumber || "No data"}
                                     </Typography>{" "}
                                 </ListItem>
+                                {user?.role?.name === "teacher" && userData && (
+                                    <>
+                                        <ListItem
+                                            sx={{
+                                                borderTop: "1px solid #777",
+                                            }}
+                                        >
+                                            Students:
+                                            <Typography color={"black"}>
+                                                {userData?.students
+                                                    .map(
+                                                        (s: any) =>
+                                                            `${s.firstName}- ${s.lastName} |`
+                                                    )
+                                                    ?.join(",") || "No data"}
+                                            </Typography>
+                                        </ListItem>
+                                    </>
+                                )}
+                                {user?.role?.name != "student" &&
+                                    sessions &&
+                                    sessions.length > 0 && (
+                                        <>
+                                            <ListItem
+                                                sx={{
+                                                    borderTop: "1px solid #777",
+                                                }}
+                                            >
+                                                Session Title:
+                                                <Typography color={"black"}>
+                                                    {sessions[0]?.title ||
+                                                        "No data"}
+                                                </Typography>
+                                            </ListItem>
+                                            <ListItem>
+                                                days:
+                                                <Typography color={"black"}>
+                                                    {sessions[0]?.dayOfWeek
+                                                        ?.map(
+                                                            (day: number) =>
+                                                                weekDays.find(
+                                                                    (c) =>
+                                                                        c.value ==
+                                                                        day
+                                                                )?.label
+                                                        )
+                                                        ?.join(",") ||
+                                                        "No data"}
+                                                </Typography>
+                                            </ListItem>
+                                        </>
+                                    )}
                             </Grid>
                         </Grid>
                         {userData?.roleId === 4 &&

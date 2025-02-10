@@ -11,6 +11,7 @@ import {
     DialogActions,
     Button,
     Typography,
+    Autocomplete,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
@@ -119,7 +120,10 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
     }, []);
     useEffect(() => {
         if (sessions?.length === 1) {
-            formik.setValues({ ...sessions[0], frontId: sessions[0].frontId || "" });
+            formik.setValues({
+                ...sessions[0],
+                frontId: sessions[0].frontId || "",
+            });
         }
     }, [sessions]);
 
@@ -242,7 +246,10 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                             },
                         }}
                         onClick={() =>
-                            formik.setValues({ ...session, frontId: session.frontId || "" })
+                            formik.setValues({
+                                ...session,
+                                frontId: session.frontId || "",
+                            })
                         }
                     >
                         {session.title}
@@ -391,62 +398,44 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                         </Grid>
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
-                                <TextField
-                                    label="Student"
-                                    name="studentId"
-                                    value={formik.values.studentId}
-                                    error={Boolean(
-                                        formik.errors.studentId &&
-                                            formik.touched.studentId
-                                    )}
-                                    fullWidth
-                                    required
-                                    select
-                                    helperText={
-                                        formik.touched.studentId &&
-                                        formik.errors.studentId
+                                <Autocomplete
+                                    options={students}
+                                    getOptionLabel={(option) =>
+                                        `${option.firstName} ${option.lastName}`
                                     }
-                                    InputLabelProps={{
-                                        shrink: formik.values.studentId
-                                            ? true
-                                            : false,
+                                    value={
+                                        students.find(
+                                            (student) =>
+                                                student.id ===
+                                                formik.values.studentId
+                                        ) || null
+                                    }
+                                    onChange={(event, newValue) => {
+                                        formik.setFieldValue(
+                                            "studentId",
+                                            newValue ? newValue.id : ""
+                                        );
                                     }}
-                                    onChange={formik.handleChange}
-                                >
-                                    {students.map(
-                                        (option: {
-                                            id: string;
-                                            firstName: string;
-                                            lastName: string;
-                                        }) => (
-                                            <MenuItem
-                                                key={option.id}
-                                                value={option.id}
-                                            >
-                                                {option.firstName}{" "}
-                                                {option.lastName}
-                                            </MenuItem>
-                                        )
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Student"
+                                            name="studentId"
+                                            error={Boolean(
+                                                formik.errors.studentId &&
+                                                    formik.touched.studentId
+                                            )}
+                                            required
+                                            helperText={
+                                                formik.touched.studentId &&
+                                                formik.errors.studentId
+                                            }
+                                        />
                                     )}
-                                </TextField>
+                                />
                             </FormControl>
                         </Grid>
                         <Grid item lg={6} md={6} sm={12} xs={12}>
-                            {/* <TextField
-              label="From Date"
-              name="fromDate"
-              type="date"
-              sx={{ width: "100%" }}
-              onChange={formik.handleChange}
-              value={formik.values.fromDate}
-              error={Boolean(
-                formik.errors.fromDate && formik.touched.fromDate
-              )}
-              helperText={formik.touched.fromDate && formik.errors.fromDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            /> */}
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateTimePicker
                                     name="fromDate"

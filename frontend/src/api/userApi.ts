@@ -3,7 +3,7 @@ import { generateQuery } from "../utils/generate-query";
 
 class UserApi {
   async getUsers(
-    limit: number,
+    limit: any,
     offset: number,
     name?: string,
     name1?: string,

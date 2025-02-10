@@ -11,9 +11,8 @@ import { UsersIcon } from "../../icons/users";
 import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import { ShiftsIcon } from "../../icons/shifts";
-import { BillsIcon } from "../../icons/bills";
 import { useAuth } from "../../hooks/use-auth";
-import { Settings } from "@mui/icons-material";
+import { HomeWorkOutlined, Settings } from "@mui/icons-material";
 
 interface DashboardSidebarProps {
     onClose?: () => void;
@@ -125,10 +124,10 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
                 user?.roleId === 4
                     ? [
                           {
-                              title: "Home Work",
+                              title: "Homework",
                               path: "/home-work",
                               icon: (
-                                  <SummarizeOutlinedIcon
+                                  <HomeWorkOutlined
                                       fontSize="small"
                                       sx={{ color: "#FFFCF2" }}
                                   />
