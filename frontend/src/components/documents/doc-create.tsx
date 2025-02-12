@@ -77,21 +77,25 @@ const CreateDocument: FC<CreateDocumentProps> = (props) => {
                     {pageName == "home-work" ? "Add Homework" : "Add Document"}
                 </Typography>
             </Box>
-            <Box sx={{ margin: 1 }}>
-                <Button
-                    component="label"
-                    variant="contained"
-                    startIcon={<CloudUploadIcon />}
-                >
-                    Upload file
-                    <VisuallyHiddenInput
-                        type="file"
-                        onChange={(e: any) => {
-                            uploadFile(e);
-                        }}
-                    />
-                </Button>
-            </Box>
+            {pageName != "home-work" && user?.roleId === 4 ? (
+                <></>
+            ) : (
+                <Box sx={{ margin: 1 }}>
+                    <Button
+                        component="label"
+                        variant="contained"
+                        startIcon={<CloudUploadIcon />}
+                    >
+                        Upload file
+                        <VisuallyHiddenInput
+                            type="file"
+                            onChange={(e: any) => {
+                                uploadFile(e);
+                            }}
+                        />
+                    </Button>
+                </Box>
+            )}
         </Paper>
     );
 };
