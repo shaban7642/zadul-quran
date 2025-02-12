@@ -116,9 +116,13 @@ class SessionsController {
       }
 
       const sortType = searchValues?.status === 'waiting' ? 'asc' : 'desc';
+      const updatedAttributes =
+        searchValues?.status === 'rescheduled'
+          ? attributes.concat(['history'])
+          : attributes;
 
       const query: FindOptions = {
-        attributes,
+        attributes: updatedAttributes,
         where: { ...searchParams },
         include: [
           {
@@ -478,11 +482,40 @@ class SessionsController {
     next: NextFunction
   ) => {
     try {
-      const data = req.body;
       const { id: sessionId } = req.params;
+      const data = req.body;
+
+      if (!sessionId) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'Session ID is required' });
+      }
+
+      const updateData = { ...data };
+
+      if (data.status === 'rescheduled') {
+        const session = await this.sessionsService.findOne({
+          where: { id: Number(sessionId) },
+        });
+
+        if (!session) {
+          return res
+            .status(404)
+            .json({ success: false, message: 'Session not found' });
+        }
+
+        updateData.history = {
+          title: session?.title || '',
+          date: session?.date || '',
+          startTime: session?.startTime || '',
+          endTime: session?.endTime || '',
+          status: session?.status || '',
+        };
+      }
+
       const resp = await this.sessionsService.update(
         { where: { id: Number(sessionId) } },
-        data
+        updateData
       );
       res.status(200).json({ success: true, resp });
     } catch (error) {

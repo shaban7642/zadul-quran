@@ -1,5 +1,6 @@
 export interface Session {
   id?: number;
+  title?: string;
   patchId?: number;
   userId?: number;
   sessionTypeId?: number;

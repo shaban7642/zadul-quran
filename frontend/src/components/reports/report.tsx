@@ -262,6 +262,144 @@ export const Report: FC<ReportProps> = ({
                     </Grid>
                 </Grid>
 
+                {session?.history && (
+                    <>
+                        <Divider sx={{ marginBottom: "16px" }}>
+                            <Chip label="History" color="primary" />
+                        </Divider>
+
+                        <Grid container component={List}>
+                            {/* Non-Quran Report Fields */}
+                            <Grid item xs={12} sm={6}>
+                                <ListItem sx={{ padding: "8px 0" }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Session Method:
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            marginLeft: "8px",
+                                            color: "text.secondary",
+                                        }}
+                                    >
+                                        {session?.sessionMethod || "No data"}
+                                    </Typography>
+                                </ListItem>
+                                <ListItem sx={{ padding: "8px 0" }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Title:
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            marginLeft: "8px",
+                                            color: "text.secondary",
+                                        }}
+                                    >
+                                        {session?.history?.title || "No data"}
+                                    </Typography>
+                                </ListItem>
+                                <ListItem sx={{ padding: "8px 0" }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Status:
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            marginLeft: "8px",
+                                            color: "text.secondary",
+                                        }}
+                                    >
+                                        {session?.history?.status || "No data"}
+                                    </Typography>
+                                </ListItem>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <ListItem sx={{ padding: "8px 0" }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Date:
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            marginLeft: "8px",
+                                            color: "text.secondary",
+                                        }}
+                                    >
+                                        {moment(
+                                            session?.history?.date || ""
+                                        ).format("MMM-D-YYYY")}
+                                    </Typography>
+                                </ListItem>
+                                <ListItem sx={{ padding: "8px 0" }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Start Time:
+                                    </Typography>   
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            marginLeft: "8px",
+                                            color: "text.secondary",
+                                        }}
+                                    >
+                                        {session?.history?.startTime
+                                            ? moment(
+                                                  `${session?.history?.date.substr(
+                                                      0,
+                                                      11
+                                                  )}${
+                                                      session?.history
+                                                          ?.startTime
+                                                  }${session?.history?.date.substr(
+                                                      19,
+                                                      24
+                                                  )}`
+                                              ).format("hh:mm A")
+                                            : ""}
+                                    </Typography>
+                                </ListItem>
+                                <ListItem sx={{ padding: "8px 0" }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        End Time:
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            marginLeft: "8px",
+                                            color: "text.secondary",
+                                        }}
+                                    >
+                                        {session?.history?.endTime
+                                            ? moment(
+                                                `${session?.history?.date.substr(0, 11)}${
+                                                    session?.history?.endTime
+                                                }${session?.history?.date.substr(19, 24)}`
+                                            ).format("hh:mm A")
+                                            : ""}
+                                    </Typography>
+                                </ListItem>
+                            </Grid>
+                        </Grid>
+                    </>
+                )}
                 {session?.report && (
                     <>
                         <Divider sx={{ marginBottom: "16px" }}>
