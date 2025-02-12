@@ -11,6 +11,8 @@ class Sessions extends Model {
 
   public sessionTypeId?: number;
 
+  public title?: string;
+
   public sessionMethod?: string;
 
   public meetingId?: string;
@@ -22,6 +24,15 @@ class Sessions extends Model {
   public endTime?: Date;
 
   public status?: string;
+
+  // New field for historical data
+  public history?: {
+    title?: string;
+    date?: Date;
+    startTime?: Date;
+    endTime?: Date;
+    status?: string;
+  };
 
   public readonly createdAt!: Date;
 
@@ -88,6 +99,11 @@ class Sessions extends Model {
         },
         endedAt: {
           type: DataTypes.DATE,
+        },
+        // New field for historical data
+        history: {
+          type: DataTypes.JSONB,
+          allowNull: true,
         },
       },
       {

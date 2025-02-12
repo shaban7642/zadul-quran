@@ -330,18 +330,60 @@ export const SessionsRow: FC<RowProps> = (props) => {
                     style={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
                     colSpan={12}
                 >
-                    {" "}
-                    {(user?.role?.name === "admin" ||
-                        user?.role?.name === "super_admin") && (
-                        <Collapse in={open} timeout="auto" unmountOnExit>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        {/* Row to display old status */}
+                        {row?.history ? (
+                            <TableRow>
+                                <TableCell colSpan={12}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        gutterBottom
+                                    >
+                                        Old Status
+                                    </Typography>
+                                    <Box sx={{ display: "flex", gap: 7 }}>
+                                        <Typography variant="body2">
+                                            <strong>Session Method:</strong>{" "}
+                                            {row?.sessionMethod}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Title:</strong>{" "}
+                                            {row?.history?.title}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Status:</strong>{" "}
+                                            {row?.history?.status}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Date:</strong>{" "}
+                                            {row?.history?.date}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>Start Time:</strong>{" "}
+                                            {row?.history?.startTime}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            <strong>End Time:</strong>{" "}
+                                            {row?.history?.endTime}
+                                        </Typography>
+                                    </Box>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            ""
+                        )}
+
+                        {/* Edit Form */}
+                        {(user?.role?.name === "admin" ||
+                            user?.role?.name === "super_admin") && (
                             <Box sx={{ margin: 1 }}>
                                 <Typography
                                     variant="h6"
                                     gutterBottom
                                     component="div"
-                                    sx={{ margin: 0 }}
+                                    // sx={{ margin: 0 }}
                                 >
-                                    edit
+                                    Edit
                                 </Typography>
                                 <form onSubmit={formik.handleSubmit}>
                                     <FormControl>
@@ -397,6 +439,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                             )}
                                         </TextField>
                                     </FormControl>
+
                                     <TextField
                                         label="Title"
                                         name="title"
@@ -523,7 +566,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                             },
                                             mr: 1,
                                         }}
-                                        label="Start Time(UTC)"
+                                        label="Start Time (UTC)"
                                         name="startTime"
                                         type="time"
                                         onChange={formik.handleChange}
@@ -556,7 +599,7 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                             },
                                             mr: 1,
                                         }}
-                                        label="End Time(UTC)"
+                                        label="End Time (UTC)"
                                         name="endTime"
                                         type="time"
                                         onChange={formik.handleChange}
@@ -587,17 +630,15 @@ export const SessionsRow: FC<RowProps> = (props) => {
                                             "& .MuiInputBase-root": {
                                                 height: 40,
                                             },
-                                            // m: 0.5,
-                                            // mt: 2,
                                         }}
                                         variant="contained"
                                     >
-                                        submit
+                                        Submit
                                     </LoadingButton>
                                 </form>
                             </Box>
-                        </Collapse>
-                    )}
+                        )}
+                    </Collapse>
                 </TableCell>
             </TableRow>
             <Dialog maxWidth="md" open={openCreateReport}>
