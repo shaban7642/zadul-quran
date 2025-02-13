@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'local' && process.env.NODE_ENV !== 'test') {
   dialectOptions = {
     ssl: {
       host: process.env.DB_HOST,
+      rejectUnauthorized: false,
     },
   };
 }
