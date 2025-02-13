@@ -15,73 +15,73 @@ interface LogicContextsProps {
     children: ReactNode;
 }
 
-export const LogicContext: FC<LogicContextsProps> = (props) => {
-    const { children } = props;
-
+export const LogicContext: FC<LogicContextsProps> = ({ children }) => {
     const { user } = useAuth();
-    const router = useRouter(); // Initialize navigation
+    const router = useRouter();
 
     const [isAlerting, setIsAlerting] = useState(false);
-    const [alertIntervalId, setAlertIntervalId] =
-        useState<NodeJS.Timeout | null>(null);
 
+    // Fetch running sessions
     const getSessions = useCallback(async () => {
         try {
-            const res: any = await sessionApi.getSessions({
+            const res = (await sessionApi.getSessions({
                 limit: 5,
                 offset: 0,
                 status: "running",
-            });
-            const data = res.rows;
+            })) as any;
+            const data = res?.rows ?? [];
 
-            if (
-                Array.isArray(data) &&
-                data.length > 0 &&
-                data.some((c) =>
-                    moment(c.startedAt).isBefore(moment().subtract(6, "hours"))
+            const hasOldSession = data.some((session: any) =>
+                moment(session.startedAt).isBefore(
+                    moment().subtract(1, "minutes")
                 )
-            ) {
+            );
+
+            if (hasOldSession && !router?.query?.sub) {
                 setIsAlerting(true);
-                if (!router.pathname.includes("sessions")) {
+                if (!router.pathname.includes("/sessions")) {
+                    localStorage.setItem(
+                        "sessions-selected-tab",
+                        JSON.stringify({
+                            value: "running",
+                            expiresAt: Date.now() + 1 * 24 * 60 * 60 * 1000,
+                        })
+                    );
                     router.push("/sessions");
                 }
+            } else {
+                setIsAlerting(false);
             }
-        } catch (err: any) {
-            console.log(err);
+        } catch (err) {
+            console.error("Failed to fetch sessions:", err);
         }
-    }, []);
+    }, [router]);
 
+    // Check sessions if user is a teacher
     useEffect(() => {
         if (user?.role?.name === "teacher") {
             getSessions();
         }
     }, [user?.role?.name, getSessions]);
 
+    // Alert every 10 seconds if needed
     useEffect(() => {
-        let intervalId: NodeJS.Timeout | null = null;
+        if (!isAlerting) return;
 
-        if (isAlerting) {
-            intervalId = setInterval(() => {
+        const intervalId = setInterval(() => {
+            const createReportForm =
+                document.getElementById("create-report-form");
+            if (!createReportForm) {
                 alert("Please close the running sessions!");
-            }, 10000);
-
-            // Store intervalId in the state or ref if needed for later cleanup
-            setAlertIntervalId(intervalId);
-        }
-
-        // Cleanup on unmount or when isAlerting changes
-        return () => {
-            if (intervalId) {
-                clearInterval(intervalId);
             }
-            // You can leave the state change to true/false outside of cleanup to avoid conflicts
-        };
-    }, [isAlerting]); // Only re-run when isAlerting changes
+        }, 10000);
+
+        return () => clearInterval(intervalId);
+    }, [isAlerting]);
 
     return <>{children}</>;
 };
 
-// PropTypes can be added if you want to enforce prop types at runtime
 LogicContext.propTypes = {
     children: PropTypes.node.isRequired,
 };
