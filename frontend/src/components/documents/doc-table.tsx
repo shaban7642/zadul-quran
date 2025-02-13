@@ -21,6 +21,7 @@ import CreateDocument from "./doc-create";
 import toast from "react-hot-toast";
 import { useMounted } from "../../hooks/use-mounted";
 import { documentApi } from "../../api/documentApi";
+import { useAuth } from "../../hooks/use-auth";
 
 export interface Document {
     id: number;
@@ -48,7 +49,7 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
                 const data: any = await documentApi.getDocuments(
                     rowsPerPage,
                     page,
-                    "books",
+                    `${pageName != "home-work" ? "books" : ""}`,
                     pageName
                 );
                 if (isMounted()) {
@@ -88,6 +89,8 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
         }
     };
 
+    const { user } = useAuth();
+
     const createDocument = async (
         values: any,
         userId: number
@@ -95,7 +98,10 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
         const load = toast.loading("createDocuments");
         try {
             await documentApi.createDocument(
-                { name: "books", id: 1 },
+                {
+                    name: user.roleId === 4 ? "home-work" : "books",
+                    id: user.roleId === 4 ? 2 : 1,
+                },
                 values,
                 userId
             );
@@ -169,7 +175,10 @@ export const DocumentTable = ({ pageName }: { pageName?: string }) => {
         <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
             <Grid container>
                 <Grid item lg={3.8} md={3.8} sm={3.8} xs={12}>
-                    <CreateDocument pageName={pageName} createDocument={createDocument} />
+                    <CreateDocument
+                        pageName={pageName}
+                        createDocument={createDocument}
+                    />
                 </Grid>
                 <Grid item lg={0.4} md={0.4} sm={0.4} xs={0}>
                     <Box></Box>
