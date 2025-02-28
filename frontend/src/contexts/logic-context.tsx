@@ -31,7 +31,7 @@ export const LogicContext: FC<LogicContextsProps> = ({ children }) => {
       const data = res?.rows ?? [];
 
       const hasOldSession = data.some((session: any) =>
-        moment(session.startedAt).isBefore(moment().subtract(1, "minutes"))
+        moment(session.startedAt).isBefore(moment().subtract(6, "hours"))
       );
 
       if (hasOldSession && !router?.query?.sub) {

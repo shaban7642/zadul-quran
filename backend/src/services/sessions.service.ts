@@ -24,8 +24,9 @@ class SessionsService {
     fromDate,
     toDate,
     dayOfWeek,
-    startTime,
-    endTime,
+    schedule, // Use the schedule array for start and end times
+    startTime: startMainTime,
+    endTime: endMainTime,
     title,
     sessionMethod,
     sessionTypeId,
@@ -36,6 +37,7 @@ class SessionsService {
     fromDate: Date;
     toDate: Date;
     dayOfWeek: number[];
+    schedule: { day: number; startTime: string; endTime: string }[]; // Schedule array with start and end times
     startTime: string;
     endTime: string;
     title: string;
@@ -43,6 +45,7 @@ class SessionsService {
     sessionTypeId: number;
   }): Promise<any> {
     try {
+      // Create the patch
       const patch = await this.patchesModel.create({
         studentId,
         teacherId,
@@ -59,6 +62,14 @@ class SessionsService {
 
       // For each day of the week (e.g., [1, 3, 5] for Mon, Wed, Fri)
       for (const targetDay of dayOfWeek) {
+        // Find the schedule entry for this day
+        const daySchedule = schedule.find((s) => s.day === targetDay);
+        if (!daySchedule) {
+          throw new Error(`No schedule found for day ${targetDay}`);
+        }
+
+        const { startTime, endTime } = daySchedule;
+
         // Create a new Date object to prevent modifying the original `start`
         const currentDate = new Date(start);
 
@@ -69,22 +80,26 @@ class SessionsService {
 
         // Loop through the dates, adding 7 days at a time, until we pass `end`
         while (currentDate <= end) {
-          result.push(new Date(currentDate).toISOString()); // Save the date
+          result.push({
+            date: new Date(currentDate).toISOString(), // Save the date
+            startTime,
+            endTime,
+          });
           currentDate.setDate(currentDate.getDate() + 7);
         }
       }
 
       // Now, create sessions for each valid date in the `result`
-      for (const sessionDate of result) {
+      for (const session of result) {
         await this.sessionsModel.create(
           {
             title,
             sessionMethod,
             patchId: patch.id,
             meetingId: `${Math.random()}`.substring(2, 8),
-            date: sessionDate,
-            startTime,
-            endTime,
+            date: session.date,
+            startTime: session.startTime,
+            endTime: session.endTime,
             sessionTypeId,
           },
           {

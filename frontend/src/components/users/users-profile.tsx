@@ -43,6 +43,7 @@ export type Session = {
     sessionTypeId: string;
     studentId: string;
     teacherId: string;
+    fromDate?: string;
     toDate: string;
     dayOfWeek: number[];
 

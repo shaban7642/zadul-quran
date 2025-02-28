@@ -15,20 +15,17 @@ import {
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
-import { Field, useFormik } from "formik";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { useFormik } from "formik";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useMounted } from "../../hooks/use-mounted";
-import { useAuth } from "../../hooks/use-auth";
 import { userApi } from "../../api/userApi";
 import { deptApi } from "../../api/deptApi";
 import { sessionApi } from "../../api/sessionsApi";
-import moment from "moment";
-import dayjs, { Dayjs } from "dayjs";
 import { sessionMethods } from "./sessions-create";
 import { Session } from "../users/users-profile";
 
+// Constants
 const weekDays = [
     { value: 1, label: "Monday" },
     { value: 2, label: "Tuesday" },
@@ -45,185 +42,237 @@ interface SessionFormProps {
     sessions?: Session[];
     createSession: (values: any) => Promise<{ success: boolean }>;
 }
-export const SessionForm: FC<SessionFormProps> = (props) => {
-    const { open, setOpen, sessions, createSession } = props;
-    const isMounted = useMounted();
 
-    const [fromDate, setFromDate] = useState<Dayjs | null>(null);
+interface Schedule {
+    day: number;
+    startTime: string;
+    endTime: string;
+}
+
+interface User {
+    id: string;
+    firstName: string;
+    lastName: string;
+    roleId: number;
+}
+
+interface Subject {
+    id: string;
+    name: string;
+}
+
+interface SessionType {
+    id: string;
+    type: string;
+}
+
+// Define API response types
+interface UserApiResponse {
+    rows: User[];
+}
+
+interface SubjectApiResponse {
+    rows: Subject[];
+}
+
+interface SessionTypeApiResponse {
+    resp: SessionType[];
+}
+
+export const SessionForm: FC<SessionFormProps> = ({
+    open,
+    setOpen,
+    sessions,
+    createSession,
+}) => {
+    const isMounted = useMounted();
     const [students, setStudents] = useState<any[]>([]);
     const [teachers, setTeachers] = useState<any[]>([]);
     const [subjects, setSubjects] = useState<any[]>([]);
     const [sessionTypes, setSessionTypes] = useState<any[]>([]);
     const [sessionCount, setSessionCount] = useState<number>(0);
-
-    const getUsers = useCallback(
-        async (rowsPerPage: any, page: number) => {
-            try {
-                const data: any = await userApi.getUsers(
-                    rowsPerPage,
-                    page,
-                    "teacher",
-                    "student"
-                );
-
-                if (isMounted()) {
-                    const filteredStudents: any[] = data.rows.filter(
-                        (row: any) => row?.roleId === 4
-                    );
-                    const filteredTeachers: any[] = data.rows.filter(
-                        (row: any) => row?.roleId === 3
-                    );
-                    setStudents(filteredStudents);
-                    setTeachers(filteredTeachers);
-                }
-            } catch (err: any) {
-                console.log(err);
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isMounted]
-    );
-
-    const getSubjects = useCallback(
-        async () => {
-            try {
-                const data: any = await deptApi.getDepts("ALL", -1);
-                if (isMounted()) {
-                    setSubjects(data.rows);
-                }
-            } catch (err: any) {
-                console.log(err);
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isMounted]
-    );
-
-    const getSessionTypes = useCallback(
-        async () => {
-            try {
-                const data: any = await sessionApi.getSessionTypes();
-                if (isMounted()) {
-                    setSessionTypes(data.resp);
-                }
-            } catch (err: any) {
-                console.log(err);
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isMounted]
-    );
+    const [schedule, setSchedule] = useState<Schedule[]>([]);
+    const [scheduleError, setScheduleError] = useState<string | null>(null); // State for schedule validation error
+    const [isSubmitted, setIsSubmitted] = useState(false); // Track if form has been submitted
+    // Fetch users, subjects, and session types on mount
     useEffect(() => {
-        getUsers("ALL", -1);
-        getSubjects();
-        getSessionTypes();
-    }, []);
+        const fetchData = async () => {
+            try {
+                const [usersData, subjectsData, sessionTypesData] =
+                    await Promise.all([
+                        userApi.getUsers(
+                            "ALL",
+                            -1,
+                            "teacher",
+                            "student"
+                        ) as Promise<UserApiResponse>,
+                        deptApi.getDepts(
+                            "ALL",
+                            -1
+                        ) as Promise<SubjectApiResponse>,
+                        sessionApi.getSessionTypes() as Promise<SessionTypeApiResponse>,
+                    ]);
+
+                if (isMounted()) {
+                    setStudents(
+                        usersData.rows.filter((row) => row.roleId === 4)
+                    );
+                    setTeachers(
+                        usersData.rows.filter((row) => row.roleId === 3)
+                    );
+                    setSubjects(subjectsData.rows);
+                    setSessionTypes(sessionTypesData.resp);
+                }
+            } catch (err) {
+                console.error("Failed to fetch data:", err);
+            }
+        };
+
+        fetchData();
+    }, [isMounted]);
+
+    // Initialize form values if a session is provided
     useEffect(() => {
         if (sessions?.length === 1) {
             formik.setValues({
                 ...sessions[0],
+                fromDate: sessions[0].fromDate || "",
                 frontId: sessions[0].frontId || "",
             });
         }
     }, [sessions]);
 
-    const handleClose = () => {
-        formik.resetForm();
-        setOpen(false);
+    // Validate schedule before submission
+    const validateSchedule = () => {
+        for (const { startTime, endTime } of schedule) {
+            if (!startTime || !endTime) {
+                setScheduleError(
+                    "Start time and end time are required for all selected days."
+                );
+                return false;
+            }
+        }
+        setScheduleError(null); // Clear error if validation passes
+
+        return true;
     };
+
+    // Handle form submission
+    const handleSubmit = async (values: any) => {
+        setIsSubmitted(true);
+        if (!validateSchedule()) {
+            return; // Prevent submission if schedule is invalid
+        }
+        try {
+            const payload = {
+                ...values,
+                frontId: "",
+                schedule,
+                startTime: schedule[0]?.startTime,
+                endTime: schedule[schedule.length - 1]?.endTime,
+            };
+
+            const { success } = await createSession(payload);
+            if (success) {
+                handleClose();
+            }
+        } catch (err) {
+            console.error("Failed to create session:", err);
+        }
+    };
+
+    // Formik initialization
     const formik = useFormik({
         initialValues: {
             departmentId: "",
             sessionTypeId: "",
             studentId: "",
             teacherId: "",
-            //  fromDate: "",
+            fromDate: "",
             toDate: "",
             dayOfWeek: [] as number[],
-
-            endTime: "",
             title: "",
             sessionMethod: "",
             frontId: "",
         },
-
         validationSchema: yup.object({
-            departmentId: yup.number().required("subject is required"),
-            sessionTypeId: yup.number().required("session type is required"),
-            studentId: yup.number().required("student is required"),
-            teacherId: yup.number().required("teacher is required"),
-            dayOfWeek: yup.number().required("dayOfWeek is required"),
-            // fromDate: yup.date().required("fromDate is required"),
-            toDate: yup.date().required("toDate is required"),
-            //startTime: yup.string().required("startTime is required"),
-            endTime: yup.string().required("endTime is required"),
-            title: yup.string().required("title is required"),
-            sessionMethod: yup.string().required("sessionMethod is required"),
+            departmentId: yup.number().required("Subject is required"),
+            sessionTypeId: yup.number().required("Session type is required"),
+            studentId: yup.number().required("Student is required"),
+            teacherId: yup.number().required("Teacher is required"),
+            dayOfWeek: yup.array().min(1, "At least one day is required"),
+            fromDate: yup.date().required("Start date is required"),
+            toDate: yup.date().required("End date is required"),
+            title: yup.string().required("Title is required"),
+            sessionMethod: yup.string().required("Session method is required"),
+            schedule: yup.array().of(
+                yup.object().shape({
+                    startTime: yup.string().required("Start time is required"),
+                    endTime: yup.string().required("End time is required"),
+                })
+            ),
         }),
-        onSubmit: async (values) => {
-            const date = new Date(String(fromDate));
-            const time = date.getTime();
-            const startTime = moment(time);
-            const endTime = moment(values.endTime, "HH:mm");
-
-            const { success } = await createSession({
-                ...values,
-                frontId: "",
-                fromDate,
-                startTime: startTime.utc().format("HH:mm"),
-                endTime: endTime.utc().format("HH:mm"),
-            });
-            if (success) {
-                handleClose();
-                formik.resetForm();
-            }
-        },
+        onSubmit: handleSubmit,
     });
 
+    // Update schedule when selected days change
     useEffect(() => {
-        if (fromDate && formik?.values?.toDate && formik.values.dayOfWeek) {
-            const start = new Date(fromDate.toDate());
-            const end = new Date(formik.values.toDate);
-            end.setHours(23, 59, 59, 999); // Set end date to the end of the day
-            const result = [];
+        const selectedDays = formik.values.dayOfWeek || [];
+        const updatedSchedule = selectedDays.map((day) => {
+            const existing = schedule.find((item) => item.day === day);
+            return existing || { day, startTime: "", endTime: "" };
+        });
+        setSchedule(updatedSchedule);
+    }, [formik.values.dayOfWeek]);
 
-            // For each day of the week (e.g., [1, 3, 5] for Mon, Wed, Fri)
-            for (const targetDay of formik.values.dayOfWeek) {
-                // Create a new Date object to prevent modifying the original `start`
-                const currentDate = new Date(start);
+    // Calculate end date based on session count and selected days
+    useEffect(() => {
+        if (
+            formik.values.fromDate &&
+            formik.values.dayOfWeek?.length > 0 &&
+            sessionCount > 0
+        ) {
+            const start = new Date(formik.values.fromDate);
+            let currentDate = new Date(start);
+            let sessionsScheduled = 0;
+            const selectedDays = formik.values.dayOfWeek.sort();
+            let lastSessionDate = null;
 
-                // Adjust currentDate to the first occurrence of targetDay
-                while (currentDate.getDay() !== targetDay) {
-                    currentDate.setDate(currentDate.getDate() + 1);
+            while (sessionsScheduled < sessionCount) {
+                if (selectedDays.includes(currentDate.getDay())) {
+                    lastSessionDate = new Date(currentDate);
+                    sessionsScheduled++;
                 }
-
-                // Loop through the dates, adding 7 days at a time, until we pass `end`
-                while (currentDate <= end) {
-                    result.push(new Date(currentDate).toISOString()); // Save the date
-                    currentDate.setDate(currentDate.getDate() + 7);
-                }
+                currentDate.setDate(currentDate.getDate() + 1);
             }
-            setSessionCount(result?.length || 0);
+
+            if (lastSessionDate) {
+                formik.setFieldValue(
+                    "toDate",
+                    lastSessionDate.toISOString().split("T")[0]
+                );
+            }
         }
-    }, [fromDate, formik.values.toDate, formik.values.dayOfWeek]);
+    }, [formik.values.fromDate, formik.values.dayOfWeek, sessionCount]);
+
+    // Close dialog and reset form
+    const handleClose = () => {
+        formik.resetForm();
+        setOpen(false);
+        setIsSubmitted(false); // Reset submission state
+    };
 
     return (
-        <Dialog maxWidth="md" open={open}>
-            <DialogTitle
-                sx={{
-                    bgcolor: "primary.main",
-                    color: "white",
-                }}
-            >
+        <Dialog maxWidth="md" open={open} onClose={handleClose}>
+            <DialogTitle sx={{ bgcolor: "primary.main", color: "white" }}>
                 <Typography variant="subtitle2">
                     Create patch of sessions
                 </Typography>
             </DialogTitle>
             <Box sx={{ p: 2, bgcolor: "white" }}>
-                {/* map on sessions and show the session title  */}
-                {sessions?.map((session: Session) => (
+                {sessions?.map((session) => (
                     <Typography
-                        key={session.frontId} // Use session.id as key
+                        key={session.frontId}
                         variant="h6"
                         sx={{
                             padding: "5px 0",
@@ -248,6 +297,7 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                         onClick={() =>
                             formik.setValues({
                                 ...session,
+                                fromDate: session.fromDate || "",
                                 frontId: session.frontId || "",
                             })
                         }
@@ -258,28 +308,31 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
 
                 <DialogContent sx={{ mt: 1 }}>
                     <Grid container spacing={2}>
+                        {/* Title */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <TextField
                                 label="Title"
                                 name="title"
-                                type="text"
-                                sx={{ width: "100%" }}
-                                onChange={formik.handleChange}
                                 value={formik.values.title}
+                                onChange={formik.handleChange}
                                 error={Boolean(
                                     formik.errors.title && formik.touched.title
                                 )}
                                 helperText={
                                     formik.touched.title && formik.errors.title
                                 }
+                                fullWidth
                             />
                         </Grid>
+
+                        {/* Session Method */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Session Method"
                                     name="sessionMethod"
                                     value={formik.values.sessionMethod}
+                                    onChange={formik.handleChange}
                                     error={Boolean(
                                         formik.errors.sessionMethod &&
                                             formik.touched.sessionMethod
@@ -288,38 +341,30 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                                         formik.touched.sessionMethod &&
                                         formik.errors.sessionMethod
                                     }
-                                    InputLabelProps={{
-                                        shrink: formik.values.sessionMethod
-                                            ? true
-                                            : false,
-                                    }}
                                     fullWidth
                                     required
                                     select
-                                    onChange={formik.handleChange}
                                 >
-                                    {sessionMethods.map(
-                                        (option: {
-                                            value: string;
-                                            label: string;
-                                        }) => (
-                                            <MenuItem
-                                                key={option.value}
-                                                value={option.value}
-                                            >
-                                                {option.label}
-                                            </MenuItem>
-                                        )
-                                    )}
+                                    {sessionMethods.map((option) => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
                         </Grid>
+
+                        {/* Subject */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Subject"
                                     name="departmentId"
                                     value={formik.values.departmentId}
+                                    onChange={formik.handleChange}
                                     error={Boolean(
                                         formik.errors.departmentId &&
                                             formik.touched.departmentId
@@ -328,38 +373,30 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                                         formik.touched.departmentId &&
                                         formik.errors.departmentId
                                     }
-                                    InputLabelProps={{
-                                        shrink: formik.values.departmentId
-                                            ? true
-                                            : false,
-                                    }}
                                     fullWidth
                                     required
                                     select
-                                    onChange={formik.handleChange}
                                 >
-                                    {subjects.map(
-                                        (option: {
-                                            id: string;
-                                            name: string;
-                                        }) => (
-                                            <MenuItem
-                                                key={option.id}
-                                                value={option.id}
-                                            >
-                                                {option.name}
-                                            </MenuItem>
-                                        )
-                                    )}
+                                    {subjects.map((option) => (
+                                        <MenuItem
+                                            key={option.id}
+                                            value={option.id}
+                                        >
+                                            {option.name}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
                         </Grid>
+
+                        {/* Teacher */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Teacher"
                                     name="teacherId"
                                     value={formik.values.teacherId}
+                                    onChange={formik.handleChange}
                                     error={Boolean(
                                         formik.errors.teacherId &&
                                             formik.touched.teacherId
@@ -368,34 +405,23 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                                         formik.touched.teacherId &&
                                         formik.errors.teacherId
                                     }
-                                    InputLabelProps={{
-                                        shrink: formik.values.teacherId
-                                            ? true
-                                            : false,
-                                    }}
                                     fullWidth
                                     required
                                     select
-                                    onChange={formik.handleChange}
                                 >
-                                    {teachers.map(
-                                        (option: {
-                                            id: string;
-                                            firstName: string;
-                                            lastName: string;
-                                        }) => (
-                                            <MenuItem
-                                                key={option.id}
-                                                value={option.id}
-                                            >
-                                                {option.firstName}{" "}
-                                                {option.lastName}
-                                            </MenuItem>
-                                        )
-                                    )}
+                                    {teachers.map((option) => (
+                                        <MenuItem
+                                            key={option.id}
+                                            value={option.id}
+                                        >
+                                            {option.firstName} {option.lastName}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
                         </Grid>
+
+                        {/* Student */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
                                 <Autocomplete
@@ -425,82 +451,25 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                                                 formik.errors.studentId &&
                                                     formik.touched.studentId
                                             )}
-                                            required
                                             helperText={
                                                 formik.touched.studentId &&
                                                 formik.errors.studentId
                                             }
+                                            required
                                         />
                                     )}
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item lg={6} md={6} sm={12} xs={12}>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker
-                                    name="fromDate"
-                                    sx={{ width: "100%" }}
-                                    label="From Date & Start Time"
-                                    value={fromDate}
-                                    onChange={(newValue: any) => {
-                                        setFromDate(newValue);
-                                    }}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item lg={6} md={6} sm={12} xs={12}>
-                            <TextField
-                                label="To Date"
-                                name="toDate"
-                                type="date"
-                                sx={{ width: "100%" }}
-                                onChange={formik.handleChange}
-                                value={formik.values.toDate}
-                                error={Boolean(
-                                    formik.errors.toDate &&
-                                        formik.touched.toDate
-                                )}
-                                helperText={
-                                    formik.touched.toDate &&
-                                    formik.errors.toDate
-                                }
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                        </Grid>
 
-                        <Grid item lg={6} md={6} sm={12} xs={12}>
-                            <TextField
-                                label="End Time"
-                                name="endTime"
-                                type="time"
-                                sx={{ width: "100%" }}
-                                onChange={formik.handleChange}
-                                value={formik.values.endTime}
-                                error={Boolean(
-                                    formik.errors.endTime &&
-                                        formik.touched.endTime
-                                )}
-                                helperText={
-                                    formik.touched.endTime &&
-                                    formik.errors.endTime
-                                }
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                        </Grid>
+                        {/* Day of Week */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
                                 <TextField
-                                    label="Day of week"
+                                    label="Day of Week"
                                     name="dayOfWeek"
-                                    value={
-                                        Array.isArray(formik.values.dayOfWeek)
-                                            ? formik.values.dayOfWeek
-                                            : []
-                                    } // Ensure dayOfWeek is an array
+                                    value={formik.values.dayOfWeek}
+                                    onChange={formik.handleChange}
                                     error={Boolean(
                                         formik.errors.dayOfWeek &&
                                             formik.touched.dayOfWeek
@@ -509,46 +478,95 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                                         formik.touched.dayOfWeek &&
                                         formik.errors.dayOfWeek
                                     }
-                                    InputLabelProps={{
-                                        shrink: formik.values.dayOfWeek
-                                            ? true
-                                            : false,
-                                    }}
                                     fullWidth
                                     required
                                     select
-                                    onChange={formik.handleChange}
-                                    SelectProps={{
-                                        multiple: true,
-                                    }}
+                                    SelectProps={{ multiple: true }}
                                 >
-                                    {weekDays.map(
-                                        (option: {
-                                            value: number;
-                                            label: string;
-                                        }) => (
-                                            <MenuItem
-                                                key={option.value}
-                                                value={option.value}
-                                            >
-                                                {option.label}
-                                            </MenuItem>
-                                        )
-                                    )}
+                                    {weekDays.map((option) => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
-                            {sessionCount > 0 && (
-                                <Typography color={"primary"} sx={{ mt: 2 }}>
-                                    Number of sessions: {String(sessionCount)}
-                                </Typography>
-                            )}
                         </Grid>
+
+                        {/* From Date */}
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <TextField
+                                disabled={!formik.values?.dayOfWeek?.length}
+                                label="From Date"
+                                name="fromDate"
+                                type="date"
+                                value={formik.values.fromDate}
+                                onChange={formik.handleChange}
+                                error={Boolean(
+                                    formik.errors.fromDate &&
+                                        formik.touched.fromDate
+                                )}
+                                helperText={
+                                    formik.touched.fromDate &&
+                                    formik.errors.fromDate
+                                }
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
+                            />
+                        </Grid>
+
+                        {/* Number of Sessions */}
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <TextField
+                                disabled={!formik.values.fromDate}
+                                label="Number of Sessions"
+                                type="number"
+                                value={sessionCount}
+                                onChange={(e) =>
+                                    setSessionCount(
+                                        Math.max(
+                                            formik.values.dayOfWeek?.length ||
+                                                1,
+                                            Number(e.target.value)
+                                        )
+                                    )
+                                }
+                                fullWidth
+                            />
+                        </Grid>
+
+                        {/* To Date */}
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <TextField
+                                label="To Date"
+                                name="toDate"
+                                type="date"
+                                value={formik.values.toDate}
+                                onChange={formik.handleChange}
+                                error={Boolean(
+                                    formik.errors.toDate &&
+                                        formik.touched.toDate
+                                )}
+                                helperText={
+                                    formik.touched.toDate &&
+                                    formik.errors.toDate
+                                }
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
+                                disabled
+                            />
+                        </Grid>
+
+                        {/* Session Type */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                             <FormControl fullWidth>
                                 <TextField
                                     label="Session Type"
                                     name="sessionTypeId"
                                     value={formik.values.sessionTypeId}
+                                    onChange={formik.handleChange}
                                     error={Boolean(
                                         formik.errors.sessionTypeId &&
                                             formik.touched.sessionTypeId
@@ -557,32 +575,101 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                                         formik.touched.sessionTypeId &&
                                         formik.errors.sessionTypeId
                                     }
-                                    InputLabelProps={{
-                                        shrink: formik.values.sessionTypeId
-                                            ? true
-                                            : false,
-                                    }}
                                     fullWidth
                                     required
                                     select
-                                    onChange={formik.handleChange}
                                 >
-                                    {sessionTypes.map(
-                                        (option: {
-                                            id: string;
-                                            name: string;
-                                        }) => (
-                                            <MenuItem
-                                                key={option.id}
-                                                value={option.id}
-                                            >
-                                                {option.name}
-                                            </MenuItem>
-                                        )
-                                    )}
+                                    {sessionTypes.map((option) => (
+                                        <MenuItem
+                                            key={option.id}
+                                            value={option.id}
+                                        >
+                                            {option.name}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
                         </Grid>
+
+                        {/* Schedule (Start and End Times) */}
+                        {schedule.map(({ day, startTime, endTime }) => (
+                            <React.Fragment key={day}>
+                                <Grid item lg={6} md={6} sm={12} xs={12}>
+                                    <TextField
+                                        label={`Start Time (${
+                                            weekDays.find(
+                                                (d) => d.value === day
+                                            )?.label
+                                        })`}
+                                        type="time"
+                                        value={startTime}
+                                        onChange={(e) => {
+                                            setSchedule((prev) =>
+                                                prev.map((d) =>
+                                                    d.day === day
+                                                        ? {
+                                                              ...d,
+                                                              startTime:
+                                                                  e.target
+                                                                      .value,
+                                                          }
+                                                        : d
+                                                )
+                                            );
+                                        }}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true }}
+                                        error={isSubmitted && !startTime} // Show error only after submission
+                                        helperText={
+                                            isSubmitted &&
+                                            !startTime &&
+                                            "Start time is required"
+                                        }
+                                    />
+                                </Grid>
+                                <Grid item lg={6} md={6} sm={12} xs={12}>
+                                    <TextField
+                                        label={`End Time (${
+                                            weekDays.find(
+                                                (d) => d.value === day
+                                            )?.label
+                                        })`}
+                                        type="time"
+                                        value={endTime}
+                                        onChange={(e) => {
+                                            setSchedule((prev) =>
+                                                prev.map((d) =>
+                                                    d.day === day
+                                                        ? {
+                                                              ...d,
+                                                              endTime:
+                                                                  e.target
+                                                                      .value,
+                                                          }
+                                                        : d
+                                                )
+                                            );
+                                        }}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true }}
+                                        error={isSubmitted && !endTime} // Show error only after submission
+                                        helperText={
+                                            isSubmitted &&
+                                            !endTime &&
+                                            "End time is required"
+                                        }
+                                    />
+                                </Grid>
+                            </React.Fragment>
+                        ))}
+                        {/* Schedule Validation Error */}
+                        {isSubmitted && scheduleError && (
+                            <Grid item xs={12}>
+                                <Typography color="error" variant="body2">
+                                    {scheduleError}
+                                </Typography>
+                            </Grid>
+                        )}
                     </Grid>
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
@@ -598,11 +685,9 @@ export const SessionForm: FC<SessionFormProps> = (props) => {
                             size="small"
                             onClick={handleClose}
                         >
-                            {" "}
                             Cancel
                         </Button>
                         <LoadingButton
-                            //   loading={loading}
                             type="submit"
                             variant="contained"
                             onClick={() => formik.handleSubmit()}
