@@ -27,6 +27,7 @@ interface Session {
     date: string;
     startTime: string;
     endTime: string;
+    title?: string;
 }
 
 interface SessionsGroupComponentProps {
