@@ -64,6 +64,7 @@ interface Subject {
 interface SessionType {
     id: string;
     type: string;
+    duration: number;
 }
 
 // Define API response types
@@ -121,7 +122,7 @@ export const SessionForm: FC<SessionFormProps> = ({
                         usersData.rows.filter((row) => row.roleId === 3)
                     );
                     setSubjects(subjectsData.rows);
-                    setSessionTypes(sessionTypesData.resp);
+                    setSessionTypes(sessionTypesData.resp?.sort((a, b) => a.duration - b.duration);
                 }
             } catch (err) {
                 console.error("Failed to fetch data:", err);
