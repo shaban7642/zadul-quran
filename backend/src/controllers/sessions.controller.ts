@@ -180,6 +180,11 @@ class SessionsController {
 
       const promises = rows.map(async (session: Session) => {
         // Split the time into hours, minutes, and seconds
+        if (!session.startTime) {
+          console.log(session.id);
+          console.log(session);
+          return;
+        }
         const [hours, minutes, seconds] = session.startTime
           .toString()
           .split(':')
@@ -452,6 +457,7 @@ class SessionsController {
         dayOfWeek,
         startTime,
         endTime,
+        schedule,
         title,
         sessionMethod,
         sessionTypeId,
@@ -466,6 +472,7 @@ class SessionsController {
         dayOfWeek,
         startTime,
         endTime,
+        schedule,
         title,
         sessionMethod,
         sessionTypeId,

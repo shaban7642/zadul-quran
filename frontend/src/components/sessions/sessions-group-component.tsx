@@ -14,28 +14,52 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { TableHeads } from "./sessions-heads";
 import { SessionsRow } from "./sessions-row";
+
+interface Session {
+    id: number;
+    patchId: string;
+    teacher: string;
+    student: string;
+    status: string;
+    startedAt: string;
+    endedAt: string;
+    subject: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    title?: string;
+}
+
+interface SessionsGroupComponentProps {
+    sessions: Session[];
+    contentRef: React.RefObject<HTMLTableElement>;
+    handleGetSessions: () => void;
+    reportFlag: boolean;
+    setReoprtFlag: (flag: boolean) => void;
+}
+
 const SessionsGroupComponent = ({
     sessions,
     contentRef,
     handleGetSessions,
     reportFlag,
     setReoprtFlag,
-}: {
-    sessions: any;
-    contentRef: any;
-    handleGetSessions: any;
-    reportFlag: boolean;
-    setReoprtFlag: any;
-}) => {
-    const [selectedDate, setSelectedDate] = useState("");
-    const sessionsGroupByDate = sessions?.reduce((acc: any, session: any) => {
-        const date = moment(session.date).format("YYYY-MM");
-        acc[date] = acc[date] || [];
-        acc[date].push(session);
-        return acc;
-    }, {});
-
+}: SessionsGroupComponentProps) => {
+    const [selectedBatchId, setSelectedBatchId] = useState<string>("");
     const [selected, setSelected] = useState<number[]>([]);
+
+    const sessionsGroupByBatchId = sessions?.reduce(
+        (acc: Record<string, Session[]>, session: Session) => {
+            const patchId = session.patchId;
+            if (!acc[patchId]) {
+                acc[patchId] = [];
+            }
+            acc[patchId].push(session);
+            return acc;
+        },
+        {}
+    );
+
     const statuses: readonly string[] = [
         "waiting",
         "expired",
@@ -45,7 +69,8 @@ const SessionsGroupComponent = ({
         "absent",
         "rescheduled",
     ];
-    const headCells: readonly any[] = [
+
+    const headCells = [
         {
             id: "teacher",
             numeric: false,
@@ -58,12 +83,7 @@ const SessionsGroupComponent = ({
             disablePadding: true,
             label: "Student",
         },
-        {
-            id: "status",
-            numeric: false,
-            disablePadding: true,
-            label: "Status",
-        },
+        { id: "status", numeric: false, disablePadding: true, label: "Status" },
         {
             id: "startedAt",
             numeric: false,
@@ -82,12 +102,7 @@ const SessionsGroupComponent = ({
             disablePadding: false,
             label: "Subject",
         },
-        {
-            id: "date",
-            numeric: true,
-            disablePadding: false,
-            label: "Date",
-        },
+        { id: "date", numeric: true, disablePadding: false, label: "Date" },
         {
             id: "startTime",
             numeric: true,
@@ -106,11 +121,11 @@ const SessionsGroupComponent = ({
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (event.target.checked) {
-            const newSelected = sessions.map((n: any) => n.id);
+            const newSelected = currentSessions.map((n) => n.id);
             setSelected(newSelected);
-            return;
+        } else {
+            setSelected([]);
         }
-        setSelected([]);
     };
 
     const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
@@ -131,24 +146,25 @@ const SessionsGroupComponent = ({
         }
         setSelected(newSelected);
     };
+
     const deleteSession = async (): Promise<{ success: boolean }> => {
-        const load = toast.loading("delete");
+        const load = toast.loading("Deleting...");
         try {
             const resp = await sessionApi.deleteSession(selected);
             if (resp) {
                 toast.dismiss(load);
-                toast.success("deleteSessionSuccess");
+                toast.success("Session deleted successfully");
                 handleGetSessions();
                 setSelected([]);
                 return { success: true };
             } else {
                 toast.dismiss(load);
-                toast.error("deleteSessionFailed");
+                toast.error("Failed to delete session");
                 return { success: false };
             }
         } catch (err: any) {
             toast.dismiss(load);
-            toast.error(err.message || "deleteSessionsFailed");
+            toast.error(err.message || "Failed to delete session");
             return { success: false };
         }
     };
@@ -157,55 +173,60 @@ const SessionsGroupComponent = ({
         id: number,
         values: any
     ): Promise<{ success: boolean }> => {
-        const load = toast.loading("update");
+        const load = toast.loading("Updating...");
         try {
             const resp = await sessionApi.updateSession(id, values);
             if (resp) {
                 toast.dismiss(load);
-                toast.success("updateSessionSuccess");
+                toast.success("Session updated successfully");
                 handleGetSessions();
                 return { success: true };
             } else {
                 toast.dismiss(load);
-                toast.error("updateSessionFailed");
+                toast.error("Failed to update session");
                 return { success: false };
             }
         } catch (err: any) {
             toast.dismiss(load);
-            toast.error(err.message || "updateSessionsFailed");
+            toast.error(err.message || "Failed to update session");
             return { success: false };
         }
     };
 
-    const currentSessions = sessionsGroupByDate[selectedDate];
+    const currentSessions = sessionsGroupByBatchId?.[selectedBatchId] || [];
 
     const renderMonthsGrid = () => (
         <Grid container spacing={3}>
-            {Object.keys(sessionsGroupByDate).map((date) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={date}>
-                    <Paper
-                        onClick={() => setSelectedDate(date)}
-                        elevation={3}
-                        sx={{
-                            backgroundColor: "primary.main",
-                            color: "white",
-                            fontWeight: "bold",
-                            fontSize: "20px",
-                            textAlign: "center",
-                            padding: "16px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                            transition: "0.3s",
-                            "&:hover": {
-                                backgroundColor: "primary.dark",
-                            },
-                        }}
-                    >
-                        {moment(date, "YYYY-MM").format("MMMM YYYY")} (
-                        {sessionsGroupByDate[date]?.length || 0})
-                    </Paper>
-                </Grid>
-            ))}
+            {Object.keys(sessionsGroupByBatchId || {}).map((batchId) => {
+                const batchTitle =
+                    sessionsGroupByBatchId[batchId]?.[0]?.title ||
+                    `Batch ${batchId}`;
+                return (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={batchId}>
+                        <Paper
+                            onClick={() => setSelectedBatchId(batchId)}
+                            elevation={3}
+                            sx={{
+                                backgroundColor: "primary.main",
+                                color: "white",
+                                fontWeight: "bold",
+                                fontSize: "20px",
+                                textAlign: "center",
+                                padding: "16px",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                transition: "0.3s",
+                                "&:hover": {
+                                    backgroundColor: "primary.dark",
+                                },
+                            }}
+                        >
+                            Batch:{" "}
+                            {`${batchTitle} (${sessionsGroupByBatchId[batchId].length})`}
+                        </Paper>
+                    </Grid>
+                );
+            })}
         </Grid>
     );
 
@@ -219,7 +240,7 @@ const SessionsGroupComponent = ({
                 }}
             >
                 <Button
-                    onClick={() => setSelectedDate("")}
+                    onClick={() => setSelectedBatchId("")}
                     sx={{ m: 2, gap: 1 }}
                     variant="outlined"
                 >
@@ -236,18 +257,18 @@ const SessionsGroupComponent = ({
                 >
                     <style>
                         {`
-													@media print {
-															body {
-																	-webkit-print-color-adjust: exact;
-															}
-															table {
-																	padding:10px;
-															}
-															.no-print {
-																	display: none !important;
-															}
-													}
-											`}
+                            @media print {
+                                body {
+                                    -webkit-print-color-adjust: exact;
+                                }
+                                table {
+                                    padding: 10px;
+                                }
+                                .no-print {
+                                    display: none !important;
+                                }
+                            }
+                        `}
                     </style>
 
                     <TableHeads
@@ -255,10 +276,10 @@ const SessionsGroupComponent = ({
                         numSelected={selected.length}
                         onSelectAllClick={handleSelectAllClick}
                         deleteSession={deleteSession}
-                        rowCount={currentSessions?.length}
+                        rowCount={currentSessions.length}
                     />
                     <TableBody>
-                        {currentSessions?.map((row: any, index: number) => {
+                        {currentSessions.map((row: Session, index: number) => {
                             const isItemSelected = selected.includes(row.id);
                             return (
                                 <SessionsRow
@@ -282,7 +303,7 @@ const SessionsGroupComponent = ({
 
     return (
         <Box sx={{ p: 2 }}>
-            {selectedDate ? renderSessionsTable() : renderMonthsGrid()}
+            {selectedBatchId ? renderSessionsTable() : renderMonthsGrid()}
         </Box>
     );
 };
