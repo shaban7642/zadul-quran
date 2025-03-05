@@ -5,8 +5,8 @@ on:
     branches: [main]
     paths-ignore:
       - '.github/**'
-      #- '**/*.md'
-      #- 'README.md'
+      - '**/*.md'
+      - 'README.md'
 
 jobs:
   deploy:
