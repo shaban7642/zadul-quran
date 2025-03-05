@@ -2,7 +2,11 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [main] 
+    branches: [main]
+    paths-ignore:
+      - '.github/**'
+      - '**/*.md'
+      - 'README.md'
 
 jobs:
   deploy:
@@ -20,5 +24,8 @@ jobs:
         password: 123Zad@zad123
         script: |
           cd /home/projects/zadul-quran
-          touch hi.txt
-          echo "its working" > hi.txt
+          git pull
+          cd backend
+          npm install
+          npm run build
+          pm2 restart 0
