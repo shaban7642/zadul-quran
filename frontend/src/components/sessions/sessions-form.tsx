@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
     Box,
     TextField,
@@ -16,14 +16,13 @@ import {
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useMounted } from "../../hooks/use-mounted";
 import { userApi } from "../../api/userApi";
 import { deptApi } from "../../api/deptApi";
 import { sessionApi } from "../../api/sessionsApi";
 import { sessionMethods } from "./sessions-create";
 import { Session } from "../users/users-profile";
+import moment from "moment";
 
 // Constants
 const weekDays = [
@@ -41,6 +40,7 @@ interface SessionFormProps {
     setOpen: (open: boolean) => void;
     sessions?: Session[];
     createSession: (values: any) => Promise<{ success: boolean }>;
+    sessionTypesToParent: any;
 }
 
 interface Schedule {
@@ -85,13 +85,16 @@ export const SessionForm: FC<SessionFormProps> = ({
     setOpen,
     sessions,
     createSession,
+    sessionTypesToParent,
 }) => {
     const isMounted = useMounted();
     const [students, setStudents] = useState<any[]>([]);
     const [teachers, setTeachers] = useState<any[]>([]);
     const [subjects, setSubjects] = useState<any[]>([]);
     const [sessionTypes, setSessionTypes] = useState<any[]>([]);
-    const [sessionCount, setSessionCount] = useState<number>(0);
+    const [sessionCount, setSessionCount] = useState<
+        number | undefined | string
+    >(0);
     const [schedule, setSchedule] = useState<Schedule[]>([]);
     const [scheduleError, setScheduleError] = useState<string | null>(null); // State for schedule validation error
     const [isSubmitted, setIsSubmitted] = useState(false); // Track if form has been submitted
@@ -122,7 +125,11 @@ export const SessionForm: FC<SessionFormProps> = ({
                         usersData.rows.filter((row) => row.roleId === 3)
                     );
                     setSubjects(subjectsData.rows);
-                    setSessionTypes(sessionTypesData.resp?.sort((a, b) => a.duration - b.duration));
+                    const types = sessionTypesData.resp?.sort(
+                        (a, b) => a.duration - b.duration
+                    );
+                    setSessionTypes(types);
+                    sessionTypesToParent && sessionTypesToParent(types);
                 }
             } catch (err) {
                 console.error("Failed to fetch data:", err);
@@ -131,17 +138,6 @@ export const SessionForm: FC<SessionFormProps> = ({
 
         fetchData();
     }, [isMounted]);
-
-    // Initialize form values if a session is provided
-    useEffect(() => {
-        if (sessions?.length === 1) {
-            formik.setValues({
-                ...sessions[0],
-                fromDate: sessions[0].fromDate || "",
-                frontId: sessions[0].frontId || "",
-            });
-        }
-    }, [sessions]);
 
     // Validate schedule before submission
     const validateSchedule = () => {
@@ -168,7 +164,17 @@ export const SessionForm: FC<SessionFormProps> = ({
             const payload = {
                 ...values,
                 frontId: "",
-                schedule,
+                schedule: schedule.map((sch) => {
+                    return {
+                        ...sch,
+                        startTime: moment
+                            .utc(sch.startTime, "HH:mm")
+                            .format("HH:mm"),
+                        endTime: moment
+                            .utc(sch.endTime, "HH:mm")
+                            .format("HH:mm"),
+                    };
+                }),
                 startTime: schedule[0]?.startTime,
                 endTime: schedule[schedule.length - 1]?.endTime,
             };
@@ -231,7 +237,7 @@ export const SessionForm: FC<SessionFormProps> = ({
         if (
             formik.values.fromDate &&
             formik.values.dayOfWeek?.length > 0 &&
-            sessionCount > 0
+            +(sessionCount || 0) > 0
         ) {
             const start = new Date(formik.values.fromDate);
             let currentDate = new Date(start);
@@ -239,7 +245,7 @@ export const SessionForm: FC<SessionFormProps> = ({
             const selectedDays = formik.values.dayOfWeek.sort();
             let lastSessionDate = null;
 
-            while (sessionsScheduled < sessionCount) {
+            while (sessionsScheduled < +(sessionCount || 0)) {
                 if (selectedDays.includes(currentDate.getDay())) {
                     lastSessionDate = new Date(currentDate);
                     sessionsScheduled++;
@@ -295,13 +301,28 @@ export const SessionForm: FC<SessionFormProps> = ({
                                 color: "white",
                             },
                         }}
-                        onClick={() =>
+                        onClick={() => {
+                            const schedule = session.dayOfWeek?.map((day) => {
+                                const matchedChild = session?.children?.find(
+                                    (child: any) =>
+                                        moment(child.date).day() === day
+                                );
+
+                                return {
+                                    day,
+                                    startTime: matchedChild?.startTime || "",
+                                    endTime: matchedChild?.endTime || "",
+                                };
+                            });
+
+                            setSchedule(schedule);
+
                             formik.setValues({
                                 ...session,
                                 fromDate: session.fromDate || "",
                                 frontId: session.frontId || "",
-                            })
-                        }
+                            });
+                        }}
                     >
                         {session.title}
                     </Typography>
@@ -526,15 +547,20 @@ export const SessionForm: FC<SessionFormProps> = ({
                                 type="number"
                                 value={sessionCount}
                                 onChange={(e) =>
-                                    setSessionCount(
-                                        Math.max(
-                                            formik.values.dayOfWeek?.length ||
-                                                1,
-                                            Number(e.target.value)
-                                        )
-                                    )
+                                    setSessionCount(e.target.value)
                                 }
                                 fullWidth
+                                error={Boolean(
+                                    formik.values.dayOfWeek.length >
+                                        +(sessionCount || 0) &&
+                                        formik.touched.dayOfWeek
+                                )}
+                                helperText={
+                                    formik.touched.dayOfWeek &&
+                                    formik.values.dayOfWeek.length >
+                                        +(sessionCount || 0) &&
+                                    "Session count cannot be less than day count"
+                                }
                             />
                         </Grid>
 

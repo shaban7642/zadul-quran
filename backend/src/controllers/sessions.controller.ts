@@ -183,7 +183,7 @@ class SessionsController {
         if (!session.startTime) {
           console.log(session.id);
           console.log(session);
-          return;
+          return session;
         }
         const [hours, minutes, seconds] = session.startTime
           .toString()
@@ -413,27 +413,101 @@ class SessionsController {
         limit: forRenew ? 100 : 1,
       };
 
-      const sessions = forRenew
-        ? await this.sessionsService.findAll(query)
-        : await this.sessionsService.findOne(query);
+      let sessions = [] as any[];
+      if (forRenew) {
+        sessions = await this.sessionsService.findAll({
+          attributes,
+          include: [
+            {
+              model: Patches,
+              include: [
+                {
+                  model: UserModel,
+                  as: 'student',
+                  ...(studentId && {
+                    where: { id: studentId },
+                    required: true,
+                  }),
+                },
+                {
+                  model: UserModel,
+                  as: 'teacher',
+                },
+                {
+                  model: Departments,
+                },
+              ],
+              required: true,
+            },
+          ],
+          order: [
+            ['createdAt', 'desc'],
+            // ['startTime', 'desc'],
+          ],
+          ...getPagination(40, 0),
+        });
+      } else {
+        sessions = (await this.sessionsService.findOne(query)) as any[];
+      }
 
       if (!sessions || (Array.isArray(sessions) && sessions.length === 0)) {
         return res.status(404).json({ message: 'Session not found' });
       }
 
       if (forRenew) {
-        const uniqueSessions = [];
-        const seenPatches = new Map();
+        const groupedByBatch = new Map();
 
+        // Group sessions by batchId
         for (const session of sessions) {
-          if (!seenPatches.has(session.patchId)) {
-            seenPatches.set(session.patchId, true);
-            uniqueSessions.push(session);
+          if (!groupedByBatch.has(session.batchId)) {
+            groupedByBatch.set(session.batchId, []);
           }
-          if (uniqueSessions.length === 5) break;
+          groupedByBatch.get(session.batchId).push(session);
         }
 
-        return res.status(200).json({ session: uniqueSessions });
+        const uniquePatches = new Map();
+        const selectedSessions = [];
+
+        for (const batchSessions of groupedByBatch.values()) {
+          for (const session of batchSessions) {
+            if (!uniquePatches.has(session.patchId)) {
+              uniquePatches.set(session.patchId, true);
+
+              // Get all other sessions with the same patchId as children
+              const childrenData = batchSessions.filter(
+                (s: any) => s.patchId === session.patchId && s !== session
+              );
+
+              const children = [
+                {
+                  id: session.id,
+                  title: session.title,
+                  date: session.date,
+                  startTime: session.startTime,
+                  endTime: session.endTime,
+                  status: session.status,
+                },
+                ...childrenData.map((child: any) => ({
+                  id: child.id,
+                  title: child.title,
+                  date: child.date,
+                  startTime: child.startTime,
+                  endTime: child.endTime,
+                  status: child.status,
+                })),
+              ].sort((a, b) => a.id - b.id);
+
+              selectedSessions.push({
+                ...session,
+                children,
+              });
+            }
+            if (uniquePatches.size === 2) break; // Stop when we have 2 unique patches
+          }
+          if (uniquePatches.size === 2) break;
+        }
+
+        return res.status(200).json({ sessions: selectedSessions });
       }
 
       return res.status(200).json({ session: sessions });
