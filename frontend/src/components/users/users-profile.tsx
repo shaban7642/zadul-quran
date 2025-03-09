@@ -46,6 +46,7 @@ export type Session = {
     fromDate?: string;
     toDate: string;
     dayOfWeek: number[];
+    children: any[];
 
     endTime: string;
     title: string;
@@ -61,6 +62,11 @@ interface RoleId {
 interface profileProps {
     id: number;
 }
+type SessionType = {
+    id: number;
+    duration: string; // or number, depending on your data type
+};
+
 export const Profile: FC<profileProps> = (props) => {
     const { id } = props;
     const { user } = useAuth();
@@ -71,6 +77,7 @@ export const Profile: FC<profileProps> = (props) => {
     const [open, setOpen] = useState(false);
     const [sessions, setSessions] = useState<Session[]>();
     const isMounted = useMounted();
+    const [sessionTypes, sessionTypesToParent] = useState<any[]>([]);
 
     const [userData, setUserData] = useState<any>({
         id: 1,
@@ -129,15 +136,17 @@ export const Profile: FC<profileProps> = (props) => {
     const getSession = async (id: number) => {
         try {
             const resp = await sessionApi.getSessionByStudentId(id, true);
-            const formatSessions = resp?.session?.map((session: any) => {
+            const formatSessions = resp?.sessions?.map((session: any) => {
                 const frontId = Math.random().toString(36).substr(2, 9);
                 return {
+                    ...session,
                     departmentId: session.patch.departmentId,
                     sessionTypeId: session.sessionTypeId,
                     sessionMethod: session.sessionMethod,
                     studentId: session.patch.studentId,
                     teacherId: session.patch.teacherId,
                     dayOfWeek: session.patch.dayOfWeek,
+                    fromDate: session.patch.fromDate,
                     endTime:
                         moment(
                             `${session?.date.substr(0, 11)}${
@@ -405,9 +414,9 @@ export const Profile: FC<profileProps> = (props) => {
                                         </ListItem>
                                     </>
                                 )}
-                                {user?.role?.name != "student" &&
+                                {user?.role?.name !== "student" &&
                                     sessions &&
-                                    sessions.length > 0 && (
+                                    Boolean(sessions?.length) && (
                                         <>
                                             <ListItem
                                                 sx={{
@@ -415,26 +424,95 @@ export const Profile: FC<profileProps> = (props) => {
                                                 }}
                                             >
                                                 Session Title:
-                                                <Typography color={"black"}>
+                                                <Typography color="black">
                                                     {sessions[0]?.title ||
                                                         "No data"}
                                                 </Typography>
                                             </ListItem>
-                                            <ListItem>
-                                                days:
-                                                <Typography color={"black"}>
-                                                    {sessions[0]?.dayOfWeek
-                                                        ?.map(
-                                                            (day: number) =>
-                                                                weekDays.find(
-                                                                    (c) =>
-                                                                        c.value ==
-                                                                        day
-                                                                )?.label
-                                                        )
-                                                        ?.join(",") ||
+                                            <ListItem
+                                                sx={{
+                                                    borderTop: "1px solid #777",
+                                                }}
+                                            >
+                                                Duration:
+                                                <Typography color="black">
+                                                    {(sessionTypes &&
+                                                        sessionTypes?.find(
+                                                            (se: any) =>
+                                                                se.id ===
+                                                                sessions[0]
+                                                                    ?.sessionTypeId
+                                                        )?.duration) ||
                                                         "No data"}
                                                 </Typography>
+                                            </ListItem>
+
+                                            <ListItem
+                                                sx={{
+                                                    borderTop: "1px solid #777",
+                                                }}
+                                            >
+                                                Days:
+                                                {Boolean(
+                                                    sessions[0]?.dayOfWeek
+                                                        ?.length
+                                                ) ? (
+                                                    <ul>
+                                                        {sessions[0].dayOfWeek.map(
+                                                            (day: Number) => {
+                                                                const {
+                                                                    id,
+                                                                    date,
+                                                                    startTime,
+                                                                    endTime,
+                                                                } =
+                                                                    sessions[0]?.children?.find(
+                                                                        (
+                                                                            child: any
+                                                                        ) =>
+                                                                            moment(
+                                                                                child.date
+                                                                            ).day() ===
+                                                                            day
+                                                                    );
+
+                                                                return (
+                                                                    <li
+                                                                        key={id}
+                                                                    >
+                                                                        <Typography color="black">
+                                                                            {moment(
+                                                                                date
+                                                                            ).format(
+                                                                                "dddd"
+                                                                            )}
+                                                                            :{" "}
+                                                                            {startTime &&
+                                                                                moment(
+                                                                                    startTime,
+                                                                                    "hh:mm"
+                                                                                ).format(
+                                                                                    "hh:mm"
+                                                                                )}{" "}
+                                                                            -{" "}
+                                                                            {endTime &&
+                                                                                moment(
+                                                                                    endTime,
+                                                                                    "hh:mm"
+                                                                                ).format(
+                                                                                    "hh:mm"
+                                                                                )}{" "}
+                                                                        </Typography>
+                                                                    </li>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </ul>
+                                                ) : (
+                                                    <Typography color="black">
+                                                        لا يوجد بيانات
+                                                    </Typography>
+                                                )}
                                             </ListItem>
                                         </>
                                     )}
@@ -959,6 +1037,7 @@ export const Profile: FC<profileProps> = (props) => {
                     setOpen={setOpen}
                     sessions={sessions}
                     createSession={createSession}
+                    sessionTypesToParent={sessionTypesToParent}
                 />
             )}
         </Box>

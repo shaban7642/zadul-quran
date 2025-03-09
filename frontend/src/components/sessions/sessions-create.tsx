@@ -277,6 +277,7 @@ const CreateSession = () => {
         open={open}
         setOpen={setOpen}
         createSession={createSession}
+        sessionTypesToParent={false}
       />
     </Box>
   );
